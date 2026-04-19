@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo json_encode($result);
             exit;
         } else if ($_GET['action'] === 'create') {
-            $result = $controller->register();
+            $result = $controller->adminCreateUser();
             echo json_encode($result);
             exit;
         }

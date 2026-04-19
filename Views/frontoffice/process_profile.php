@@ -13,12 +13,9 @@ if ($result) {
         if (session_status() === PHP_SESSION_NONE) session_start();
         $isAdmin = isset($_SESSION['role']) && (strtolower($_SESSION['role']) === 'admin' || $_SESSION['role'] === 'Admin');
         
-        $redirect = $isAdmin ? '../backoffice/nutrismart-dashboard.html' : 'nutrismart-website.html';
+        $redirect = $isAdmin ? '../backoffice/nutrismart-dashboard.html' : 'nutrismart-home.html';
         
-        echo "<script>
-            alert('" . addslashes($result['message']) . "');
-            window.location.href='$redirect';
-        </script>";
+        echo "<script>window.location.href='$redirect';</script>";
     } else {
         echo "<script>
             alert('Erreur : " . addslashes($result['message']) . "');

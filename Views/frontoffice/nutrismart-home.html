@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriSmart — Mon Espace</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=2" />
+  <style>
+    /* ── EMERGENCY DESIGN SYSTEM RECOVERY ── */
+    :root {
+      --forest: #223c2a;
+      --primary: #4a7c59;
+      --mid: #8fbc8f;
+      --lime: #c4d4a8;
+      --orange: #f2994a;
+      --peach: #f4a241;
+      --cream: #f7f3ec;
+      --sand: #ede8de;
+      --white: #ffffff;
+      --gray: #748074;
+    }
+
+    /* Base Resets */
+    .btn-primary,
+    .btn-gradient,
+    .btn-outline,
+    .btn-premium,
+    .dropdown-item,
+    .nav-cta {
+      text-decoration: none !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      min-height: calc(100vh - 130px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      padding: 4rem 5rem 5rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(74, 124, 89, 0.05) 0%, rgba(244, 162, 65, 0.03) 100%);
+    }
+
+    @keyframes bgShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .btn-orange-light {
+      background: linear-gradient(135deg, #ffcc80, #ffb74d) !important;
+      color: #5d4037 !important;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2rem;
+      box-shadow: 0 4px 15px rgba(255, 183, 77, 0.3);
+    }
+
+    .btn-orange-light:hover {
+      background: #ffa726 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 183, 77, 0.5);
+    }
+
+    .btn-premium {
+      background: linear-gradient(135deg, var(--primary), var(--forest)) !important;
+      color: white !important;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2rem;
+      box-shadow: 0 8px 25px rgba(74, 124, 89, 0.25);
+    }
+
+    /* DASHBOARD COMPONENTS */
+    .hero-visual {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .hero-image-main {
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      animation: rotatePlate 60s linear infinite;
+      object-fit: cover;
+    }
+
+    @keyframes rotatePlate {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .card-float {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .card-float.green-card {
+      background: rgba(74, 124, 89, 0.95);
+      color: white;
+    }
+
+    .card-float.tall {
+      grid-row: span 2;
+    }
+
+    /* BUTTONS SYSTEM - Ensuring they look like buttons */
+    .btn-gradient {
+      background: linear-gradient(135deg, var(--orange), var(--peach)) !important;
+      color: white !important;
+      padding: 1rem 2.5rem;
+      border-radius: 3rem;
+    }
+
+    .btn-outline {
+      background: white !important;
+      border: 2px solid var(--lime) !important;
+      color: var(--forest) !important;
+      padding: 1rem 2.5rem;
+      border-radius: 3rem;
+    }
+
+    .btn-gradient:hover,
+    .btn-outline:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* DROPDOWN FAIL-SAFE */
+    .dropdown-content.show {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) scale(1) !important;
+    }
+
+    /* CTA SECTION FIX */
+    .cta-section {
+      background: var(--cream);
+      padding: 6rem 5rem;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* PREMIUM HERO PERSONALIZATION STYLES */
+    .hero-badge {
+      background: linear-gradient(135deg, rgba(74, 124, 89, 0.15) 0%, rgba(74, 124, 89, 0.05) 100%);
+      border: 1px solid rgba(74, 124, 89, 0.2);
+      box-shadow: 0 8px 32px rgba(74, 124, 89, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--forest);
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .hero-badge::before {
+      content: "✦";
+      color: var(--orange);
+    }
+
+    .hero-badge::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 2rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), transparent);
+      z-index: -1;
+    }
+
+    .hero h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.15;
+      font-weight: 900;
+      color: var(--forest);
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      /* Subtle shadow for depth */
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--orange);
+      font-weight: 400;
+    }
+
+    #hero-user-name {
+      background: linear-gradient(135deg, var(--forest) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      filter: drop-shadow(0px 8px 16px rgba(74, 124, 89, 0.35));
+      /* Vibrant glowing shadow */
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="navbar">
+    <a href="nutrismart-home.html" class="nav-logo">
+      <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+        style="overflow: visible">
+        <mask id="biteMask">
+          <rect x="-20" y="-20" width="140" height="140" fill="white" />
+          <circle cx="92" cy="35" r="18" fill="black" />
+          <circle cx="84" cy="62" r="14" fill="black" />
+        </mask>
+        <g mask="url(#biteMask)">
+          <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+          <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+        </g>
+        <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+      </svg>
+      <div>
+        <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="nutrismart-home.html" class="active">Accueil</a></li>
+      <li><a href="profile.html">Profil</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-auth" id="user-nav-auth" style="display: none;">
+      <div class="user-dropdown" style="position: relative; display: inline-block;">
+        <div class="user-badge" id="dropdownToggle"
+          style="cursor: pointer; display: flex; align-items: center; gap: 0.75rem; background: rgba(74, 124, 89, 0.08); padding: 0.5rem 1.2rem; border-radius: 2rem; border: 1px solid rgba(74, 124, 89, 0.15); color: #223c2a; font-weight: 600;">
+          <div class="user-avatar" id="user-initial"
+            style="width: 32px; height: 32px; background: #4a7c59; color: white; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; font-weight: 700;">
+            ?</div>
+          <span id="user-name-text">Chargement...</span>
+          <svg style="width:14px; height:14px; margin-left:4px; opacity:0.6;" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+        <div class="dropdown-content" id="userDropdown">
+          <div class="dropdown-header">
+            <span class="user-name" id="dropdown-name">Chargement...</span>
+            <span class="user-email" id="user-email-text">email@exemple.com</span>
+          </div>
+          <div class="dropdown-actions">
+            <a href="profile.html" class="dropdown-item">
+              <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Mon Profil
+            </a>
+            <a href="logout.php" class="dropdown-item logout">
+              <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Déconnexion
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        Votre Espace Personnel
+      </div>
+      <h1>
+        Bienvenue <span id="hero-user-name" style="color: var(--primary);"></span> 👋<br>
+        <em>Prêt(e) pour aujourd'hui ?</em>
+      </h1>
+      <p class="hero-sub" style="margin-bottom: 2rem;">
+        Voici votre tableau de bord sur mesure. Suivez l'évolution de vos objectifs, consultez vos plans de repas
+        personnalisés et profitez de vos outils exclusifs NutriSmart.
+      </p>
+      <div class="hero-actions">
+        <a href="#features" class="btn-premium">
+          Découvrir mes outils
+        </a>
+      </div>
+      <p
+        style="margin-top: 1rem; font-size: 0.85rem; color: var(--mid); font-weight: 600; animation: fadeUp 1s 0.6s ease both;">
+        ✦ N'oubliez pas de mettre à jour votre profil régulièrement.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">Sur mesure</span>
+          <span class="stat-lbl">Plan Nutritionnel</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">Vos Objectifs</span>
+          <span class="stat-lbl">En ligne de mire</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-lbl">Personnalisé</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual cards -->
+    <div class="hero-visual">
+      <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80"
+        alt="Plat Nutritif" class="hero-image-main" />
+      <div class="card-float">
+        <h4>Plan du jour</h4>
+        <p>Repas générés selon votre profil</p>
+        <div class="mini-chart">
+          <div class="bar" style="height: 40%; --final-height: 40%; animation-delay: 0.1s;"></div>
+          <div class="bar active" style="height: 70%; --final-height: 70%; animation-delay: 0.2s;"></div>
+          <div class="bar active" style="height: 90%; --final-height: 90%; animation-delay: 0.3s;"></div>
+          <div class="bar active" style="height: 65%; --final-height: 65%; animation-delay: 0.4s;"></div>
+          <div class="bar" style="height: 50%; --final-height: 50%; animation-delay: 0.5s;"></div>
+          <div class="bar active" style="height: 80%; --final-height: 80%; animation-delay: 0.6s;"></div>
+          <div class="bar" style="height: 45%; --final-height: 45%; animation-delay: 0.7s;"></div>
+        </div>
+      </div>
+
+      <div class="card-float green-card tall">
+        <h4>Objectif calories</h4>
+        <p style="margin-bottom: 0.5rem">2 100 kcal / jour</p>
+        <div class="progress-ring">
+          <svg viewBox="0 0 70 70" width="70" height="70">
+            <circle cx="35" cy="35" r="29" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="6" />
+            <circle cx="35" cy="35" r="29" fill="none" stroke="#8bc34a" stroke-width="6" stroke-dasharray="182"
+              stroke-dashoffset="46" stroke-linecap="round" />
+          </svg>
+          <span class="ring-val">75%</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro">
+            <div class="macro-lbl">
+              <span>Protéines</span><span>68g</span>
+            </div>
+            <div class="macro-bar">
+              <div class="macro-fill" style="width: 72%; --final-width: 72%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-float">
+        <h4>Courses</h4>
+        <p>Budget restant</p>
+        <div style="
+              font-family: 'Playfair Display', serif;
+              font-size: 1.7rem;
+              font-weight: 900;
+              color: #2d6a2d;
+              margin-top: 0.5rem;
+            ">
+          38,50 TND
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="section-tag">Mes Outils</div>
+    <h2>Propulsez vos objectifs.</h2>
+    <p class="section-sub">
+      Accédez à tous vos modules personnalisés depuis votre espace membre.
+    </p>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Salade">
+        <h3>Profil Personnalisé</h3>
+        <p>Gérez vos objectifs, restrictions alimentaires et IMC en temps réel.</p>
+      </div>
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Bowl">
+        <h3>Programmes Repas</h3>
+        <p>Consultez vos menus hebdomadaires générés par notre algorithme.</p>
+      </div>
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Sport">
+        <h3>Programmes Sport</h3>
+        <p>Découvrez vos routines d'exercices adaptées à vos objectifs santé.</p>
+      </div>
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Budget">
+        <h3>Courses & Budget</h3>
+        <p>Maîtrisez vos dépenses tout en optimisant votre panier santé.</p>
+      </div>
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Food DB">
+        <h3>Base de Données Alimentaire</h3>
+        <p>Accédez à des milliers d'aliments détaillés et leurs valeurs nutritionnelles.</p>
+      </div>
+      <div class="feat-card">
+        <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=400&q=80"
+          class="feat-img" alt="Tracking">
+        <h3>Progress Tracking</h3>
+        <p>Visualisez votre évolution avec des graphiques détaillés et des bilans hebdomadaires.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA (Simplified for logged-in users) -->
+  <section class="cta-section">
+    <h2>Votre transformation continue</h2>
+    <p>
+      Mettez à jour vos données régulièrement pour des résultats optimaux.<br />
+      Vous faites partie de la communauté NutriSmart.
+    </p>
+    <div class="cta-actions" style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 2.5rem;">
+      <a href="profile.html" class="btn-gradient">Mettre à jour mon profil</a>
+      <a href="contact.html" class="btn-outline">Besoin d'aide ?</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-inner">
+      <!-- Brand & Contact -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="biteMaskFooterFinal">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterFinal)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span>NutriSmart</span>
+        </div>
+        <p class="footer-desc">
+          Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.31-2.31a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Tunis, Tunisie
+          </div>
+        </div>
+      </div>
+
+      <!-- Plateforme -->
+      <div class="footer-col">
+        <h5>Plateforme</h5>
+        <ul>
+          <li><a href="#features">Fonctionnalités</a></li>
+          <li><a href="#how-it-works">Comment ça marche</a></li>
+          <li><a href="#modules">Modules</a></li>
+          <li>
+            <p>Programmes Repas</p>
+          </li>
+          <li>
+            <p>Programmes Sport</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Ressources -->
+      <div class="footer-col">
+        <h5>Ressources</h5>
+        <ul>
+          <li>
+            <p>Base alimentaire</p>
+          </li>
+          <li>
+            <p>Carnet de recettes</p>
+          </li>
+          <li>
+            <p>Blog Nutrition</p>
+          </li>
+          <li>
+            <p>Suivi de progrès</p>
+          </li>
+          <li>
+            <p>FAQ</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social & Legal -->
+      <div class="footer-col">
+        <h5>Suivez-nous</h5>
+        <div class="footer-social-wrap">
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
+        </div>
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 NutriSmart — Tous droits réservés</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">CGU</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const dropdownToggle = document.getElementById('dropdownToggle');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (dropdownToggle && userDropdown) {
+      // Toggle dropdown
+      dropdownToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isShow = userDropdown.classList.contains('show');
+        if (isShow) {
+          userDropdown.classList.remove('show');
+          userDropdown.style.display = 'none';
+        } else {
+          userDropdown.classList.add('show');
+          userDropdown.style.display = 'block';
+        }
+        console.log('Dropdown state:', !isShow);
+      });
+
+      // Close dropdown when clicking outside
+      window.addEventListener('click', () => {
+        userDropdown.classList.remove('show');
+        userDropdown.style.display = 'none';
+      });
+    }
+
+    // AJAX fetch session info
+    fetch('get_session.php')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Session data:', data);
+        if (data.loggedIn) {
+          document.getElementById('user-nav-auth').style.display = 'flex';
+          document.getElementById('user-name-text').textContent = data.name;
+          document.getElementById('dropdown-name').textContent = data.name;
+          document.getElementById('user-initial').textContent = data.name.charAt(0);
+          document.getElementById('user-email-text').textContent = data.email;
+
+          // Inject user's first name into the hero section
+          const heroNameObj = document.getElementById('hero-user-name');
+          if (heroNameObj) {
+            const firstName = data.name.split(' ')[0];
+            heroNameObj.textContent = firstName;
+          }
+        } else {
+          // Not logged in: show public nav but do NOT auto-redirect.
+          // The user must click 'Déconnexion' to go back to public site.
+          document.getElementById('user-nav-auth').style.display = 'none';
+        }
+      })
+      .catch(err => {
+        console.error('Erreur session:', err);
+      });
+  </script>
+
+</body>
+
+</html>

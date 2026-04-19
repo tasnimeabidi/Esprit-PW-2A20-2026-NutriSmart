@@ -40,8 +40,13 @@ class UserController
                     $_SESSION['role'] = $user['role'];
                 }
 
-                // After registration, always take to profile form
-                header('Location: profile.html?msg=welcome');
+                // Role-based redirection
+                if (strtolower(trim($_SESSION['role'])) === 'admin') {
+                    header('Location: ../backoffice/nutrismart-dashboard.html');
+                } else {
+                    // Normal users must complete their profile right after registering
+                    header('Location: profile.html');
+                }
                 exit;
             } else {
                 return ['success' => false, 'message' => 'Erreur lors de la création du compte.'];
@@ -68,10 +73,10 @@ class UserController
                 $_SESSION['user_id'] = $user['id_utilisateur'];
                 $_SESSION['role'] = $user['role'];
 
-                if (strtolower($user['role']) === 'admin' || $user['role'] === 'Admin') {
+                if (strtolower(trim($_SESSION['role'])) === 'admin') {
                     header('Location: ../backoffice/nutrismart-dashboard.html');
                 } else {
-                    header('Location: nutrismart-website.html');
+                    header('Location: nutrismart-home.html');
                 }
                 exit;
             } else {
@@ -143,10 +148,39 @@ class UserController
                 return ['success' => false, 'message' => 'Nom, email et rôle sont obligatoires.'];
             }
 
-            if ($this->userModel->updateUserByAdmin($id_utilisateur, $nom, $email, $role, $age, $password)) {
+            $updateStatus = $this->userModel->updateUserByAdmin($id_utilisateur, $nom, $email, $role, $age, $password);
+            if ($updateStatus === true) {
                 return ['success' => true, 'message' => 'Utilisateur mis à jour.'];
             } else {
-                return ['success' => false, 'message' => 'Erreur lors de la mise à jour SQL.'];
+                return ['success' => false, 'message' => 'Erreur SQL: ' . (is_string($updateStatus) ? $updateStatus : 'inconnue')];
+            }
+        }
+        return ['success' => false, 'message' => 'Méthode non autorisée.'];
+    }
+
+    // CREATE (Backoffice)
+    public function adminCreateUser()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nom = $_POST['nom'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $role = $_POST['role'] ?? 'utilisateur';
+
+            if (empty($nom) || empty($email) || empty($password)) {
+                return ['success' => false, 'message' => 'Tous les champs sont obligatoires.'];
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return ['success' => false, 'message' => 'Email invalide.'];
+            }
+            if ($this->userModel->getByEmail($email)) {
+                return ['success' => false, 'message' => 'Cet email existe déjà.'];
+            }
+
+            if ($this->userModel->create($nom, $email, $password, $role)) {
+                return ['success' => true, 'message' => 'Utilisateur créé avec succès.'];
+            } else {
+                return ['success' => false, 'message' => 'Erreur lors de la création du compte.'];
             }
         }
         return ['success' => false, 'message' => 'Méthode non autorisée.'];

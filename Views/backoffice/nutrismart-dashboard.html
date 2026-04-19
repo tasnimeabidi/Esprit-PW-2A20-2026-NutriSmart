@@ -837,10 +837,10 @@
       </div>
       <div class="notif-btn" title="Paramètres">⚙️</div>
       <div class="admin-avatar">
-        <div class="avatar-img">A</div>
+        <div class="avatar-img" id="admin-avatar-initial">A</div>
         <div class="admin-info">
-          <div class="admin-name">Admin Principal</div>
-          <div class="admin-role">Super Administrator</div>
+          <div class="admin-name" id="admin-display-name">Chargement...</div>
+          <div class="admin-role">Administrateur</div>
         </div>
       </div>
     </div>
@@ -1320,6 +1320,16 @@
         }, 600);
       });
     });
+    // Load real admin info from session
+    fetch('../frontoffice/get_session.php')
+      .then(r => r.json())
+      .then(data => {
+        if (data.loggedIn) {
+          document.getElementById('admin-display-name').textContent = data.name;
+          document.getElementById('admin-avatar-initial').textContent = data.name.charAt(0).toUpperCase();
+        }
+      })
+      .catch(err => console.error('Session error:', err));
   </script>
 </body>
 

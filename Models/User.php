@@ -98,7 +98,7 @@ class User {
                     $stmt2 = $this->pdo->prepare("UPDATE profil_nutritionnel SET age = ? WHERE id_utilisateur = ?");
                     $stmt2->execute([$age, $id]);
                 } else {
-                    $stmt2 = $this->pdo->prepare("INSERT INTO profil_nutritionnel (id_utilisateur, age, poids, taille) VALUES (?, ?, 0, 0)");
+                    $stmt2 = $this->pdo->prepare("INSERT INTO profil_nutritionnel (id_utilisateur, age, poids, taille, objectifs, preferences_alimentaires) VALUES (?, ?, 0, 0, NULL, NULL)");
                     $stmt2->execute([$id, $age]);
                 }
             }
@@ -107,7 +107,7 @@ class User {
             return true;
         } catch (Exception $e) {
             $this->pdo->rollBack();
-            return false;
+            return $e->getMessage();
         }
     }
 }

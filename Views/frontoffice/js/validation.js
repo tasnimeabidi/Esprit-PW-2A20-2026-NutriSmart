@@ -1,157 +1,144 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-  // --- Helper Functions ---
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
+document.addEventListener("DOMContentLoaded", () => {
+  // --- Configuration ---
+  const config = {
+    colors: {
+      success: "#3dba52",
+      error: "#e53935",
+      successBg: "rgba(61, 186, 82, 0.1)",
+      errorBg: "rgba(229, 57, 53, 0.1)",
+    },
   };
 
-  const validateName = (name) => {
-    return /^[a-zA-ZÀ-ÿ\s'-]{3,}$/.test(name);
+  // --- Validators ---
+  const validators = {
+    nom: (val) => /^[a-zA-ZÀ-ÿ\s'-]{3,5}$/.test(val.trim()),
+    email: (val) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val.trim()),
+    password: (val) => /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(val),
+    login_password: (val) => val.trim().length > 0,
+    age: (val) => {
+      const v = parseInt(val);
+      return !isNaN(v) && v >= 14 && v <= 70;
+    },
+    poids: (val) => {
+      const v = parseFloat(val);
+      return !isNaN(v) && v >= 30 && v <= 300;
+    },
+    taille: (val) => {
+      const v = parseInt(val);
+      return !isNaN(v) && v >= 130 && v <= 250;
+    },
+    message: (val) => val.trim().length >= 10,
   };
 
-  const validatePassword = (password) => {
-    // Min 8 chars, 1 uppercase, 1 number
-    return /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+  const errorMessages = {
+    nom: "Le nom doit contenir au moins 3 lettres.",
+    email: "Adresse e-mail invalide.",
+    password: "Min. 8 caractères, 1 majuscule, 1 chiffre.",
+    login_password: "Le mot de passe est requis.",
+    age: "Âge requis ",
+    poids: "Poids requis ",
+    taille: "Taille requise",
+    message: "Le message doit contenir au moins 10 caractères.",
   };
 
+  // --- Core Functions ---
 
-  const showError = (input, message) => {
-    // Highlight input
-    input.style.borderColor = '#e53935';
-    input.style.boxShadow = '0 0 0 4px rgba(229, 57, 53, 0.1)';
-    
-    // Add error message text
-    let errorDiv = input.parentNode.querySelector('.error-msg');
+  const updateUI = (input, isValid, message) => {
+    const parent = input.parentNode;
+
+    // Apply styles
+    input.style.borderColor = isValid
+      ? config.colors.success
+      : config.colors.error;
+    input.style.boxShadow = `0 0 0 4px ${isValid ? config.colors.successBg : config.colors.errorBg
+      }`;
+    input.style.transition = "all 0.3s ease";
+
+    // Handle Error Message
+    let errorDiv = parent.querySelector(".validation-msg");
     if (!errorDiv) {
-      errorDiv = document.createElement('div');
-      errorDiv.className = 'error-msg';
-      errorDiv.style.color = '#e53935';
-      errorDiv.style.fontSize = '0.78rem';
-      errorDiv.style.marginTop = '0.4rem';
-      errorDiv.style.fontWeight = '600';
-      input.parentNode.appendChild(errorDiv);
+      errorDiv = document.createElement("div");
+      errorDiv.className = "validation-msg";
+      errorDiv.style.fontSize = "0.78rem";
+      errorDiv.style.marginTop = "0.4rem";
+      errorDiv.style.fontWeight = "600";
+      parent.appendChild(errorDiv);
     }
-    errorDiv.innerText = message;
+
+    if (isValid) {
+      errorDiv.innerText = "✓ Valide";
+      errorDiv.style.color = config.colors.success;
+    } else {
+      errorDiv.innerText = message;
+      errorDiv.style.color = config.colors.error;
+    }
   };
 
-  const clearError = (input) => {
-    input.style.borderColor = '';
-    input.style.boxShadow = '';
-    const errorDiv = input.parentNode.querySelector('.error-msg');
-    if (errorDiv) errorDiv.remove();
+  const validateInput = (input) => {
+    const name = input.getAttribute("name");
+    const id = input.getAttribute("id");
+    const value = input.value;
+
+    // Determine which validator to use
+    let validatorKey = name;
+    if (id === "login_password") validatorKey = "login_password";
+    if (id === "edit_password" && value === "") return true; // Optional password in edit
+
+    if (validators[validatorKey]) {
+      const isValid = validators[validatorKey](value);
+      updateUI(input, isValid, errorMessages[validatorKey]);
+      return isValid;
+    }
+    return true; // No validator defined, skip
   };
 
-  // Attach clear event to all inputs
-  document.querySelectorAll('input, textarea, select').forEach(input => {
-    input.addEventListener('input', () => clearError(input));
-  });
+  const initForm = (formId) => {
+    const form = document.getElementById(formId);
+    if (!form) return;
 
-  // --- 1. Register Form Validation ---
-  const registerForm = document.getElementById('registerForm');
-  if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-      let isValid = true;
-      const nom = registerForm.querySelector('input[name="nom"]');
-      const email = registerForm.querySelector('input[name="email"]');
-      const password = registerForm.querySelector('input[name="password"]');
+    const inputs = form.querySelectorAll(
+      'input:not([type="hidden"]), textarea, select'
+    );
 
-
-      if (!validateName(nom.value.trim())) {
-        showError(nom, 'Le nom doit contenir au moins 3 lettres.');
-        isValid = false;
-      }
-      if (!validateEmail(email.value.trim())) {
-        showError(email, 'Adresse e-mail invalide.');
-        isValid = false;
-      }
-      if (!validatePassword(password.value)) {
-        showError(password, 'Min. 8 caractères, 1 majuscule, 1 chiffre.');
-        isValid = false;
-      }
-
-      if (!isValid) e.preventDefault();
+    inputs.forEach((input) => {
+      // Immediate feedback on input
+      input.addEventListener("input", () => validateInput(input));
+      // Also on blur for completeness
+      input.addEventListener("blur", () => validateInput(input));
     });
-  }
 
-  // --- 2. Login Form Validation ---
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      let isValid = true;
-      const email = loginForm.querySelector('input[name="email"]');
-      const password = loginForm.querySelector('input[name="password"]');
+    form.addEventListener("submit", (e) => {
+      let isFormValid = true;
+      inputs.forEach((input) => {
+        if (!validateInput(input)) {
+          isFormValid = false;
+        }
+      });
 
-      if (!validateEmail(email.value.trim())) {
-        showError(email, 'Adresse e-mail manquante ou invalide.');
-        isValid = false;
+      if (!isFormValid) {
+        e.preventDefault();
+        // Scroll to first error
+        const firstError = form.querySelector(
+          '.validation-msg[style*="rgb(229, 57, 53)"]'
+        );
+        if (firstError)
+          firstError.parentNode.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
       }
-      if (password.value.trim() === '') {
-        showError(password, 'Le mot de passe est requis.');
-        isValid = false;
-      }
-
-      if (!isValid) e.preventDefault();
     });
-  }
+  };
 
-  // --- 3. Profile Form Validation ---
-  const profileForm = document.getElementById('profileForm');
-  if (profileForm) {
-    profileForm.addEventListener('submit', (e) => {
-      let isValid = true;
-      const age = profileForm.querySelector('input[name="age"]');
-      const poids = profileForm.querySelector('input[name="poids"]');
-      const taille = profileForm.querySelector('input[name="taille"]');
+  // --- Initialize Forms ---
+  const formsToValidate = [
+    "registerForm",
+    "loginForm",
+    "profileForm",
+    "contactForm",
+    "addForm",
+    "editForm",
+  ];
 
-
-
-      const ageVal = parseInt(age.value);
-      if (isNaN(ageVal) || ageVal < 10 || ageVal > 120) {
-        showError(age, 'Veuillez saisir un âge valide (entre 10 et 120).');
-        isValid = false;
-      }
-
-      const poidsVal = parseFloat(poids.value);
-      if (isNaN(poidsVal) || poidsVal < 20 || poidsVal > 300) {
-        showError(poids, 'Veuillez saisir un poids valide en kg.');
-        isValid = false;
-      }
-
-      const tailleVal = parseInt(taille.value);
-      if (isNaN(tailleVal) || tailleVal < 50 || tailleVal > 250) {
-        showError(taille, 'Veuillez saisir une taille valide en cm.');
-        isValid = false;
-      }
-
-      if (!isValid) e.preventDefault();
-    });
-  }
-
-  // --- 4. Contact Form Validation ---
-  const contactForm = document.getElementById('contactForm');
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      let isValid = true;
-      const nom = contactForm.querySelector('input[name="nom"]');
-      const email = contactForm.querySelector('input[name="email"]');
-      const message = contactForm.querySelector('textarea[name="message"]');
-
-      if (!validateName(nom.value.trim())) {
-        showError(nom, 'Le nom doit contenir au moins 3 lettres.');
-        isValid = false;
-      }
-      if (!validateEmail(email.value.trim())) {
-        showError(email, 'Adresse e-mail valide requise.');
-        isValid = false;
-      }
-      if (message.value.trim().length < 10) {
-        showError(message, 'Votre message doit contenir au moins 10 caractères.');
-        isValid = false;
-      }
-
-      if (!isValid) e.preventDefault();
-    });
-  }
+  formsToValidate.forEach((id) => initForm(id));
 });

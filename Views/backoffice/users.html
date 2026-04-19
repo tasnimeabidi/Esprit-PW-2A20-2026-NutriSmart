@@ -645,10 +645,10 @@
       </div>
       <div class="notif-btn" title="Paramètres">⚙️</div>
       <div class="admin-avatar">
-        <div class="avatar-img">A</div>
+        <div class="avatar-img" id="admin-avatar-initial">A</div>
         <div class="admin-info">
-          <div class="admin-name">Admin Principal</div>
-          <div class="admin-role">Super Administrator</div>
+          <div class="admin-name" id="admin-display-name">Chargement...</div>
+          <div class="admin-role">Administrateur</div>
         </div>
       </div>
     </div>
@@ -747,7 +747,6 @@
             <th>ID Client</th>
             <th>Rôle</th>
             <th>Age</th>
-            <th>MOT DE PASSE</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -787,10 +786,7 @@
           </div>
           <div class="form-group">
             <label>Mot de passe</label>
-            <div class="pw-wrapper">
-              <input type="password" id="add_password" name="password" required placeholder="••••••••">
-              <button type="button" class="toggle-pw" onclick="togglePW('add_password')">👁️</button>
-            </div>
+            <input type="text" name="password" required placeholder="Ex: NutriSmart2026!">
           </div>
           <div class="form-group">
             <label>Rôle</label>
@@ -837,11 +833,8 @@
             <input type="number" id="edit_age" name="age">
           </div>
           <div class="form-group">
-            <label>Nouveau mot de passe (laisser vide pour ne pas changer)</label>
-            <div class="pw-wrapper">
-              <input type="password" id="edit_password" name="password" placeholder="••••••••">
-              <button type="button" class="toggle-pw" onclick="togglePW('edit_password')">👁️</button>
-            </div>
+            <label>Nouveau mot de passe (optionnel)</label>
+            <input type="text" id="edit_password" name="password" placeholder="Laisser vide pour ne pas changer">
           </div>
         </div>
         <div class="modal-footer">
@@ -867,38 +860,79 @@
           .then(users => {
             tbody.innerHTML = '';
             if (!users || users.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Aucun utilisateur trouvé.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;">Aucun utilisateur trouvé.</td></tr>';
               return;
             }
             users.forEach(u => {
               const tr = document.createElement('tr');
-              tr.innerHTML = `
-                            <td>
-                                <div class="user-cell">
-                                    <div class="u-avatar" style="background:#3dba52">${(u.nom || '?').charAt(0).toUpperCase()}</div>
-                                    <div>
-                                        <div class="u-name">${u.nom}</div>
-                                        <div class="u-email">${u.email}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-family:var(--mono);font-size:.75rem;color:var(--muted)">${u.id}</td>
-                            <td style="color:var(--white);font-weight:500">${u.role}</td>
-                            <td style="color:var(--muted)">${u.age || '-'} ans</td>
-                            <td>
-                                <div style="color:var(--primary); font-family:var(--mono); font-size:0.65rem; background:rgba(61,186,82,0.05); padding:4px 8px; border-radius:4px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${u.password_hash || u.mot_de_passe}">
-                                    ${u.password_hash || u.mot_de_passe || '••••••••'}
-                                </div>
-                            </td>
-                            <td>
-                                <button class="action-btn" title="Modifier" onclick="openEditModal('${u.id}', \`${u.nom.replace(/`/g, '')}\`, '${u.email}', '${u.role}', '${u.age || ''}')">✏️</button>
-                                <button class="action-btn" title="Supprimer" onclick="deleteUser('${u.id}')">🗑️</button>
-                            </td>
-                        `;
+
+              // Column: User info
+              const tdUser = document.createElement('td');
+              const userCell = document.createElement('div');
+              userCell.className = 'user-cell';
+              const avatar = document.createElement('div');
+              avatar.className = 'u-avatar';
+              avatar.style.background = '#3dba52';
+              avatar.textContent = (u.nom || '?').charAt(0).toUpperCase();
+              const userInfo = document.createElement('div');
+              const uName = document.createElement('div');
+              uName.className = 'u-name';
+              uName.textContent = u.nom;
+              const uEmail = document.createElement('div');
+              uEmail.className = 'u-email';
+              uEmail.textContent = u.email;
+              userInfo.appendChild(uName);
+              userInfo.appendChild(uEmail);
+              userCell.appendChild(avatar);
+              userCell.appendChild(userInfo);
+              tdUser.appendChild(userCell);
+
+              // Column: ID
+              const tdId = document.createElement('td');
+              tdId.style.cssText = 'font-family:var(--mono);font-size:.75rem;color:var(--muted)';
+              tdId.textContent = u.id;
+
+              // Column: Role
+              const tdRole = document.createElement('td');
+              tdRole.style.cssText = 'color:var(--white);font-weight:500';
+              tdRole.textContent = u.role;
+
+              // Column: Age
+              const tdAge = document.createElement('td');
+              tdAge.style.color = 'var(--muted)';
+              tdAge.textContent = (u.age || '-') + ' ans';
+
+              // Column: Actions
+              const tdAct = document.createElement('td');
+
+              const editBtn = document.createElement('button');
+              editBtn.className = 'action-btn';
+              editBtn.title = 'Modifier';
+              editBtn.textContent = '✏️';
+              editBtn.addEventListener('click', function() {
+                openEditModal(u.id, u.nom || '', u.email || '', u.role || '', u.age || '');
+              });
+
+              const delBtn = document.createElement('button');
+              delBtn.className = 'action-btn';
+              delBtn.title = 'Supprimer';
+              delBtn.textContent = '🗑️';
+              delBtn.addEventListener('click', function() {
+                deleteUser(u.id);
+              });
+
+              tdAct.appendChild(editBtn);
+              tdAct.appendChild(delBtn);
+
+              tr.appendChild(tdUser);
+              tr.appendChild(tdId);
+              tr.appendChild(tdRole);
+              tr.appendChild(tdAge);
+              tr.appendChild(tdAct);
               tbody.appendChild(tr);
             });
           }).catch(e => {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--red);">Le rendu CRUD nécessite l'exécution sur serveur PHP(ex: XAMPP).</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--red);">Le rendu CRUD nécessite l'exécution sur serveur PHP (ex: XAMPP).</td></tr>`;
           });
       }
 
@@ -963,19 +997,19 @@
             alert('Erreur réseau. Lancez le serveur local.');
           });
       });
-      window.togglePW = function (id) {
-        const input = document.getElementById(id);
-        const btn = input.nextElementSibling;
-        if (input.type === 'password') {
-          input.type = 'text';
-          btn.textContent = '🔒';
-        } else {
-          input.type = 'password';
-          btn.textContent = '👁️';
-        }
-      };
     });
+    // Load real admin info from session
+    fetch('../frontoffice/get_session.php')
+      .then(r => r.json())
+      .then(data => {
+        if (data.loggedIn) {
+          document.getElementById('admin-display-name').textContent = data.name;
+          document.getElementById('admin-avatar-initial').textContent = data.name.charAt(0).toUpperCase();
+        }
+      })
+      .catch(err => console.error('Session error:', err));
   </script>
+  <script src="../frontoffice/js/validation.js"></script>
 </body>
 
 </html>
