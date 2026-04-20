@@ -327,7 +327,33 @@ $logs = $controller->listLogs();
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* ── ANIMATIONS ── */
+  /* ── MODAL ── */
+  .modal {
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px); place-items: center;
+  }
+  .modal-content {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 1.2rem; padding: 2rem; width: 450px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: fadeIn .3s ease both;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+  .close-modal { cursor: pointer; font-size: 1.5rem; color: var(--muted); }
+  .close-modal:hover { color: var(--white); }
+
+  .admin-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: .4rem; }
+  .form-group label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+  .admin-input {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: .5rem; padding: .75rem; color: var(--white);
+    font-family: var(--sans); font-size: .9rem; outline: none;
+  }
+  .admin-input:focus { border-color: var(--primary); }
+
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
   .kpi-card { animation: fadeIn .4s ease both; }
   .kpi-card:nth-child(1){animation-delay:.05s}
@@ -946,7 +972,7 @@ $logs = $controller->listLogs();
             <div class="card-title">Flux de Suivi Utilisateur (Gestion Directe)</div>
             <div class="card-sub">Gérez tous les logs de progression</div>
           </div>
-          <button class="btn-sm btn-green" onclick="addLogAdmin()">+ Ajouter un Log</button>
+          <button class="btn-sm btn-green" onclick="showAddModal()">+ Ajouter un Log</button>
         </div>
         <table class="users-table">
           <thead>
@@ -970,7 +996,7 @@ $logs = $controller->listLogs();
               </td>
               <td><?php echo $row['date']; ?></td>
               <td>
-                <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>')" style="background:none; border:none; cursor:pointer;">✏️</button>
+                <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>', '<?php echo addslashes($row['description']); ?>', <?php echo $row['calories']; ?>)" style="background:none; border:none; cursor:pointer;">✏️</button>
                 <button onclick="deleteLogAdmin(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>')" style="background:none; border:none; cursor:pointer;">🗑️</button>
               </td>
             </tr>
@@ -1000,80 +1026,156 @@ $logs = $controller->listLogs();
       this.classList.add('active');
     });
   });
+</script>
 
-  // Quick action hover sound (visual feedback)
-  document.querySelectorAll('.qa-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      this.style.borderColor = 'var(--primary)';
-      this.style.background = 'rgba(61,186,82,.15)';
-      setTimeout(() => {
-        this.style.borderColor = '';
-        this.style.background = '';
-      }, 600);
+<!-- ADMIN MODAL -->
+<div id="logModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Ajouter un Log</h3>
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+    </div>
+    <form id="adminLogForm" class="admin-form">
+      <input type="hidden" name="action" id="adminFormAction" value="create">
+      <input type="hidden" name="id" id="adminLogId" value="">
+      <input type="hidden" name="user_id" value="1">
+      
+      <div class="form-group">
+        <label>Type de log</label>
+        <select name="type" id="adminLogType" class="admin-input">
+          <option value="meal">Repas (Aliment)</option>
+          <option value="activity">Activité (Sport)</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Description (MIN 3 caract.)</label>
+        <input type="text" name="description" id="adminLogDesc" class="admin-input" placeholder="Ex: Poulet, Running...">
+      </div>
+      
+      <div class="form-group">
+        <label>Calories (kcal)</label>
+        <input type="number" name="calories" id="adminLogCals" class="admin-input" placeholder="Ex: 300">
+      </div>
+      
+      <button type="submit" class="btn-sm btn-green" style="margin-top: 1rem; width: 100%; padding: .8rem;">Confirmer</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN DELETE MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center; background: white; color: #333; padding: 2rem; border-radius: 1.5rem;">
+        <div class="modal-header" style="border-bottom: none; justify-content: center; padding-bottom: 0.5rem;">
+            <h3 class="modal-title" id="deleteModalTitle" style="color: #2c4c3e; font-size: 1.4rem;">Confirmer la suppression ?</h3>
+        </div>
+        <p style="margin: 1rem 0; color: #666; font-size: 0.95rem; line-height: 1.4;">Voulez-vous vraiment supprimer cet enregistrement du système ? Cette action est définitive.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 1.5rem;">
+            <button id="confirmDeleteBtn" class="btn-sm" style="background: #e74c3c; color: white; border: none; width: 130px; height: 40px; border-radius: 0.6rem; cursor: pointer; font-weight: 500;">Supprimer</button>
+            <button onclick="closeDeleteModal()" class="btn-sm" style="background: #f1f1f1; color: #555; border: 1px solid #ddd; width: 130px; height: 40px; border-radius: 0.6rem; cursor: pointer;">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.chart-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            this.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
     });
-  });
 
-  function addLogAdmin() {
-    const type = prompt("Type de log (meal / activity) :", "meal");
-    if(!type) return;
-    const desc = prompt("Description :");
-    if(!desc) return;
-    const cal = prompt("Calories :");
-    if(!cal) return;
-
-    const formData = new FormData();
-    formData.append('action', 'create');
-    formData.append('user_id', '1');
-    formData.append('type', type);
-    formData.append('description', desc);
-    formData.append('calories', cal);
-    formData.append('date', new Date().toISOString().split('T')[0]);
-
-    fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
-    .then(r => r.json())
-    .then(data => {
-        if(data.status === 'success') location.reload();
-        else alert(data.message);
+    // Sidebar active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (this.href && this.href.includes('.html')) return;
+            e.preventDefault();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
     });
-  }
 
-  function deleteLogAdmin(id, type) {
-    if(confirm('Supprimer ce log définitivement ?')) {
-        const formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('id', id);
-        formData.append('type', type);
+    const modal = document.getElementById('logModal');
+    
+    function showAddModal() {
+        document.getElementById('modalTitle').innerText = "Ajouter un Log";
+        document.getElementById('adminFormAction').value = "create";
+        document.getElementById('adminLogId').value = "";
+        document.getElementById('adminLogForm').reset();
+        modal.style.display = 'grid';
+    }
+
+    function editLog(id, type, desc, cals) {
+        document.getElementById('modalTitle').innerText = "Modifier le Log #" + id;
+        document.getElementById('adminFormAction').value = "update";
+        document.getElementById('adminLogId').value = id;
+        document.getElementById('adminLogType').value = type;
+        document.getElementById('adminLogDesc').value = desc;
+        document.getElementById('adminLogCals').value = cals;
+        modal.style.display = 'grid';
+    }
+
+    function closeModal() { modal.style.display = 'none'; }
+    let deleteTarget = { id: null, type: null };
+    const dModal = document.getElementById('deleteModal');
+
+    function deleteLogAdmin(id, type) {
+        deleteTarget = { id, type };
+        dModal.style.display = 'grid';
+    }
+
+    function closeDeleteModal() { dModal.style.display = 'none'; }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if(!deleteTarget.id) return;
+        
+        const params = new URLSearchParams();
+        params.append('action', 'delete');
+        params.append('id', deleteTarget.id);
+        params.append('type', deleteTarget.type);
+
+        fetch('../../controllers/SuiviController.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.status === 'success') location.reload();
+            else alert('Erreur: ' + data.message);
+        })
+        .catch(err => alert("Erreur de communication avec le serveur."))
+        .finally(() => closeDeleteModal());
+    });
+
+    // Close modals on outside click
+    window.onclick = function(event) { 
+        if (event.target == modal) closeModal(); 
+        if (event.target == dModal) closeDeleteModal();
+    }
+
+    document.getElementById('adminLogForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Contrôle de saisie
+        const desc = document.getElementById('adminLogDesc').value.toLowerCase();
+        const disallowed = ['car', 'voiture', 'avion', 'plane'];
+        if (disallowed.some(word => desc.includes(word))) {
+            alert("Erreur: Veuillez entrer une description d'aliment ou d'activité valide.");
+            return;
+        }
+
+        const formData = new FormData(this);
+        formData.append('date', new Date().toISOString().split('T')[0]);
+        
         fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => {
             if(data.status === 'success') location.reload();
-            else alert(data.message);
+            else alert('Erreur: ' + data.message);
         });
-    }
-  }
-
-  function editLog(id, type) {
-    const newDesc = prompt("Nouvelle description :");
-    if(!newDesc) return;
-    const newCal = prompt("Nouvelles calories :");
-    if(!newCal) return;
-
-    const formData = new FormData();
-    formData.append('action', 'update');
-    formData.append('id', id);
-    formData.append('type', type);
-    formData.append('description', newDesc);
-    formData.append('calories', newCal);
-    formData.append('user_id', '1');
-    formData.append('date', new Date().toISOString().split('T')[0]);
-
-    fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
-    .then(r => r.json())
-    .then(data => {
-        if(data.status === 'success') location.reload();
-        else alert(data.message);
     });
-  }
-</script>
+  </script>
 </body>
 </html>

@@ -6,13 +6,20 @@ class Suivi {
         $this->conn = $db;
     }
 
-    // Read all logs (JOINing nutrition and sport)
+    // Read all logs (JOINing nutrition with aliment entity and sport)
     public function readAll($user_id) {
-        $query = "SELECT id, id_utilisateur as user_id, 'meal' as type, date_entree as date, calories, 'Aliment' as description FROM journal_nutrition WHERE id_utilisateur = :uid
+        $query = "SELECT n.id, n.id_utilisateur as user_id, 'meal' as type, n.date_entree as date, n.calories, COALESCE(a.nom, 'Aliment Inconnu') as description 
+                  FROM journal_nutrition n
+                  LEFT JOIN aliment a ON n.id_aliment = a.id
+                  WHERE n.id_utilisateur = :uid
                   UNION
-                  SELECT id, id_utilisateur as user_id, 'activity' as type, date_seance as date, calories_depensees as calories, type_sport as description FROM journal_sport WHERE id_utilisateur = :uid
+                  SELECT s.id, s.id_utilisateur as user_id, 'activity' as type, s.date_seance as date, s.calories_depensees as calories, s.type_sport as description 
+                  FROM journal_sport s
+                  WHERE s.id_utilisateur = :uid
                   UNION
-                  SELECT id, id_utilisateur as user_id, 'weight' as type, date_mesure as date, 0 as calories, CONCAT(poids, ' kg') as description FROM journal_poids WHERE id_utilisateur = :uid
+                  SELECT w.id, w.id_utilisateur as user_id, 'weight' as type, w.date_mesure as date, 0 as calories, CONCAT(w.poids, ' kg') as description 
+                  FROM journal_poids w
+                  WHERE w.id_utilisateur = :uid
                   ORDER BY date DESC";
         
         $stmt = $this->conn->prepare($query);
@@ -58,9 +65,15 @@ class Suivi {
     }
 
     // Delete Log
+    // Delete Log
     public function delete($id, $type) {
-        $table = ($type == 'meal') ? "journal_nutrition" : (($type == 'activity') ? "journal_sport" : "journal_poids");
-        if(!$table) return false;
+        $table = "";
+        if ($type === 'meal') $table = "journal_nutrition";
+        elseif ($type === 'activity' || $type === 'sport') $table = "journal_sport";
+        elseif ($type === 'weight') $table = "journal_poids";
+        
+        if (empty($table)) return false;
+
         $query = "DELETE FROM $table WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute(['id' => $id]);
@@ -68,7 +81,8 @@ class Suivi {
 
     public function updateLog($id, $type, $desc, $cal) {
         if ($type === 'meal') {
-            $stmt = $this->conn->prepare("UPDATE journal_nutrition SET calories = :cal WHERE id = :id");
+            // For meals in this app, update calories and a default quantity
+            $stmt = $this->conn->prepare("UPDATE journal_nutrition SET calories = :cal, quantite = 100 WHERE id = :id");
             return $stmt->execute(['id' => $id, 'cal' => $cal]);
         } else {
             $stmt = $this->conn->prepare("UPDATE journal_sport SET calories_depensees = :cal, type_sport = :desc WHERE id = :id");

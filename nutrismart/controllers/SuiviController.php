@@ -21,6 +21,20 @@ class SuiviController {
         $date = $data['date'] ?? date('Y-m-d');
         $type = $data['type'];
         $calories = abs($data['calories'] ?? 0);
+        $description = trim($data['description'] ?? 'Activité');
+
+        // Contrôle de saisie (Validation)
+        if ($type === 'activity' || $type === 'meal') {
+            if (strlen($description) < 3) {
+                return ["status" => "error", "message" => "La description doit contenir au moins 3 caractères."];
+            }
+            $disallowed = ['voiture', 'car', 'avion', 'plane'];
+            foreach ($disallowed as $word) {
+                if (stripos($description, $word) !== false) {
+                    return ["status" => "error", "message" => "Veuillez entrer un aliment ou une activité valide."];
+                }
+            }
+        }
 
         // SMART LINK: Get the first available user ID
         $userRow = $this->db->query("SELECT id_utilisateur FROM utilisateur LIMIT 1")->fetch();
@@ -47,12 +61,11 @@ class SuiviController {
                 return ["status" => "success", "message" => "Repas ajouté"];
             }
         } elseif ($type === 'activity') {
-            $desc = $data['description'] ?? 'Activité';
-            if ($this->suivi->createSport($active_uid, $date, $desc, $calories)) {
+            if ($this->suivi->createSport($active_uid, $date, $description, $calories)) {
                 return ["status" => "success", "message" => "Activité ajoutée"];
             }
         }
- elseif ($type === 'weight') {
+        elseif ($type === 'weight') {
             $poids = $data['weight'] ?? 0;
             if ($this->suivi->createWeight($user_id, $date, $poids)) {
                 return ["status" => "success", "message" => "Poids mis à jour"];
@@ -63,16 +76,29 @@ class SuiviController {
 
     public function deleteLog($id, $type) {
         if ($this->suivi->delete($id, $type)) {
-            return ["status" => "success", "message" => "Log supprimé"];
+            return ["status" => "success", "message" => "Log supprimé avec succès"];
         }
-        return ["status" => "error", "message" => "Erreur lors de la suppression"];
+        return ["status" => "error", "message" => "Impossible de supprimer le log (ID: $id, Type: $type)"];
     }
 
     public function updateLog($data) {
         $id = $data['id'];
         $type = $data['type'];
         $calories = abs($data['calories'] ?? 0);
-        $description = $data['description'] ?? '';
+        $description = trim($data['description'] ?? '');
+
+        // Contrôle de saisie (Validation)
+        if ($type === 'activity' || $type === 'meal') {
+            if (strlen($description) < 3) {
+                return ["status" => "error", "message" => "La description doit contenir au moins 3 caractères."];
+            }
+            $disallowed = ['voiture', 'car', 'avion', 'plane'];
+            foreach ($disallowed as $word) {
+                if (stripos($description, $word) !== false) {
+                    return ["status" => "error", "message" => "Veuillez entrer un aliment ou une activité valide."];
+                }
+            }
+        }
         
         if ($this->suivi->updateLog($id, $type, $description, $calories)) {
             return ["status" => "success", "message" => "Log mis à jour"];

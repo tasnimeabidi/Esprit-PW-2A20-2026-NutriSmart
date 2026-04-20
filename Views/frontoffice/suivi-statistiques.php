@@ -532,7 +532,31 @@ $logs = $controller->listLogs();
             cursor: pointer; 
         }
 
-        /* ── RESPONSIVE ── */
+        /* ── MODAL ── */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px); place-items: center;
+        }
+        .modal-content {
+            background: var(--white); border: 1px solid #ddd;
+            border-radius: 1.5rem; padding: 2rem; width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: fadeIn .3s ease both;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--forest); }
+        .close-modal { cursor: pointer; font-size: 1.5rem; color: var(--gray); }
+
+        .edit-form { display: flex; flex-direction: column; gap: 1rem; }
+        .f-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .f-group label { font-size: 0.75rem; font-weight: 700; color: var(--gray); }
+        .f-input {
+            border: 1px solid #ddd; border-radius: 0.8rem; padding: 0.75rem;
+            font-family: inherit; font-size: 0.9rem; outline: none;
+        }
+        .f-input:focus { border-color: var(--primary); }
+
         @media (max-width: 1100px) {
             .dashboard-grid { padding: 0 2rem 4rem; }
             .col-4, .col-8, .col-6 { grid-column: span 12; }
@@ -603,7 +627,7 @@ $logs = $controller->listLogs();
                         <span class="logger-label">🍎 Journal Alimentaire</span>
                         <div class="input-group">
                             <input type="text" id="foodInput" class="logger-field" placeholder="Qu'avez-vous mangé ?">
-                            <input type="number" id="qtyInput" class="logger-field" placeholder="Qté (g/ml)" style="width: 100px;" min="1">
+                            <input type="number" id="qtyInput" class="logger-field" placeholder="Qté (g/ml)" style="width: 100px;">
                         </div>
                         <button onclick="analyzeAI('meal')" class="logger-btn" style="position: static; transform: none; width: 100%;">Analyser le repas</button>
                         <div id="mealAI" class="ai-calculating">🧬 L'IA analyse les nutriments...</div>
@@ -618,7 +642,7 @@ $logs = $controller->listLogs();
                         <span class="logger-label">⚡ Journal Sportif</span>
                         <div class="input-group">
                             <input type="text" id="sportInput" class="logger-field" placeholder="Quel sport ?">
-                            <input type="number" id="durInput" class="logger-field" placeholder="Min" style="width: 80px;" min="1">
+                            <input type="number" id="durInput" class="logger-field" placeholder="Min" style="width: 80px;">
                         </div>
                         <button onclick="analyzeAI('sport')" class="logger-btn" style="background: var(--orange); color: white; width: 100%;">Évaluer l'effort</button>
                         <div id="sportAI" class="ai-calculating">🔥 Calcul de la dépense calorique...</div>
@@ -745,7 +769,7 @@ $logs = $controller->listLogs();
                         <div class="cal-lbl">kcal</div>
                     </div>
                     <div class="act-actions" style="margin-left: 10px; display: flex; gap: 8px;">
-                        <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>')" style="background: none; border: none; cursor: pointer; opacity: 0.6; font-size: 1.1rem;">✏️</button>
+                        <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>', '<?php echo addslashes($row['description']); ?>', <?php echo $row['calories']; ?>)" style="background: none; border: none; cursor: pointer; opacity: 0.6; font-size: 1.1rem;">✏️</button>
                         <button onclick="deleteLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>')" style="background: none; border: none; cursor: pointer; opacity: 0.5; font-size: 1.1rem;">🗑️</button>
                     </div>
                 </div>
@@ -836,6 +860,46 @@ $logs = $controller->listLogs();
       </div>
     </footer>
 
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Modifier l'entrée</h3>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editLogForm" class="edit-form">
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="id" id="editLogId">
+                <input type="hidden" name="type" id="editLogType">
+                <input type="hidden" name="user_id" value="1">
+                
+                <div class="f-group">
+                    <label>Description</label>
+                    <input type="text" name="description" id="editLogDesc" class="f-input">
+                </div>
+                <div class="f-group">
+                    <label>Calories (kcal)</label>
+                    <input type="number" name="calories" id="editLogCals" class="f-input">
+                </div>
+                <button type="submit" class="logger-btn" style="width: 100%; margin-top: 1rem;">Mettre à jour 🔄</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; background: white; color: #333; padding: 2rem; border-radius: 1.5rem;">
+            <div class="modal-header" style="border-bottom: none; justify-content: center; padding-bottom: 0.5rem;">
+                <h3 class="modal-title" style="color: #2c4c3e; font-size: 1.5rem;">Confirmer la suppression ?</h3>
+            </div>
+            <p style="margin: 1rem 0; color: #666; font-size: 1rem; line-height: 1.5;">Cette action est irréversible. Voulez-vous vraiment supprimer ce log de votre historique ?</p>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 1.5rem;">
+                <button id="confirmDeleteBtn" class="logger-btn" style="background: #e74c3c; color: white; width: 130px; position: static; transform: none; border-radius: 0.8rem; box-shadow: 0 4px 15px rgba(231,76,60,0.2);">Supprimer</button>
+                <button onclick="closeDeleteModal()" class="logger-btn" style="background: #f1f1f1; color: #444; width: 130px; position: static; transform: none; border-radius: 0.8rem;">Annuler</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleChat() {
             const chat = document.getElementById('aiChat');
@@ -852,31 +916,46 @@ $logs = $controller->listLogs();
         function analyzeAI(type) {
             const loader = document.getElementById(type + 'AI');
             const result = document.getElementById(type + 'Result');
-            const input = document.getElementById(type === 'meal' ? 'foodInput' : 'sportInput').value.toLowerCase();
-            const qty = parseFloat(document.getElementById(type === 'meal' ? 'qtyInput' : 'durInput').value) || 0;
+            const inputVal = document.getElementById(type === 'meal' ? 'foodInput' : 'sportInput').value.toLowerCase();
+            const qtyVal = parseFloat(document.getElementById(type === 'meal' ? 'qtyInput' : 'durInput').value) || 0;
 
-            if(!input || qty <= 0) { alert("Veuillez remplir les champs"); return; }
+            console.log("Analyzing:", type, inputVal, qtyVal);
+
+            if(!inputVal || qtyVal <= 0) { 
+                alert("Veuillez remplir la description et la quantité/durée."); 
+                return; 
+            }
+            
+            // Contrôle de saisie
+            const disallowed = ['car', 'voiture', 'avion', 'plane'];
+            if (disallowed.some(word => inputVal.includes(word))) {
+                alert("Erreur: Veuillez entrer une description d'aliment ou d'activité valide (pas d'objets).");
+                return;
+            }
 
             result.style.display = 'none';
             loader.style.display = 'block';
 
             setTimeout(() => {
                 loader.style.display = 'none';
-                let cal = 0;
+                let calResult = 0;
                 
                 if(type === 'meal') {
-                    const baseCal = aiDatabase.foods[Object.keys(aiDatabase.foods).find(f => input.includes(f))] || 1.0;
-                    cal = Math.round(baseCal * qty);
-                    document.getElementById('predCal').innerText = cal;
+                    const foundKey = Object.keys(aiDatabase.foods).find(f => inputVal.includes(f));
+                    const baseCal = aiDatabase.foods[foundKey] || 1.2; // Default to 1.2 kcal/g if not in DB
+                    calResult = Math.round(baseCal * qtyVal);
+                    document.getElementById('predCal').innerText = calResult;
                 } else {
-                    const baseBurn = aiDatabase.sports[Object.keys(aiDatabase.sports).find(s => input.includes(s))] || 6;
-                    cal = Math.round(baseBurn * qty);
-                    document.getElementById('predBurn').innerText = cal;
+                    const foundKey = Object.keys(aiDatabase.sports).find(s => inputVal.includes(s));
+                    const baseBurn = aiDatabase.sports[foundKey] || 7; // Default to 7 kcal/min
+                    calResult = Math.round(baseBurn * qtyVal);
+                    document.getElementById('predBurn').innerText = calResult;
                 }
 
-                lastPrediction = { type, desc: input, qty, cal };
+                lastPrediction = { type, desc: inputVal, qty: qtyVal, cal: calResult };
                 result.style.display = 'block';
-            }, 1200);
+                console.log("Prediction success:", lastPrediction);
+            }, 800);
         }
 
         function saveLog(type) {
@@ -890,57 +969,82 @@ $logs = $controller->listLogs();
             formData.append('date', new Date().toISOString().split('T')[0]);
 
             fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
-            .then(r => r.text()) // Get text first to debug if it's not JSON
-            .then(text => {
-                try {
-                    const data = JSON.parse(text);
-                    if(data.status === 'success') location.reload();
-                    else alert("Erreur: " + data.message);
-                } catch(e) {
-                    console.error("Server raw response:", text);
-                    alert("Erreur serveur (vérifiez la console pour les détails)");
-                }
-            })
-            .catch(err => {
-                console.error("Fetch error:", err);
-                alert("Erreur de connexion au serveur");
+            .then(r => r.json())
+            .then(data => {
+                if(data.status === 'success') location.reload();
+                else alert("Erreur: " + data.message);
             });
         }
 
+        let deleteTarget = { id: null, type: null };
+        const dModal = document.getElementById('deleteModal');
+
         function deleteLog(id, type) {
-            if(confirm('Supprimer ce log ?')) {
-                const formData = new FormData();
-                formData.append('action', 'delete');
-                formData.append('id', id);
-                formData.append('type', type);
-                fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
-                .then(r => r.json())
-                .then(data => { if(data.status === 'success') location.reload(); });
-            }
+            deleteTarget = { id, type };
+            dModal.style.display = 'grid';
         }
 
-        function editLog(id, type) {
-            const newDesc = prompt("Nouvelle description :");
-            if(!newDesc) return;
-            const newCal = prompt("Nouvelles calories :");
-            if(!newCal) return;
+        function closeDeleteModal() { dModal.style.display = 'none'; }
 
-            const formData = new FormData();
-            formData.append('action', 'update');
-            formData.append('id', id);
-            formData.append('type', type);
-            formData.append('description', newDesc);
-            formData.append('calories', newCal);
-            formData.append('user_id', '1');
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if(!deleteTarget.id) return;
+            
+            const params = new URLSearchParams();
+            params.append('action', 'delete');
+            params.append('id', deleteTarget.id);
+            params.append('type', deleteTarget.type);
+
+            fetch('../../controllers/SuiviController.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.status === 'success') location.reload();
+                else alert("Erreur: " + data.message);
+            })
+            .catch(err => alert("Erreur de communication avec le serveur."))
+            .finally(() => closeDeleteModal());
+        });
+
+        // Close delete modal on outside click
+        window.onclick = function(event) { 
+            if (event.target == eModal) closeEditModal(); 
+            if (event.target == dModal) closeDeleteModal();
+        }
+
+        const eModal = document.getElementById('editModal');
+        function editLog(id, type, desc, cal) {
+            document.getElementById('editLogId').value = id;
+            document.getElementById('editLogType').value = type;
+            document.getElementById('editLogDesc').value = desc || '';
+            document.getElementById('editLogCals').value = cal || '';
+            eModal.style.display = 'grid';
+        }
+        function closeEditModal() { eModal.style.display = 'none'; }
+        window.onclick = function(event) { if (event.target == eModal) closeEditModal(); }
+
+        document.getElementById('editLogForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const desc = document.getElementById('editLogDesc').value.toLowerCase();
+            const disallowed = ['car', 'voiture', 'avion', 'plane'];
+            if (disallowed.some(word => desc.includes(word))) {
+                alert("Erreur: Veuillez entrer une description valide.");
+                return;
+            }
+            const formData = new FormData(this);
             formData.append('date', new Date().toISOString().split('T')[0]);
-
             fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
             .then(r => r.json())
             .then(data => {
                 if(data.status === 'success') location.reload();
                 else alert(data.message);
+            })
+            .catch(err => {
+                alert("Erreur de communication avec le serveur.");
             });
-        }
+        });
     </script>
 </body>
 </html>

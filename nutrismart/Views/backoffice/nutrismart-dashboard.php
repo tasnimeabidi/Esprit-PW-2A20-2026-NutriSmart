@@ -327,7 +327,33 @@ $logs = $controller->listLogs();
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* ── ANIMATIONS ── */
+  /* ── MODAL ── */
+  .modal {
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px); place-items: center;
+  }
+  .modal-content {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 1.2rem; padding: 2rem; width: 450px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: fadeIn .3s ease both;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+  .close-modal { cursor: pointer; font-size: 1.5rem; color: var(--muted); }
+  .close-modal:hover { color: var(--white); }
+
+  .admin-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: .4rem; }
+  .form-group label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+  .admin-input {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: .5rem; padding: .75rem; color: var(--white);
+    font-family: var(--sans); font-size: .9rem; outline: none;
+  }
+  .admin-input:focus { border-color: var(--primary); }
+
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
   .kpi-card { animation: fadeIn .4s ease both; }
   .kpi-card:nth-child(1){animation-delay:.05s}
@@ -423,13 +449,13 @@ $logs = $controller->listLogs();
   </a>
 
   <div class="nav-section-label">Modules NutriSmart</div>
-  <a class="nav-item" href="users.html">
+  <a class="nav-item" href="#">
     <span class="nav-icon">👥</span> Utilisateurs
   </a>
-  <a class="nav-item" href="aliment.php">
+  <a class="nav-item" href="#">
     <span class="nav-icon">🥗</span> Aliments
   </a>
-  <a class="nav-item" href="planRepas.html">
+  <a class="nav-item" href="#">
     <span class="nav-icon">📅</span> Plans de repas
   </a>
   <a class="nav-item" href="#" onclick="showView('view-suivi', this)">
@@ -438,7 +464,7 @@ $logs = $controller->listLogs();
   <a class="nav-item" href="#">
     <span class="nav-icon">🛒</span> Courses & Budget
   </a>
-  <a class="nav-item" href="recettes.php">
+  <a class="nav-item" href="#">
     <span class="nav-icon">📖</span> Recettes
   </a>
 
@@ -463,33 +489,693 @@ $logs = $controller->listLogs();
   </div>
 </aside>
 
-  <main class="main dash-workspace">
-    <div id="view-welcome" class="content-view" style="display: flex; flex-direction: column; gap: 1.5rem;">
-      <div class="page-header">
+<!-- MAIN CONTENT -->
+<main>
+  <style>
+    .content-view { display: none; flex-direction: column; gap: 1.5rem; width: 100%; }
+    #view-welcome { display: flex; justify-content: center; align-items: center; text-align: center; height: 100%; color: var(--muted); }
+    .empty-state { max-width: 400px; }
+  </style>
+
+  <!-- Welcome View -->
+  <div id="view-welcome" class="content-view">
+    <div class="empty-state">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
+      <h2 style="color: var(--white); margin-bottom: 0.5rem;">Administration NutriSmart</h2>
+      <p>Sélectionnez un module dans le menu de gauche pour visualiser et gérer les données.</p>
+    </div>
+  </div>
+
+  <!-- Dashboard View (Original main content) -->
+  <div id="view-dashboard" class="content-view">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Tableau de bord</div>
+      <div class="page-sub">Samedi 28 Mars 2026 · Dernière sync : il y a 2 min</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-sm btn-ghost">📤 Exporter rapport</button>
+      <button class="btn-sm btn-green">+ Ajouter aliment</button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Utilisateurs actifs</div>
+        <div class="kpi-icon" style="background:rgba(61,186,82,.12)">👤</div>
+      </div>
+      <div class="kpi-val">284</div>
+      <div class="kpi-trend up">↑ +18% ce mois</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Aliments indexés</div>
+        <div class="kpi-icon" style="background:rgba(41,182,246,.12)">🥗</div>
+      </div>
+      <div class="kpi-val">1,247</div>
+      <div class="kpi-trend up">↑ +43 cette semaine</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Plans IA générés</div>
+        <div class="kpi-icon" style="background:rgba(249,168,37,.12)">🤖</div>
+      </div>
+      <div class="kpi-val">892</div>
+      <div class="kpi-trend up">↑ +32% vs mois dernier</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Recettes en attente</div>
+        <div class="kpi-icon" style="background:rgba(229,57,53,.12)">📖</div>
+      </div>
+      <div class="kpi-val">17</div>
+      <div class="kpi-trend down">⚠ Modération requise</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Suivi global</div>
+        <div class="kpi-icon" style="background:rgba(171,71,188,.12)">📉</div>
+      </div>
+      <div class="kpi-val">94%</div>
+      <div class="kpi-trend up">↑ Engagement optimal</div>
+    </div>
+  </div>
+
+  <!-- Main Grid: Chart + Activity -->
+  <div class="main-grid">
+    <!-- Left: Charts + Users -->
+    <div style="display:flex;flex-direction:column;gap:1.2rem">
+
+      <!-- Bar chart - Registrations -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Inscriptions utilisateurs</div>
+            <div class="card-sub">Nouveaux comptes par semaine</div>
+          </div>
+          <div class="chart-tabs">
+            <button class="chart-tab">7J</button>
+            <button class="chart-tab active">30J</button>
+            <button class="chart-tab">3M</button>
+          </div>
+        </div>
+        <!-- Inline SVG bar chart -->
+        <svg class="bar-chart" viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3dba52"/>
+              <stop offset="100%" stop-color="#3dba52" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="0" y1="130" x2="560" y2="130" stroke="#253028" stroke-width="1"/>
+          <line x1="0" y1="100" x2="560" y2="100" stroke="#253028" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="70" x2="560" y2="70" stroke="#253028" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="40" x2="560" y2="40" stroke="#253028" stroke-width="1" stroke-dasharray="4"/>
+          <!-- Labels -->
+          <text x="0" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 1</text>
+          <text x="78" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 2</text>
+          <text x="158" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 3</text>
+          <text x="238" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 4</text>
+          <text x="318" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 5</text>
+          <text x="398" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 6</text>
+          <text x="478" y="148" fill="#5a7060" font-size="10" font-family="Space Mono">Sem 7</text>
+          <!-- Bars -->
+          <rect x="8"   y="90" width="50" height="40" rx="4" fill="url(#barGrad)"/>
+          <rect x="88"  y="75" width="50" height="55" rx="4" fill="url(#barGrad)"/>
+          <rect x="168" y="60" width="50" height="70" rx="4" fill="url(#barGrad)"/>
+          <rect x="248" y="80" width="50" height="50" rx="4" fill="url(#barGrad)"/>
+          <rect x="328" y="45" width="50" height="85" rx="4" fill="url(#barGrad)"/>
+          <rect x="408" y="50" width="50" height="80" rx="4" fill="url(#barGrad)"/>
+          <rect x="488" y="30" width="50" height="100" rx="4" fill="#3dba52"/>
+          <!-- Values -->
+          <text x="33"  y="85" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">12</text>
+          <text x="113" y="70" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">18</text>
+          <text x="193" y="55" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">24</text>
+          <text x="273" y="75" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">19</text>
+          <text x="353" y="40" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">31</text>
+          <text x="433" y="45" fill="#e8f0e9" font-size="11" text-anchor="middle" font-family="Space Mono">28</text>
+          <text x="513" y="25" fill="#3dba52" font-size="11" text-anchor="middle" font-family="Space Mono" font-weight="700">38</text>
+        </svg>
+      </div>
+
+      <!-- Users Table -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Derniers utilisateurs inscrits</div>
+            <div class="card-sub">5 comptes les plus récents</div>
+          </div>
+          <button class="btn-sm btn-ghost">Voir tous →</button>
+        </div>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Utilisateur</th>
+              <th>Module principal</th>
+              <th>Plans IA</th>
+              <th>Statut</th>
+              <th>Inscrit le</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="u-avatar" style="background:#3F51B5">S</div>
+                  <div>
+                    <div class="u-name">Sarah Benali</div>
+                    <div class="u-email">sarah.b@mail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--muted);font-size:.78rem">Meal Planning</td>
+              <td style="font-family:var(--mono);font-size:.8rem;color:var(--primary)">14</td>
+              <td><span class="status-pill s-active">ACTIF</span></td>
+              <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">28/03/26</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="u-avatar" style="background:#F57C00">K</div>
+                  <div>
+                    <div class="u-name">Karim Mansouri</div>
+                    <div class="u-email">k.mansouri@mail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--muted);font-size:.78rem">Progress Tracking</td>
+              <td style="font-family:var(--mono);font-size:.8rem;color:var(--primary)">7</td>
+              <td><span class="status-pill s-active">ACTIF</span></td>
+              <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">27/03/26</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="u-avatar" style="background:#00796B">L</div>
+                  <div>
+                    <div class="u-name">Lina Trabelsi</div>
+                    <div class="u-email">lina.t@mail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--muted);font-size:.78rem">Recipes</td>
+              <td style="font-family:var(--mono);font-size:.8rem;color:var(--muted)">2</td>
+              <td><span class="status-pill s-pending">EN ATTENTE</span></td>
+              <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">26/03/26</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="u-avatar" style="background:#7B1FA2">M</div>
+                  <div>
+                    <div class="u-name">Mohamed Ghali</div>
+                    <div class="u-email">m.ghali@mail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--muted);font-size:.78rem">Grocery & Budget</td>
+              <td style="font-family:var(--mono);font-size:.8rem;color:var(--primary)">21</td>
+              <td><span class="status-pill s-active">ACTIF</span></td>
+              <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">25/03/26</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="u-avatar" style="background:#E53935">R</div>
+                  <div>
+                    <div class="u-name">Rana Khelifi</div>
+                    <div class="u-email">rana.k@mail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--muted);font-size:.78rem">Food & Nutrition</td>
+              <td style="font-family:var(--mono);font-size:.8rem;color:var(--muted)">0</td>
+              <td><span class="status-pill s-inactive">INACTIF</span></td>
+              <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">24/03/26</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right: Side panels -->
+    <div class="side-panels">
+
+      <!-- Module usage -->
+      <div class="mini-card">
+        <div class="card-header" style="margin-bottom:.5rem">
+          <div>
+            <div class="card-title">Utilisation par module</div>
+            <div class="card-sub">% d'utilisateurs actifs</div>
+          </div>
+        </div>
+        <div class="module-usage">
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">👤 User & Profile</span><span class="module-pct">96%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:96%;background:#3F51B5"></div></div>
+          </div>
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">🥗 Food & Nutrition</span><span class="module-pct">81%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:81%;background:#009688"></div></div>
+          </div>
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">📅 Meal Planning</span><span class="module-pct">74%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:74%;background:#F57C00"></div></div>
+          </div>
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">📈 Suivi & Statistiques</span><span class="module-pct">68%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:68%;background:#E53935"></div></div>
+          </div>
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">🛒 Grocery</span><span class="module-pct">52%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:52%;background:#7B1FA2"></div></div>
+          </div>
+          <div class="module-row">
+            <div class="module-info"><span class="module-name">📖 Recipes</span><span class="module-pct">41%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:41%;background:#00796B"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="mini-card">
+        <div class="card-header" style="margin-bottom:0">
+          <div>
+            <div class="card-title">Activité récente</div>
+            <div class="card-sub">Dernières actions</div>
+          </div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="act-dot" style="background:var(--primary)"></div>
+            <div>
+              <div class="act-text">Nouvel aliment ajouté : <strong>Tofu fumé</strong></div>
+              <div class="act-time">Il y a 4 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:var(--gold)"></div>
+            <div>
+              <div class="act-text">Recette en attente de modération</div>
+              <div class="act-time">Il y a 17 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:var(--blue)"></div>
+            <div>
+              <div class="act-text"><strong>38</strong> nouveaux utilisateurs cette semaine</div>
+              <div class="act-time">Aujourd'hui</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:var(--purple)"></div>
+            <div>
+              <div class="act-text">Plan IA généré pour 12 utilisateurs</div>
+              <div class="act-time">Il y a 1h</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:var(--red)"></div>
+            <div>
+              <div class="act-text">Compte inactif détecté — Rana K.</div>
+              <div class="act-time">Il y a 3h</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Grid -->
+  <div class="bottom-grid">
+
+    <!-- Top aliments -->
+    <div class="chart-card">
+      <div class="card-header">
         <div>
-          <h1 class="page-title">Bienvenue sur NutriSmart Admin</h1>
-          <p class="page-sub">G�rez vos modules et suivez les statistiques en temps r�el.</p>
+          <div class="card-title">🏆 Top aliments recherchés</div>
+          <div class="card-sub">Cette semaine</div>
         </div>
       </div>
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-label">Utilisateurs</span><div class="kpi-icon" style="background:rgba(61,186,82,.1);color:var(--primary)">??</div></div>
-          <div class="kpi-val">284</div>
+      <div style="margin-top:.5rem">
+        <div class="food-row">
+          <div class="food-rank" style="background:rgba(249,168,37,.2);color:var(--gold)">1</div>
+          <span class="food-name">🥚 Œuf entier</span>
+          <span class="food-count">342 fois</span>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-label">Recettes</span><div class="kpi-icon" style="background:rgba(255,167,38,.1);color:var(--gold)">??</div></div>
-          <div class="kpi-val">12</div>
+        <div class="food-row">
+          <div class="food-rank" style="background:rgba(61,186,82,.1)">2</div>
+          <span class="food-name">🍗 Blanc de poulet</span>
+          <span class="food-count">289 fois</span>
+        </div>
+        <div class="food-row">
+          <div class="food-rank">3</div>
+          <span class="food-name">🥦 Brocoli</span>
+          <span class="food-count">241 fois</span>
+        </div>
+        <div class="food-row">
+          <div class="food-rank">4</div>
+          <span class="food-name">🌾 Flocons d'avoine</span>
+          <span class="food-count">198 fois</span>
+        </div>
+        <div class="food-row">
+          <div class="food-rank">5</div>
+          <span class="food-name">🥑 Avocat</span>
+          <span class="food-count">176 fois</span>
         </div>
       </div>
     </div>
-    <div id="view-dashboard" class="content-view" style="display: none;">
-      <!-- Dashboard content placeholder -->
-      <h2 class="serif">Tableau de Bord D�taill�</h2>
+
+    <!-- Budget stats -->
+    <div class="chart-card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">💰 Budget moyen / utilisateur</div>
+          <div class="card-sub">Module Grocery & Budget</div>
+        </div>
+      </div>
+      <div class="budget-display">
+        <div class="budget-big">42,80 €</div>
+        <div class="budget-sub">Budget hebdomadaire moyen</div>
+        <div style="font-size:.75rem;color:var(--primary);margin-top:.3rem">↓ −5% vs semaine dernière</div>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-fill"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-top:.4rem;font-family:var(--mono)">
+        <span>0 €</span><span>Cible : 50 €</span><span>100 €</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1rem">
+        <div style="background:var(--border);border-radius:.6rem;padding:.7rem;text-align:center">
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--primary)">68%</div>
+          <div style="font-size:.68rem;color:var(--muted)">utilisent le module</div>
+        </div>
+        <div style="background:var(--border);border-radius:.6rem;padding:.7rem;text-align:center">
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--lime)">193</div>
+          <div style="font-size:.68rem;color:var(--muted)">listes créées</div>
+        </div>
+      </div>
     </div>
-    <div id="view-suivi" class="content-view" style="display: none;">
-      <!-- Suivi content placeholder -->
-      <h2 class="serif">Suivi et Statistiques</h2>
+
+    <!-- Quick Actions -->
+    <div class="chart-card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">⚡ Actions rapides</div>
+          <div class="card-sub">Administration</div>
+        </div>
+      </div>
+      <div class="quick-actions">
+        <button class="qa-btn">
+          <div class="qa-icon">➕</div>
+          <div class="qa-label">Ajouter aliment</div>
+        </button>
+        <button class="qa-btn">
+          <div class="qa-icon">✅</div>
+          <div class="qa-label">Valider recettes</div>
+        </button>
+        <button class="qa-btn">
+          <div class="qa-icon">📧</div>
+          <div class="qa-label">Notifier users</div>
+        </button>
+        <button class="qa-btn">
+          <div class="qa-icon">📊</div>
+          <div class="qa-label">Rapport PDF</div>
+        </button>
+        <button class="qa-btn">
+          <div class="qa-icon">🔄</div>
+          <div class="qa-label">Sync base IA</div>
+        </button>
+        <button class="qa-btn">
+          <div class="qa-icon">🗑️</div>
+          <div class="qa-label">Purger cache</div>
+        </button>
+      </div>
     </div>
-  </main>
+
+    </div>
+  </div>
+
+  <!-- Suivi et Statistiques View -->
+  <div id="view-suivi" class="content-view">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Gestion Suivi et Statistiques</div>
+        <div class="page-sub">Surveillance des performances utilisateurs et logs caloriques</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-sm btn-ghost">📊 Exporter Analytics</button>
+        <button class="btn-sm btn-green">⚙️ Configurer AI</button>
+      </div>
+    </div>
+
+    <!-- Admin Stats for Suivi -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Volume de données</div>
+          <div class="kpi-icon" style="background:rgba(41,182,246,.12)">📁</div>
+        </div>
+        <div class="kpi-val">128 GB</div>
+        <div class="kpi-trend up">↑ +2.4GB aujourd'hui</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Sessions actives</div>
+          <div class="kpi-icon" style="background:rgba(61,186,82,.12)">🟢</div>
+        </div>
+        <div class="kpi-val">84</div>
+        <div class="kpi-trend up">↑ Utilisateurs en ligne</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Calories Totales Loggées</div>
+          <div class="kpi-icon" style="background:rgba(249,168,37,.12)">🔥</div>
+        </div>
+        <div class="kpi-val">1.2M</div>
+        <div class="kpi-trend up">↑ Ce mois-ci</div>
+      </div>
+    </div>
+
+    <div class="main-grid" style="grid-template-columns: 1fr;">
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Flux de Suivi Utilisateur (Gestion Directe)</div>
+            <div class="card-sub">Gérez tous les logs de progression</div>
+          </div>
+          <button class="btn-sm btn-green" onclick="showAddModal()">+ Ajouter un Log</button>
+        </div>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Utilisateur</th>
+              <th>Action / Description</th>
+              <th>Impact</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php while($row = $logs->fetch(PDO::FETCH_ASSOC)): ?>
+            <tr id="admin-log-<?php echo $row['id']; ?>">
+              <td>#<?php echo $row['id']; ?></td>
+              <td>USR-<?php echo $row['user_id']; ?></td>
+              <td><strong><?php echo htmlspecialchars($row['description']); ?></strong><br><small><?php echo ucfirst($row['type']); ?></small></td>
+              <td style="color:<?php echo $row['type']=='meal' ? 'var(--red)' : 'var(--primary)'; ?>">
+                <?php echo ($row['type'] == 'meal' ? '+' : '-') . $row['calories']; ?> kcal
+              </td>
+              <td><?php echo $row['date']; ?></td>
+              <td>
+                <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>', '<?php echo addslashes($row['description']); ?>', <?php echo $row['calories']; ?>)" style="background:none; border:none; cursor:pointer;">✏️</button>
+                <button onclick="deleteLogAdmin(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>')" style="background:none; border:none; cursor:pointer;">🗑️</button>
+              </td>
+            </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.chart-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Sidebar active state
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      if (this.href && this.href.includes('.html')) return;
+      e.preventDefault();
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+<!-- ADMIN MODAL -->
+<div id="logModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Ajouter un Log</h3>
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+    </div>
+    <form id="adminLogForm" class="admin-form">
+      <input type="hidden" name="action" id="adminFormAction" value="create">
+      <input type="hidden" name="id" id="adminLogId" value="">
+      <input type="hidden" name="user_id" value="1">
+      
+      <div class="form-group">
+        <label>Type de log</label>
+        <select name="type" id="adminLogType" class="admin-input">
+          <option value="meal">Repas (Aliment)</option>
+          <option value="activity">Activité (Sport)</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Description (MIN 3 caract.)</label>
+        <input type="text" name="description" id="adminLogDesc" class="admin-input" placeholder="Ex: Poulet, Running...">
+      </div>
+      
+      <div class="form-group">
+        <label>Calories (kcal)</label>
+        <input type="number" name="calories" id="adminLogCals" class="admin-input" placeholder="Ex: 300">
+      </div>
+      
+      <button type="submit" class="btn-sm btn-green" style="margin-top: 1rem; width: 100%; padding: .8rem;">Confirmer</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN DELETE MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center; background: white; color: #333; padding: 2rem; border-radius: 1.5rem;">
+        <div class="modal-header" style="border-bottom: none; justify-content: center; padding-bottom: 0.5rem;">
+            <h3 class="modal-title" id="deleteModalTitle" style="color: #2c4c3e; font-size: 1.4rem;">Confirmer la suppression ?</h3>
+        </div>
+        <p style="margin: 1rem 0; color: #666; font-size: 0.95rem; line-height: 1.4;">Voulez-vous vraiment supprimer cet enregistrement du système ? Cette action est définitive.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 1.5rem;">
+            <button id="confirmDeleteBtn" class="btn-sm" style="background: #e74c3c; color: white; border: none; width: 130px; height: 40px; border-radius: 0.6rem; cursor: pointer; font-weight: 500;">Supprimer</button>
+            <button onclick="closeDeleteModal()" class="btn-sm" style="background: #f1f1f1; color: #555; border: 1px solid #ddd; width: 130px; height: 40px; border-radius: 0.6rem; cursor: pointer;">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.chart-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            this.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Sidebar active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (this.href && this.href.includes('.html')) return;
+            e.preventDefault();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    const modal = document.getElementById('logModal');
+    
+    function showAddModal() {
+        document.getElementById('modalTitle').innerText = "Ajouter un Log";
+        document.getElementById('adminFormAction').value = "create";
+        document.getElementById('adminLogId').value = "";
+        document.getElementById('adminLogForm').reset();
+        modal.style.display = 'grid';
+    }
+
+    function editLog(id, type, desc, cals) {
+        document.getElementById('modalTitle').innerText = "Modifier le Log #" + id;
+        document.getElementById('adminFormAction').value = "update";
+        document.getElementById('adminLogId').value = id;
+        document.getElementById('adminLogType').value = type;
+        document.getElementById('adminLogDesc').value = desc;
+        document.getElementById('adminLogCals').value = cals;
+        modal.style.display = 'grid';
+    }
+
+    function closeModal() { modal.style.display = 'none'; }
+    let deleteTarget = { id: null, type: null };
+    const dModal = document.getElementById('deleteModal');
+
+    function deleteLogAdmin(id, type) {
+        deleteTarget = { id, type };
+        dModal.style.display = 'grid';
+    }
+
+    function closeDeleteModal() { dModal.style.display = 'none'; }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if(!deleteTarget.id) return;
+        
+        const params = new URLSearchParams();
+        params.append('action', 'delete');
+        params.append('id', deleteTarget.id);
+        params.append('type', deleteTarget.type);
+
+        fetch('../../controllers/SuiviController.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.status === 'success') location.reload();
+            else alert('Erreur: ' + data.message);
+        })
+        .catch(err => alert("Erreur de communication avec le serveur."))
+        .finally(() => closeDeleteModal());
+    });
+
+    // Close modals on outside click
+    window.onclick = function(event) { 
+        if (event.target == modal) closeModal(); 
+        if (event.target == dModal) closeDeleteModal();
+    }
+
+    document.getElementById('adminLogForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Contrôle de saisie
+        const desc = document.getElementById('adminLogDesc').value.toLowerCase();
+        const disallowed = ['car', 'voiture', 'avion', 'plane'];
+        if (disallowed.some(word => desc.includes(word))) {
+            alert("Erreur: Veuillez entrer une description d'aliment ou d'activité valide.");
+            return;
+        }
+
+        const formData = new FormData(this);
+        formData.append('date', new Date().toISOString().split('T')[0]);
+        
+        fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(data => {
+            if(data.status === 'success') location.reload();
+            else alert('Erreur: ' + data.message);
+        });
+    });
+  </script>
 </body>
 </html>
