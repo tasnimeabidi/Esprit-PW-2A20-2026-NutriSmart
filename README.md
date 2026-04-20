@@ -62,6 +62,18 @@ Classe : **2A20**
 
 Année académique : **2025–2026**
 
+## 📊 Tableau de Bord - Module 4 (Suivi et Statistiques)
+Voici l'état d'avancement des tâches pour le module de Suivi et Statistiques :
+
+- [x] **Interface CRUD Moderne** : Remplacement des `prompt()` par des fenêtres modales intégrées.
+- [x] **Contrôle de Saisie Manuel** : Validation stricte via JavaScript (Client) et PHP (Serveur).
+- [x] **Conformité Pédagogique** : Suppression totale des attributs de validation HTML5.
+- [x] **Seconde Entité** : Création et gestion de l'entité `Aliment`.
+- [x] **Jointure de Données** : Mise en place d'un `LEFT JOIN` SQL pour l'affichage dynamique des noms d'aliments.
+- [x] **Architecture MVC** : Respect rigoureux du modèle Modèle-Vue-Contrôleur.
+- [x] **Programmation Orientée Objet** : Utilisation de classes et de méthodes structurées.
+- [x] **Sécurité & PDO** : Utilisation exclusive de PDO pour toutes les interactions avec la base de données.
+
 ## Premiers pas
 
 1. Cloner le dépôt
