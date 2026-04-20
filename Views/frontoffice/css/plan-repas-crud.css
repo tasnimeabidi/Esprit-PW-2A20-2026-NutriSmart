@@ -1,0 +1,339 @@
+/**
+ * CRUD modal « Plan repas, repas & sport » — styles partagés (.bo-crud-page).
+ * Panneaux par entité : crud-panel-plan-repas.css, crud-panel-repas.css, crud-panel-programme-sportif.css
+ */
+.bo-crud-page {
+  --photo-header: #4c7b5b;
+  --photo-bar-ok: #e8f3eb;
+  --photo-table-head: #e8f3eb;
+  --photo-btn-solid: #5b8c6a;
+  --crud-ink: #2a3d2f;
+  --crud-line: #d0ddd3;
+  --crud-card: #ffffff;
+  --bo-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.bo-crud-page .bo-crud-msg {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #1e3d28;
+  background: var(--photo-bar-ok);
+  border: 1px solid #c5e0cf;
+}
+
+.bo-crud-page .bo-crud-msg:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.bo-crud-page .bo-crud-msg--err {
+  color: #991b1b !important;
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+}
+
+.bo-crud-page .bo-crud-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.15rem;
+  padding: 0.4rem;
+  border-radius: 14px;
+  background: var(--photo-bar-ok);
+  border: 1px solid #c8e4d2;
+}
+
+.bo-crud-page .bo-crud-tab {
+  font-family: var(--bo-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.55rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #4a5c52;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+.bo-crud-page .bo-crud-tab:hover {
+  color: var(--crud-ink);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.bo-crud-page .bo-crud-tab.is-active {
+  background: #fff;
+  color: var(--crud-ink);
+  box-shadow: 0 2px 12px rgba(45, 90, 39, 0.1);
+}
+
+.bo-crud-page .content-card.bo-crud-panel {
+  background: var(--crud-card);
+  border: 1px solid var(--crud-line);
+  border-radius: 16px;
+  box-shadow: 0 4px 28px rgba(15, 23, 42, 0.06);
+  padding: 1.35rem 1.45rem 1.5rem;
+}
+
+.bo-crud-page .bo-crud-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--crud-ink);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+}
+
+.bo-crud-page .bo-crud-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem 1.15rem;
+  margin-bottom: 1.15rem;
+}
+
+.bo-crud-page .bo-crud-form-grid > label {
+  color: var(--crud-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  gap: 0.45rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.bo-crud-page .bo-crud-form-grid input:not([type="hidden"]),
+.bo-crud-page .bo-crud-form-grid select {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--crud-line);
+  background: #fff;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--crud-ink);
+  font-family: var(--bo-sans);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bo-crud-page .bo-crud-form-grid input:focus,
+.bo-crud-page .bo-crud-form-grid select:focus {
+  outline: none;
+  border-color: #5a8f66;
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.18);
+}
+
+/* Boutons : Enregistrer pleine largeur, Nouveau en dessous (maquette) */
+.bo-crud-page .bo-crud-form-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.65rem;
+  margin-bottom: 1.35rem;
+}
+
+.bo-crud-page .bo-crud-form-actions .btn-sm {
+  min-height: 2.65rem;
+  padding: 0.55rem 1.45rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bo-crud-page .bo-crud-form-actions .btn-green {
+  background: var(--photo-btn-solid) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(76, 123, 91, 0.28);
+}
+
+.bo-crud-page .bo-crud-form-actions .btn-green:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 5px 18px rgba(76, 123, 91, 0.32) !important;
+}
+
+.bo-crud-page .bo-crud-form-actions .btn-ghost {
+  background: #fff !important;
+  border: 1.5px solid rgba(91, 140, 106, 0.75) !important;
+  color: #111111 !important;
+}
+
+.bo-crud-page .bo-crud-form-actions .btn-ghost:hover {
+  background: rgba(232, 243, 235, 0.95) !important;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid #c5e0cf;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table th {
+  background: var(--photo-table-head);
+  color: #2a3d2f;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #c5dcc9;
+  text-align: left;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.84rem;
+  border-bottom: 1px solid #eef4f0;
+  background: #fff;
+  color: var(--crud-ink);
+}
+
+.bo-crud-page .users-list-table.bo-crud-table tbody tr:nth-child(even) td {
+  background: #f9fcf9;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table tbody tr:hover td {
+  background: rgba(74, 124, 89, 0.08);
+}
+
+.bo-crud-page .table-scroll {
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.bo-crud-page .bo-crud-actions {
+  white-space: nowrap;
+}
+
+.bo-crud-page .bo-crud-td-actions {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* Forçage au-dessus de mp-dashboard */
+#repas-page-crud-root.bo-crud-page .bo-crud-form-actions .btn-sm.btn-green,
+#plan-repas-crud-root.bo-crud-page .bo-crud-form-actions .btn-sm.btn-green,
+.main.dash-workspace.bo-crud-page .bo-crud-form-actions .btn-sm.btn-green {
+  background: #5b8c6a !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 12px rgba(76, 123, 91, 0.28) !important;
+}
+
+#repas-page-crud-root.bo-crud-page .bo-crud-form-actions .btn-sm.btn-ghost,
+#plan-repas-crud-root.bo-crud-page .bo-crud-form-actions .btn-sm.btn-ghost,
+.main.dash-workspace.bo-crud-page .bo-crud-form-actions .btn-sm.btn-ghost {
+  background: #fff !important;
+  border: 1.5px solid rgba(91, 140, 106, 0.75) !important;
+  color: #111111 !important;
+  border-radius: 999px !important;
+}
+
+#repas-page-crud-root.bo-crud-page .users-list-table.bo-crud-table th,
+#plan-repas-crud-root.bo-crud-page .users-list-table.bo-crud-table th,
+.main.dash-workspace.bo-crud-page .users-list-table.bo-crud-table th {
+  background: #e8f3eb !important;
+  color: #2a3d2f !important;
+}
+
+/* —— Actions liste : Modifier / Supprimer —— */
+.bo-crud-page .ns-crud-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.bo-crud-page .ns-crud-action {
+  font-family: var(--bo-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.38rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  line-height: 1.2;
+}
+
+.bo-crud-page .ns-crud-action--edit {
+  background: #fff;
+  border-color: #5b8c6a;
+  color: #1e4620;
+  box-shadow: 0 1px 2px rgba(30, 86, 49, 0.12);
+}
+
+.bo-crud-page .ns-crud-action--edit:hover {
+  background: #e8f3eb;
+}
+
+.bo-crud-page .ns-crud-action--edit:focus-visible {
+  outline: 2px solid #2d5a27;
+  outline-offset: 2px;
+}
+
+.bo-crud-page .ns-crud-action--delete {
+  background: #fff;
+  border-color: #e57373;
+  color: #b71c1c;
+  box-shadow: 0 1px 2px rgba(183, 28, 28, 0.1);
+}
+
+.bo-crud-page .ns-crud-action--delete:hover {
+  background: #ffebee;
+}
+
+.bo-crud-page .ns-crud-action--delete:focus-visible {
+  outline: 2px solid #c62828;
+  outline-offset: 2px;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table td.ns-crud-empty {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+  padding: 1.35rem 1rem !important;
+  font-style: italic;
+  background: #fafcfb !important;
+}
+
+/* Bandeau mode édition sous le titre d’entité */
+.bo-crud-page .bo-crud-hint.bo-crud-hint--editing {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.bo-crud-page .bo-crud-form--editing[data-mode="edit"] {
+  position: relative;
+}
+
+.bo-crud-page .users-list-table.bo-crud-table thead th:last-child {
+  min-width: 9.5rem;
+  text-align: right;
+}

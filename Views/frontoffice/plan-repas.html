@@ -4,131 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NutriSmart — Plan repas</title>
-    <link rel="stylesheet" href="css/mp-dashboard.css" />
+    <link rel="stylesheet" href="css/mp-dashboard.css?v=20260425" />
     <link rel="stylesheet" href="css/shared-styles.css?v=20260416" />
-    <link rel="stylesheet" href="css/nutrismart-saisie-ui.css" />
+    <link rel="stylesheet" href="css/plan-repas-crud.css?v=20260426" />
+    <link rel="stylesheet" href="css/crud-panel-plan-repas.css?v=20260421" />
+    <link rel="stylesheet" href="css/crud-panel-repas.css?v=20260421" />
+    <link rel="stylesheet" href="css/crud-panel-programme-sportif.css?v=20260421" />
+    <link rel="stylesheet" href="css/nutrismart-saisie-ui.css?v=20260423" />
+    <link rel="stylesheet" href="css/plan-repas-dialog-base.css?v=20260426" />
+    <link rel="stylesheet" href="css/nutrismart-crud-field-toolbar.css?v=20260421" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        important: "#plan-repas-crud-dialog",
+        corePlugins: { preflight: false },
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
     <style>
-      .pr-filemode-banner {
-        margin: 0;
-        padding: 0.75rem 1.25rem;
-        background: #7a1f1f;
-        color: #fff;
-        font-size: 0.875rem;
-        line-height: 1.45;
-        text-align: center;
-        border-bottom: 2px solid #c62828;
-      }
-      .pr-filemode-banner strong {
-        display: block;
-        margin-bottom: 0.25rem;
-      }
-      .pr-filemode-banner code {
-        background: rgba(0, 0, 0, 0.2);
-        padding: 0.1rem 0.35rem;
-        border-radius: 4px;
-        font-size: 0.8em;
-      }
-
-      .day-card.day-card--opens-crud {
+      .day-card.js-open-plan-crud {
         cursor: pointer;
-        transition: box-shadow 0.2s, transform 0.2s;
+        transition: box-shadow 0.2s ease, transform 0.15s ease;
       }
-      .day-card.day-card--opens-crud:hover {
-        box-shadow: 0 12px 40px rgba(45, 90, 39, 0.12);
+      .day-card.js-open-plan-crud:hover {
+        box-shadow: 0 10px 36px rgba(26, 60, 34, 0.14);
+        transform: translateY(-2px);
       }
-      .day-card.day-card--opens-crud:focus {
-        outline: 2px solid #4f46e5;
+      .day-card.js-open-plan-crud:focus-visible {
+        outline: 2px solid #2d5a27;
         outline-offset: 3px;
       }
-      .day-card.day-card--opens-crud:focus:not(:focus-visible) {
-        outline: none;
-      }
-
-      .pr-crud-dialog {
-        padding: 0;
-        border: none;
-        border-radius: 14px;
-        background: transparent;
-        margin: 0;
-      }
-      .pr-crud-dialog[open] {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: min(920px, calc(100vw - 1.5rem));
-        width: min(920px, calc(100vw - 1.5rem));
-        max-height: min(92vh, 900px);
+      .days-grid-add-wrap {
         display: flex;
-        flex-direction: column;
-      }
-      .pr-crud-dialog::backdrop {
-        background: rgba(15, 23, 42, 0.48);
-      }
-      .pr-crud-dialog__panel {
-        position: relative;
-        background: #fff;
-        border-radius: 14px;
-        min-height: 0;
-        flex: 1;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
-      }
-      .pr-crud-dialog__close {
-        position: absolute;
-        top: 0.75rem;
-        right: 0.85rem;
-        z-index: 6;
-        width: 2.35rem;
-        height: 2.35rem;
-        border: none;
-        border-radius: 8px;
-        background: rgba(15, 23, 42, 0.07);
-        color: #0f172a;
-        font-size: 1.4rem;
-        line-height: 1;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
         justify-content: center;
+        padding: 0.75rem 0 1.25rem;
       }
-      .pr-crud-dialog__close:hover {
-        background: rgba(15, 23, 42, 0.12);
-      }
-      .pr-crud-dialog .fo-mem-crud-section.pr-crud-dialog__section {
-        border-top: none;
-        max-width: none;
-        margin: 0;
-        flex: 1;
-        overflow: auto;
-        padding-top: 2.65rem;
-      }
-      .pr-crud-dialog__day {
-        margin: -0.35rem 0 0.75rem;
-        font-size: 0.875rem;
+      .days-grid-add-btn {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.88rem;
         font-weight: 600;
-        color: #4f46e5;
+        padding: 0.55rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid rgba(45, 90, 39, 0.35);
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e4620;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(26, 60, 34, 0.08);
+        transition: background 0.18s, box-shadow 0.18s;
       }
-      .pr-crud-dialog__day:empty {
-        display: none;
-        margin: 0;
+      .days-grid-add-btn:hover {
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(26, 60, 34, 0.12);
+      }
+      /* Modale plan repas : un peu plus large + cadre arrondi marqué */
+      #plan-repas-crud-dialog.pr-plan-crud-dialog {
+        width: min(94vw, 600px);
+        max-width: 600px;
+        border-radius: 32px;
+        border: 2px solid rgba(30, 86, 49, 0.28);
+        box-shadow:
+          0 14px 44px rgba(26, 60, 34, 0.18),
+          0 4px 14px rgba(0, 0, 0, 0.08);
       }
     </style>
   </head>
   <body>
-    <script>
-      (function () {
-        if (window.location.protocol !== "file:") return;
-        var b = document.createElement("div");
-        b.className = "pr-filemode-banner";
-        b.setAttribute("role", "alert");
-        b.innerHTML =
-          "<strong>Page ouverte en fichier local (file://)</strong>Le CRUD utilise le navigateur, pas MySQL. Ouvrez via <code>http://localhost/.../Views/frontoffice/plan-repas.html</code> pour que les lignes apparaissent dans phpMyAdmin.";
-        document.body.insertBefore(b, document.body.firstChild);
-      })();
-    </script>
     <!-- Structure type cours HTML5 : en-tête site + main (sections / articles) -->
     <div class="conteneur-principal ecran-plan-repas conteneur-principal--menu-haut">
       <!-- En-tête du site : logo, navigation principale, accès compte -->
@@ -176,9 +126,11 @@
           <a href="recette.html" class="fo-topnav-link">Recette</a>
           <a href="suivi-statistiques.html" class="fo-topnav-link">Suivi statistique</a>
           <a href="plan-repas.html" class="fo-topnav-link is-active">Plan repas</a>
+          <a href="repas.html" class="fo-topnav-link">Repas</a>
           <a href="blog.html" class="fo-topnav-link">Blog</a>
           <a href="programme-sport.html" class="fo-topnav-link">Programme sport</a>
           <a href="budget-courses.html" class="fo-topnav-link">Budget</a>
+          <a href="../backoffice/crud-plan-repas-sport.html" class="fo-topnav-link">BackOffice</a>
         </nav>
         <div class="fo-topnav-right">
           <a href="register.html" class="fo-topnav-cta">Commencer gratuitement</a>
@@ -225,6 +177,10 @@
         </section>
 
         <!-- Section informative : objectif et cible calorique -->
+        <p class="pr-crud-hint" style="margin: 0 0 1rem; padding: 0 0.25rem; font-size: 0.92rem; color: var(--muted, #5c6b60); max-width: 52rem">
+          <strong>CRUD :</strong> cliquez sur une <strong>carte jour</strong> (Lundi, Mardi…) pour ouvrir la fenêtre <code>plan_repas</code>.
+          La grille reste une maquette : en base, un repas est lié à un <code>plan_repas</code>, pas à un jour affiché ici.
+        </p>
         <section class="goal-bar" aria-label="Objectif nutritionnel">
           <div class="icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -250,7 +206,12 @@
         <!-- Zone liste : un article par jour (contenu structuré sémantique) -->
         <div class="page-plan-repas">
         <section class="days-grid days-grid--plan" aria-label="Plan repas de la semaine">
-          <article class="day-card day-card--opens-crud is-current">
+          <article
+            class="day-card is-current js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80"
@@ -313,7 +274,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=600&q=80"
@@ -376,7 +342,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80"
@@ -439,7 +410,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80"
@@ -502,7 +478,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80"
@@ -565,7 +546,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=600&q=80"
@@ -628,7 +614,12 @@
             </div>
           </article>
 
-          <article class="day-card day-card--opens-crud">
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
             <div class="day-card-head">
               <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=600&q=80"
@@ -691,137 +682,245 @@
             </div>
           </article>
         </section>
+        <div class="days-grid-add-wrap">
+          <button type="button" class="days-grid-add-btn" id="btn-add-extra-day">
+            + Ajouter un jour
+          </button>
         </div>
-
-        <dialog class="pr-crud-dialog" id="pr-crud-dialog" aria-labelledby="fo-crud-plan-title">
-          <div class="pr-crud-dialog__panel">
-            <button type="button" class="pr-crud-dialog__close" id="pr-crud-dialog-close" aria-label="Fermer">
-              &times;
-            </button>
-            <section
-              class="fo-mem-crud-section pr-crud-dialog__section"
-              id="mes-plans-repas-crud"
-              aria-labelledby="fo-crud-plan-title"
-            >
-              <h2 id="fo-crud-plan-title" class="serif fo-mem-crud-title">Gérer mes plans &amp; repas</h2>
-              <p class="pr-crud-dialog__day" id="pr-crud-dialog-day" role="status"></p>
-          <div id="fo-crud-plan" class="fo-crud-wrap">
-            <p id="crud-global-msg" class="fo-crud-msg" role="status" aria-live="polite"></p>
-            <div class="fo-crud-tabs" role="tablist" aria-label="Entités plan repas">
-              <button type="button" class="fo-crud-tab is-active" data-tab="planRepas" role="tab" aria-selected="true">
-                Plan repas
-              </button>
-              <button type="button" class="fo-crud-tab" data-tab="repas" role="tab" aria-selected="false">Repas</button>
-            </div>
-            <section class="fo-crud-panel" data-panel="planRepas" id="fo-panel-plan-repas">
-              <h3 class="fo-crud-heading">plan_repas</h3>
-              <p class="fo-crud-hint" id="hint-planRepas"></p>
-              <form id="form-planRepas" class="fo-crud-form" novalidate>
-                <div class="fo-crud-form-grid">
-                  <label> id_utilisateur (FK)
-                    <input type="text" id="pr-id-utilisateur" name="idUtilisateur" value="1" placeholder="ex. 1" />
-                  </label>
-                  <label> date_debut
-                    <input type="date" id="pr-date-debut" name="dateDebut" />
-                  </label>
-                  <label> date_fin
-                    <input type="date" id="pr-date-fin" name="dateFin" />
-                  </label>
-                  <label> objectif
-                    <input
-                      type="text"
-                      id="pr-objectif"
-                      name="objectif"
-                      placeholder="Perte de poids…"
-                      maxlength="255"
-                      data-ns-texte-lettres="1"
-                      autocomplete="off"
-                    />
-                  </label>
-                  <label> statut
-                    <select id="pr-statut" name="statut">
-                      <option value="">— Choisir —</option>
-                      <option value="brouillon">Brouillon</option>
-                      <option value="actif">Actif</option>
-                      <option value="archivé">Archivé</option>
-                      <option value="en pause">En pause</option>
-                    </select>
-                  </label>
-                </div>
-                <div class="fo-crud-form-actions">
-                  <button type="submit" class="fo-crud-btn fo-crud-btn--primary">Enregistrer</button>
-                  <button type="button" class="fo-crud-btn fo-crud-btn--ghost" data-reset-form="planRepas">Nouveau</button>
-                </div>
-              </form>
-              <div class="fo-crud-table-scroll">
-                <table class="fo-crud-table" aria-label="Liste plans repas">
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <th>id_utilisateur</th>
-                      <th>date_debut</th>
-                      <th>date_fin</th>
-                      <th>objectif</th>
-                      <th>statut</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbody-plan-repas"></tbody>
-                </table>
-              </div>
-            </section>
-            <section class="fo-crud-panel" data-panel="repas" id="fo-panel-repas" hidden>
-              <h3 class="fo-crud-heading">repas</h3>
-              <p class="fo-crud-hint" id="hint-repas"></p>
-              <form id="form-repas" class="fo-crud-form" novalidate>
-                <div class="fo-crud-form-grid">
-                  <label> id_plan (FK)
-                    <select id="repas-id-plan" name="idPlan"></select>
-                  </label>
-                  <label> id_recette (FK)
-                    <input type="text" id="repas-id-recette" name="idRecette" placeholder="ex. 1" />
-                  </label>
-                  <label> type
-                    <input
-                      type="text"
-                      id="repas-type"
-                      name="type"
-                      placeholder="Petit-déjeuner…"
-                      maxlength="64"
-                      data-ns-texte-sans-ponct="1"
-                      autocomplete="off"
-                    />
-                  </label>
-                  <label> calories
-                    <input type="text" id="repas-calories" name="calories" inputmode="numeric" placeholder="420" />
-                  </label>
-                </div>
-                <div class="fo-crud-form-actions">
-                  <button type="submit" class="fo-crud-btn fo-crud-btn--primary">Enregistrer</button>
-                  <button type="button" class="fo-crud-btn fo-crud-btn--ghost" data-reset-form="repas">Nouveau</button>
-                </div>
-              </form>
-              <div class="fo-crud-table-scroll">
-                <table class="fo-crud-table" aria-label="Liste repas">
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <th>id_plan</th>
-                      <th>id_recette</th>
-                      <th>type</th>
-                      <th>calories</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbody-repas"></tbody>
-                </table>
-              </div>
-            </section>
-          </div>
-            </section>
-          </div>
-        </dialog>
+        </div>
       </main>
+
+    <dialog
+      id="plan-repas-crud-dialog"
+      class="pr-crud-dialog pr-plan-crud-dialog overflow-hidden border-0 bg-[#f5f5f4] p-0 font-sans text-neutral-900 antialiased"
+      aria-modal="true"
+      aria-labelledby="plan-repas-crud-form-title"
+    >
+      <div class="flex shrink-0 items-center justify-between gap-3 rounded-t-[32px] border-b border-[#dfe6e0] bg-white px-4 py-3 sm:px-5">
+        <h2 id="plan-repas-crud-form-title" class="m-0 text-[16px] font-semibold tracking-tight text-gray-900">
+          plan_repas
+        </h2>
+        <button
+          type="button"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d1d5db] bg-white text-gray-600 transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/35"
+          data-plan-crud-close
+          aria-label="Fermer la fenêtre"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex max-h-[min(82vh,880px)] min-h-0 flex-col overflow-hidden rounded-b-[32px] bg-[#f0f0f0]">
+        <div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-crud-scroll">
+          <div class="px-4 pb-5 pt-4 sm:px-5 sm:pb-6 sm:pt-5">
+            <div id="plan-repas-crud-root" class="bo-users-page bo-crud-page w-full max-w-none p-0">
+              <p id="crud-global-msg" class="bo-crud-msg" role="status" aria-live="polite"></p>
+
+              <!-- PlanRepas -->
+              <section class="content-card bo-crud-panel border-0 bg-transparent p-0 shadow-none" data-panel="planRepas" id="panel-plan-repas">
+                <p class="bo-crud-hint" id="hint-planRepas"></p>
+                <form id="form-planRepas" class="bo-crud-form" novalidate>
+                  <!-- id_utilisateur requis en base : envoyé sans saisie (défaut 1 — à remplacer par l’utilisateur connecté si besoin) -->
+                  <input type="hidden" id="pr-id-utilisateur" name="idUtilisateur" value="1" />
+                  <div class="flex w-full flex-col gap-2.5">
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">date_debut</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="date"
+                          id="pr-date-debut"
+                          name="dateDebut"
+                          title="jj/mm/aaaa"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-date-debut"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-date-debut"
+                            title="Vider ce champ"
+                            aria-label="Vider ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">date_fin</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="date"
+                          id="pr-date-fin"
+                          name="dateFin"
+                          title="jj/mm/aaaa"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-date-fin"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-date-fin"
+                            title="Vider ce champ"
+                            aria-label="Vider ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">objectif</span>
+                      <span class="text-[11px] font-normal text-gray-500">Lettres uniquement (espaces autorisés).</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="text"
+                          id="pr-objectif"
+                          name="objectif"
+                          placeholder="ex. Perte de poids"
+                          maxlength="255"
+                          data-ns-texte-lettres="1"
+                          autocomplete="off"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-objectif"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-objectif"
+                            title="Vider ce champ"
+                            aria-label="Vider ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">statut</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="pr-statut"
+                          name="statut"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option value="brouillon">Brouillon</option>
+                          <option value="actif">Actif</option>
+                          <option value="archivé">Archivé</option>
+                          <option value="en pause">En pause</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-statut"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-statut"
+                            title="Réinitialiser ce champ"
+                            aria-label="Réinitialiser ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                  </div>
+                  <div class="bo-crud-form-actions mt-4 flex flex-col gap-2.5">
+                    <button
+                      type="submit"
+                      class="btn-sm btn-green h-[50px] w-full rounded-full border-0 bg-[#1e5631] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(30,86,49,0.35)] transition hover:bg-[#174728] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/50"
+                    >
+                      Enregistrer
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-sm btn-ghost h-[44px] w-full rounded-[12px] border border-[#d1d5db] bg-white text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+                      data-reset-form="planRepas"
+                    >
+                      Nouveau
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
 
       <footer id="contact">
         <div class="footer-inner">
@@ -922,103 +1021,27 @@
         </div>
       </footer>
     </div>
-    <!-- JavaScript externe (cours : &lt;script src="..."&gt;) — sans effet si pas de formulaire ciblé -->
-    <script src="js/script.js" defer></script>
+    <!-- JavaScript externe (cours : &lt;script src="..."&gt;) — CRUD plan_repas dans la modale -->
+    <script src="nutrismart-api-config.php"></script>
     <script>
+      if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
+      if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
+      window.NUTRISMART_CRUD_ENTITIES = ["planRepas"];
       window.NUTRISMART_CRUD_ADMIN_CONFIG = {
-        root: "#fo-crud-plan",
-        tabSelector: ".fo-crud-tab",
-        panelSelector: ".fo-crud-panel",
-        msgClassBase: "fo-crud-msg",
-        actionsClass: "fo-crud-actions",
+        root: "#plan-repas-crud-root",
+        tabSelector: ".bo-crud-tab",
+        panelSelector: ".bo-crud-panel",
+        msgClassBase: "bo-crud-msg",
+        actionsClass: "bo-crud-actions",
       };
-      window.NUTRISMART_CRUD_ENTITIES = ["planRepas", "repas"];
-      /* MySQL uniquement si page servie en http(s) — pas en file:// */
-      window.NUTRISMART_API_BASE = window.location.protocol === "file:" ? "" : "../../api";
     </script>
     <script src="js/nutrismart-crud-store.js"></script>
-    <script src="js/nutrismart-saisie-crud.js"></script>
-    <script src="js/nutrismart-crud-admin.js?v=20260416"></script>
-    <script>
-      (function () {
-        document.addEventListener("DOMContentLoaded", function () {
-          var grid = document.querySelector(".days-grid--plan");
-          var dialog = document.getElementById("pr-crud-dialog");
-          var dayEl = document.getElementById("pr-crud-dialog-day");
-          var closeBtn = document.getElementById("pr-crud-dialog-close");
-          if (!grid || !dialog || !dayEl) return;
-
-          var lastCard = null;
-
-          grid.querySelectorAll(".day-card").forEach(function (card) {
-            card.setAttribute("tabindex", "0");
-            card.setAttribute("role", "button");
-            var dn = card.querySelector(".day-name");
-            var day = dn ? dn.textContent.trim() : "";
-            card.setAttribute(
-              "aria-label",
-              day ? "Ouvrir la gestion des plans et repas — " + day : "Ouvrir la gestion des plans et repas"
-            );
-            card.setAttribute("aria-haspopup", "dialog");
-            card.setAttribute("aria-controls", "pr-crud-dialog");
-          });
-
-          function openFromCard(card) {
-            lastCard = card;
-            var dn = card && card.querySelector(".day-name");
-            var day = dn ? dn.textContent.trim() : "";
-            dayEl.textContent = day ? "Jour sélectionné : " + day : "";
-            if (typeof dialog.showModal === "function") {
-              dialog.showModal();
-            } else {
-              dialog.setAttribute("open", "");
-            }
-          }
-
-          function closeDialog() {
-            if (typeof dialog.close === "function") {
-              dialog.close();
-            } else {
-              dialog.removeAttribute("open");
-            }
-          }
-
-          grid.addEventListener("click", function (e) {
-            var card = e.target.closest(".day-card");
-            if (!card || !grid.contains(card)) return;
-            openFromCard(card);
-          });
-
-          grid.addEventListener("keydown", function (e) {
-            if (e.key !== "Enter" && e.key !== " ") return;
-            var card = e.target.closest(".day-card");
-            if (!card || !grid.contains(card)) return;
-            e.preventDefault();
-            openFromCard(card);
-          });
-
-          if (closeBtn) {
-            closeBtn.addEventListener("click", closeDialog);
-          }
-
-          dialog.addEventListener("click", function (e) {
-            if (e.target === dialog) {
-              closeDialog();
-            }
-          });
-
-          dialog.addEventListener("cancel", function (e) {
-            e.preventDefault();
-            closeDialog();
-          });
-
-          dialog.addEventListener("close", function () {
-            if (lastCard && typeof lastCard.focus === "function") {
-              lastCard.focus();
-            }
-          });
-        });
-      })();
-    </script>
+    <script src="js/nutrismart-saisie-crud.js?v=20260421"></script>
+    <script src="js/nutrismart-crud-admin.js?v=20260420c"></script>
+    <script src="js/crud-panel-planRepas.js?v=20260421"></script>
+    <script src="js/nutrismart-crud-field-toolbar.js?v=20260421"></script>
+    <script src="js/plan-repas-modal-validation.js?v=20260420f"></script>
+    <script src="js/plan-repas-day-cards-modal.js?v=20260422"></script>
+    <script src="js/script.js" defer></script>
   </body>
 </html>

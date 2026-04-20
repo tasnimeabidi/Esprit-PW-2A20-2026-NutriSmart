@@ -1,0 +1,11 @@
+/**
+ * Onglet Repas — grille (#panel-repas).
+ * Logique : nutrismart-crud-admin.js (entité repas).
+ */
+#panel-repas .bo-crud-form-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+#panel-repas .ns-repas-cal-wrap {
+  grid-column: 1 / -1;
+}

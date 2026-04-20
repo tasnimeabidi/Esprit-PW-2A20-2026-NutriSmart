@@ -1,0 +1,56 @@
+/**
+ * Boutons stylo / corbeille à côté des champs (formulaires CRUD bo-crud-form).
+ */
+.bo-crud-form .pr-field-tools {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bo-crud-form .pr-field-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 0.65rem;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.bo-crud-form .pr-field-btn:hover {
+  background: #f9fafb;
+}
+
+.bo-crud-form .pr-field-btn:focus-visible {
+  outline: 2px solid #1e5631;
+  outline-offset: 2px;
+}
+
+.bo-crud-form .pr-field-btn--edit {
+  color: #1e5631;
+  border-color: rgba(30, 86, 49, 0.35);
+}
+
+.bo-crud-form .pr-field-btn--edit:hover {
+  background: #eef5ef;
+}
+
+.bo-crud-form .pr-field-btn--clear {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.35);
+}
+
+.bo-crud-form .pr-field-btn--clear:hover {
+  background: #fef2f2;
+}
+
+.bo-crud-form .pr-field-btn svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}

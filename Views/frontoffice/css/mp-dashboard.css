@@ -1148,9 +1148,8 @@ body {
 .plan-header .background {
   position: absolute;
   inset: 0;
-  background: #3d5c3a
-    url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80")
-    center / cover;
+  /* Fond vert uni (sans photo) — carte type « Connexion » */
+  background: #2d4a32;
 }
 
 .plan-header .overlay {
@@ -1158,8 +1157,8 @@ body {
   inset: 0;
   background: linear-gradient(
     120deg,
-    rgba(30, 61, 26, 0.75) 0%,
-    rgba(45, 90, 39, 0.45) 100%
+    rgba(25, 48, 30, 0.35) 0%,
+    rgba(35, 70, 40, 0.2) 100%
   );
 }
 
@@ -1392,12 +1391,17 @@ body {
 .day-card-meta .kcal-pill {
   font-family: "Inter", system-ui, sans-serif;
   font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.4rem 0.85rem;
+  font-weight: 700;
+  padding: 0.45rem 0.95rem;
   border-radius: 999px;
-  background: rgba(30, 30, 30, 0.55);
+  background: rgba(45, 40, 35, 0.82);
   backdrop-filter: blur(8px);
   color: #fff;
+}
+.day-card-meta .kcal-pill::before {
+  content: "≈ ";
+  font-weight: 700;
+  opacity: 0.95;
 }
 
 .day-card-meta .kcal {

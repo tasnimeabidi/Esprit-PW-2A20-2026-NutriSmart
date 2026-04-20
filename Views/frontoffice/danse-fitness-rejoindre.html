@@ -907,6 +907,7 @@
       </div>
     </footer>
 
+    <script src="nutrismart-api-config.php"></script>
     <script>
       window.NUTRISMART_CRUD_ADMIN_CONFIG = {
         root: "#fo-crud-prog",
@@ -916,8 +917,8 @@
         actionsClass: "fo-crud-actions",
       };
       window.NUTRISMART_CRUD_ENTITIES = ["programmeSportif"];
-      /* file:// ne peut pas appeler PHP : pas d’API → données en localStorage uniquement */
-      window.NUTRISMART_API_BASE = window.location.protocol === "file:" ? "" : "../../api";
+      if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
+      if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
     </script>
     <script src="js/nutrismart-crud-store.js"></script>
     <script src="js/nutrismart-saisie-crud.js"></script>

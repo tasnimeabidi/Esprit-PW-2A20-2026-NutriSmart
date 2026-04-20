@@ -10,6 +10,7 @@ spl_autoload_register(function (string $class): void {
     $base = NUTRISMART_BASE . DIRECTORY_SEPARATOR;
     $paths = [
         $base . 'Models' . DIRECTORY_SEPARATOR . $class . '.php',
+        $base . 'Model' . DIRECTORY_SEPARATOR . $class . '.php',
         $base . 'controllers' . DIRECTORY_SEPARATOR . $class . '.php',
     ];
     foreach ($paths as $path) {
@@ -21,3 +22,4 @@ spl_autoload_register(function (string $class): void {
 });
 
 require_once NUTRISMART_BASE . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'database.php';
+require_once NUTRISMART_BASE . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';

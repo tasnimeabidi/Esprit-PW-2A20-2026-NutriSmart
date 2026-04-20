@@ -6,7 +6,11 @@
     <title>NutriSmart — CRUD Plan repas &amp; Sport</title>
     <link rel="stylesheet" href="../frontoffice/css/mp-dashboard.css" />
     <link rel="stylesheet" href="backoffice-shell.css?v=20260415" />
-    <link rel="stylesheet" href="../frontoffice/css/nutrismart-saisie-ui.css" />
+    <link rel="stylesheet" href="../frontoffice/css/plan-repas-crud.css?v=20260421" />
+    <link rel="stylesheet" href="../frontoffice/css/crud-panel-plan-repas.css?v=20260421" />
+    <link rel="stylesheet" href="../frontoffice/css/crud-panel-repas.css?v=20260421" />
+    <link rel="stylesheet" href="../frontoffice/css/crud-panel-programme-sportif.css?v=20260421" />
+    <link rel="stylesheet" href="../frontoffice/css/nutrismart-saisie-ui.css?v=20260421" />
   </head>
   <body class="bo-shell-body">
     <header class="topbar">
@@ -86,7 +90,7 @@
         <span class="nav-icon">📤</span> Exports
       </a>
       <a class="nav-item active" href="crud-plan-repas-sport.html">
-        <span class="nav-icon">🗄️</span> Base de données
+        <span class="nav-icon">🗄️</span> CRUD Plan &amp; Sport
       </a>
 
       <div class="nav-section-label">Système</div>
@@ -102,7 +106,10 @@
 
       <div style="margin-top: auto; padding-top: 1.5rem">
         <a class="nav-item" href="../frontoffice/plan-repas.html" style="color: #3dba52">
-          <span class="nav-icon">🌐</span> Front office
+          <span class="nav-icon">🌐</span> Front: Plan repas
+        </a>
+        <a class="nav-item" href="../frontoffice/programme-sport.html" style="color: #3dba52">
+          <span class="nav-icon">🏃</span> Front: Programme sport
         </a>
       </div>
     </aside>
@@ -199,21 +206,34 @@
                 <label> id_plan (FK)
                   <select id="repas-id-plan" name="idPlan"></select>
                 </label>
-                <label> id_recette (FK)
-                  <input type="text" id="repas-id-recette" name="idRecette" placeholder="ex. R12" />
+                <label> Recette
+                  <select id="repas-id-recette" name="idRecette">
+                    <option value="">— Aucune recette —</option>
+                  </select>
                 </label>
                 <label> type
+                  <select id="repas-type" name="type" required>
+                    <option value="">— Choisir le type —</option>
+                    <option>Petit-déjeuner</option>
+                    <option>Brunch</option>
+                    <option>Déjeuner</option>
+                    <option>Collation</option>
+                    <option>Goûter</option>
+                    <option>Dîner</option>
+                    <option>Souper</option>
+                  </select>
+                </label>
+                <label class="ns-repas-cal-wrap">
+                  <span class="ns-repas-cal-label">Calories / kcal</span>
                   <input
                     type="text"
-                    id="repas-type"
-                    name="type"
-                    placeholder="Petit-déjeuner…"
-                    data-ns-texte-sans-ponct="1"
+                    id="repas-calories"
+                    name="calories"
+                    inputmode="numeric"
+                    class="ns-repas-calories-field"
+                    placeholder=""
                     autocomplete="off"
                   />
-                </label>
-                <label> calories
-                  <input type="text" id="repas-calories" name="calories" inputmode="numeric" placeholder="420" />
                 </label>
               </div>
               <div class="bo-crud-form-actions">
@@ -227,7 +247,7 @@
                   <tr>
                     <th>id</th>
                     <th>id_plan</th>
-                    <th>id_recette</th>
+                    <th>Recette</th>
                     <th>type</th>
                     <th>calories</th>
                     <th>Actions</th>
@@ -328,11 +348,16 @@
       </div>
     </main>
 
+    <script src="../frontoffice/nutrismart-api-config.php"></script>
     <script>
-      window.NUTRISMART_API_BASE = "../../api";
+      if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
+      if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
     </script>
     <script src="../frontoffice/js/nutrismart-crud-store.js"></script>
-    <script src="../frontoffice/js/nutrismart-saisie-crud.js"></script>
-    <script src="../frontoffice/js/nutrismart-crud-admin.js?v=20260416"></script>
+    <script src="../frontoffice/js/nutrismart-saisie-crud.js?v=20260421"></script>
+    <script src="../frontoffice/js/nutrismart-crud-admin.js?v=20260421"></script>
+    <script src="../frontoffice/js/crud-panel-planRepas.js?v=20260421"></script>
+    <script src="../frontoffice/js/crud-panel-repas.js?v=20260421"></script>
+    <script src="../frontoffice/js/crud-panel-programmeSportif.js?v=20260421"></script>
   </body>
 </html>

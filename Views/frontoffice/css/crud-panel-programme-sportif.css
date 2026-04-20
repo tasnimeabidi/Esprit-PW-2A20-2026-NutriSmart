@@ -1,0 +1,14 @@
+/**
+ * Onglet ProgrammeSportif — grille et texte d’aide (#panel-programme).
+ * Logique : nutrismart-crud-admin.js (entité programmeSportif).
+ */
+#panel-programme .bo-crud-meta {
+  font-size: 0.8125rem;
+  color: #4a5c52;
+  margin: 0 0 0.75rem;
+  line-height: 1.45;
+}
+
+#panel-programme .bo-crud-form-grid {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}

@@ -1,24 +1,65 @@
 /**
- * Affichage des erreurs de saisie (sans validation HTML5) — bordure + message sous le champ.
+ * Affichage des erreurs de saisie (sans validation HTML5) — aligné maquette inscription NutriSmart.
+ * Erreur : #dc3545 + fond rose très pâle · Valide : #28a745 + message « ✓ Valide ».
  */
 .ns-saisie-input-invalid,
 .ns-saisie-input-invalid:focus {
-  border-color: #c62828 !important;
-  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.18) !important;
+  border-color: #dc3545 !important;
+  background-color: #fff5f5 !important;
+  box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.25) !important;
   outline: none;
 }
 
 select.ns-saisie-input-invalid,
 select.ns-saisie-input-invalid:focus {
-  border-color: #c62828 !important;
+  border-color: #dc3545 !important;
+  background-color: #fff5f5 !important;
+}
+
+/* État valide (maquette : bordure verte vive + fond blanc ou vert très léger) */
+.ns-saisie-input-valid:not(.ns-saisie-input-invalid),
+.ns-saisie-input-valid:not(.ns-saisie-input-invalid):focus {
+  border-color: #28a745 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.35) !important;
+  outline: none;
+}
+
+select.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
+  border-color: #28a745 !important;
+  background-color: #ffffff !important;
 }
 
 .ns-saisie-field-msg {
-  color: #b71c1c;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  margin: 0.35rem 0 0;
+  color: #dc3545;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  margin: 0.4rem 0 0;
   padding: 0;
+  font-weight: 500;
+}
+
+.ns-saisie-success-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #28a745;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.4rem 0 0;
+  padding: 0;
+}
+
+.ns-saisie-success-msg::before {
+  content: "✓";
+  font-weight: 800;
+  font-size: 1em;
+}
+
+.ns-saisie-success-msg::after {
+  content: " Valide";
+  font-weight: 600;
 }
 
 .bo-field .ns-saisie-field-msg,
@@ -42,4 +83,55 @@ select.ns-saisie-input-invalid:focus {
 
 .bo-crud-form-grid .fo-crud-champ-lecture-seule {
   padding: 0.45rem 0.65rem;
+}
+
+/* Repas — champ CALORIES (même esprit que « activité / discipline » : label caps gris, zone blanche, valeur en noir) */
+.ns-repas-cal-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.ns-repas-cal-label {
+  display: block;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+.ns-repas-calories-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.ns-repas-calories-field::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+.ns-repas-calories-field:focus {
+  outline: none;
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35);
+}
+.ns-repas-calories-field.ns-repas-calories-field--from-recette {
+  background: #fff;
+  color: #111827;
+  cursor: default;
+}
+.ns-repas-calories-field.ns-repas-calories-field--from-recette:focus {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.25);
+  border-color: #e5e7eb;
+}
+
+.ns-repas-calories-field.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
+  border-color: #28a745;
+  box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.35);
 }

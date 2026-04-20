@@ -35,6 +35,15 @@ final class ValidateurProgrammeSportifApi
         if ($r->ok() && (!ctype_digit($duree) || (int) $duree < 1)) {
             $r->ajouter('dureeMin', 'La durée doit être un nombre entier de minutes (≥ 1).');
         }
+        if ($r->ok()) {
+            $n = (int) $duree;
+            // SMALLINT UNSIGNED MySQL : au-delà, troncature silencieuse → souvent 65535 ; on refuse avant INSERT.
+            if ($n > 65535) {
+                $r->ajouter('dureeMin', 'La durée ne peut pas dépasser 65535 minutes (limite technique).');
+            } elseif ($n > 1440) {
+                $r->ajouter('dureeMin', 'La durée ne peut pas dépasser 1440 minutes (24 h) pour une séance.');
+            }
+        }
 
         $statut = isset($data['statut']) ? trim((string) $data['statut']) : 'prevue';
         ValidateurChampsCommuns::longueurMax($r, 'statut', $statut, 64, 'Le statut');

@@ -1,0 +1,309 @@
+/**
+ * Modal « Plan repas, repas & sport » — UI moderne (centrée, carte blanche, header vert).
+ * Périmètre : #plan-repas-crud-dialog uniquement.
+ * Polices : charger Inter + Poppins dans la page (voir plan-repas.html).
+ */
+@keyframes pr-modal-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pr-modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#plan-repas-crud-dialog.pr-crud-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(94vw, 760px);
+  max-width: min(94vw, 760px);
+  height: fit-content;
+  max-height: min(92vh, 880px);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
+  font-family: "Inter", "Poppins", system-ui, -apple-system, sans-serif;
+  color: #1a1f1c;
+}
+
+#plan-repas-crud-dialog.pr-crud-dialog[open] {
+  animation: pr-modal-dialog-in 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#plan-repas-crud-dialog.pr-crud-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: pr-modal-backdrop-in 0.28s ease forwards;
+}
+
+/* Header vert foncé */
+#plan-repas-crud-dialog .pr-crud-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  background: linear-gradient(135deg, #2f4d3c 0%, #1e3d2c 100%);
+  color: #fff;
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__kicker {
+  display: none;
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__title {
+  margin: 0;
+  font-family: "Poppins", "Inter", system-ui, sans-serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #fff;
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__close {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.2s, transform 0.15s;
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__close:active {
+  transform: scale(0.96);
+}
+
+#plan-repas-crud-dialog .pr-crud-dialog__close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Zone scroll */
+#plan-repas-crud-dialog .plan-crud-scroll {
+  margin: 0;
+  max-height: min(70vh, 680px);
+  overflow: auto;
+  overflow-x: hidden;
+  background: #fafbfa;
+  scrollbar-gutter: stable;
+}
+
+#plan-repas-crud-dialog .plan-crud-scroll-inner {
+  padding: 1.35rem 1.4rem 1.6rem;
+}
+
+#plan-repas-crud-dialog #plan-repas-crud-root.bo-users-page {
+  padding: 0;
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Onglets — léger contraste sur fond clair */
+#plan-repas-crud-dialog .bo-crud-tabs {
+  margin-bottom: 1.1rem;
+  padding: 0.35rem;
+  border-radius: 12px;
+  background: #eef4f0;
+  border: 1px solid #dce8df;
+}
+
+#plan-repas-crud-dialog .bo-crud-tab.is-active {
+  box-shadow: 0 2px 8px rgba(30, 61, 44, 0.12);
+}
+
+/* Carte formulaire */
+#plan-repas-crud-dialog .content-card.bo-crud-panel {
+  background: #ffffff;
+  border: 1px solid #e3ebe4;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.05);
+  padding: 1.25rem 1.3rem 1.4rem;
+}
+
+#plan-repas-crud-dialog .bo-crud-heading {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e2e22;
+  margin: 0 0 1rem;
+}
+
+/* Grille champs Plan repas */
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid {
+  gap: 1.1rem 1rem;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid > label {
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #2a3d2f;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .pr-modal-field__label {
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+/* Inputs : fond gris très clair, bordure fine */
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid input:not([type="hidden"]),
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid select {
+  min-height: 2.85rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 12px;
+  border: 1px solid #d1d9d4;
+  background: #f3f5f4;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a261c;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid input:hover:not(:focus),
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid select:hover:not(:focus) {
+  border-color: #b8c9bf;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid input:focus,
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-grid select:focus {
+  outline: none;
+  border-color: #5b8c6a;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(91, 140, 106, 0.2);
+}
+
+/* Champs date : zone alignée + calendrier natif à droite (WebKit / Chromium) */
+#plan-repas-crud-dialog .pr-modal-input-wrap--date {
+  display: block;
+  width: 100%;
+}
+
+#plan-repas-crud-dialog .pr-modal-input-wrap--date input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  color-scheme: light;
+}
+
+#plan-repas-crud-dialog .pr-modal-input-wrap--date input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  padding: 0.2rem;
+}
+
+#plan-repas-crud-dialog .pr-modal-input-wrap--date input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.85;
+}
+
+/* Messages validation sous les champs (plan repas) */
+#plan-repas-crud-dialog #panel-plan-repas .pr-modal-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-field-msg,
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg {
+  margin-top: 0.4rem;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-field-msg:not(.is-visible) {
+  display: none !important;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg:not(.is-visible) {
+  display: none !important;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-field-msg.is-visible {
+  display: block !important;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg.is-visible {
+  display: flex !important;
+  align-items: center;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg {
+  color: #15803d;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg::before {
+  content: "✓";
+  font-weight: 800;
+  margin-right: 0.35rem;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .ns-saisie-success-msg::after {
+  content: "Valide";
+}
+
+/* Bouton principal */
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-actions {
+  margin-top: 0.25rem;
+  margin-bottom: 1.15rem;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-actions .btn-green {
+  border-radius: 12px !important;
+  min-height: 2.85rem;
+  font-family: "Poppins", "Inter", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: #4a7a59 !important;
+  box-shadow: 0 4px 14px rgba(74, 122, 89, 0.35) !important;
+  transition: filter 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-actions .btn-green:hover {
+  filter: brightness(0.94);
+  box-shadow: 0 6px 20px rgba(45, 90, 55, 0.38) !important;
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-actions .btn-green:active {
+  transform: translateY(1px);
+}
+
+#plan-repas-crud-dialog #panel-plan-repas .bo-crud-form-actions .btn-ghost {
+  border-radius: 12px !important;
+}
+
+/* Tableau sous le formulaire */
+#plan-repas-crud-dialog .users-list-table.bo-crud-table {
+  margin-top: 0.25rem;
+}
