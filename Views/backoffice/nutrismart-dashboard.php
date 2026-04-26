@@ -10,6 +10,7 @@ $logs = $controller->listLogs();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NutriSmart — Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -932,7 +933,7 @@ $logs = $controller->listLogs();
         <div class="page-sub">Surveillance des performances utilisateurs et logs caloriques</div>
       </div>
       <div class="header-actions">
-        <button class="btn-sm btn-ghost">📊 Exporter Analytics</button>
+        <button onclick="exportAdminDashboard()" class="btn-sm btn-ghost">📊 Exporter Rapport PDF</button>
         <button class="btn-sm btn-green">⚙️ Configurer AI</button>
       </div>
     </div>
@@ -991,8 +992,11 @@ $logs = $controller->listLogs();
               <td>#<?php echo $row['id']; ?></td>
               <td>USR-<?php echo $row['user_id']; ?></td>
               <td><strong><?php echo htmlspecialchars($row['description']); ?></strong><br><small><?php echo ucfirst($row['type']); ?></small></td>
-              <td style="color:<?php echo $row['type']=='meal' ? 'var(--red)' : 'var(--primary)'; ?>">
-                <?php echo ($row['type'] == 'meal' ? '+' : '-') . $row['calories']; ?> kcal
+              <td style="color:<?php echo $row['type']=='meal' ? 'var(--red)' : ($row['type']=='weight' ? 'var(--gold)' : 'var(--primary)'); ?>">
+                <?php 
+                  if($row['type'] == 'weight') echo htmlspecialchars($row['description']);
+                  else echo ($row['type'] == 'meal' ? '+' : '-') . $row['calories'] . ' kcal'; 
+                ?>
               </td>
               <td><?php echo $row['date']; ?></td>
               <td>
@@ -1045,6 +1049,7 @@ $logs = $controller->listLogs();
         <select name="type" id="adminLogType" class="admin-input">
           <option value="meal">Repas (Aliment)</option>
           <option value="activity">Activité (Sport)</option>
+          <option value="weight">Journal de Poids (Second entité)</option>
         </select>
       </div>
       
@@ -1053,9 +1058,14 @@ $logs = $controller->listLogs();
         <input type="text" name="description" id="adminLogDesc" class="admin-input" placeholder="Ex: Poulet, Running...">
       </div>
       
-      <div class="form-group">
+      <div class="form-group" id="caloriesGroup">
         <label>Calories (kcal)</label>
         <input type="number" name="calories" id="adminLogCals" class="admin-input" placeholder="Ex: 300">
+      </div>
+
+      <div class="form-group" id="weightGroup" style="display:none">
+        <label>Valeur du Poids (kg)</label>
+        <input type="number" step="0.1" name="weight" id="adminLogWeight" class="admin-input" placeholder="Ex: 72.5">
       </div>
       
       <button type="submit" class="btn-sm btn-green" style="margin-top: 1rem; width: 100%; padding: .8rem;">Confirmer</button>
@@ -1103,6 +1113,8 @@ $logs = $controller->listLogs();
         document.getElementById('adminFormAction').value = "create";
         document.getElementById('adminLogId').value = "";
         document.getElementById('adminLogForm').reset();
+        document.getElementById('caloriesGroup').style.display = 'flex';
+        document.getElementById('weightGroup').style.display = 'none';
         modal.style.display = 'grid';
     }
 
@@ -1111,10 +1123,35 @@ $logs = $controller->listLogs();
         document.getElementById('adminFormAction').value = "update";
         document.getElementById('adminLogId').value = id;
         document.getElementById('adminLogType').value = type;
+        
+        // Handle field visibility
+        if (type === 'weight') {
+            document.getElementById('caloriesGroup').style.display = 'none';
+            document.getElementById('weightGroup').style.display = 'flex';
+            // Parse weight from description "75.5 kg (...)"
+            const weightVal = parseFloat(desc.split(' ')[0]) || 70;
+            document.getElementById('adminLogWeight').value = weightVal;
+        } else {
+            document.getElementById('caloriesGroup').style.display = 'flex';
+            document.getElementById('weightGroup').style.display = 'none';
+            document.getElementById('adminLogCals').value = cals;
+        }
+        
         document.getElementById('adminLogDesc').value = desc;
-        document.getElementById('adminLogCals').value = cals;
         modal.style.display = 'grid';
     }
+
+    // Type switching listener
+    document.getElementById('adminLogType').addEventListener('change', function() {
+        const type = this.value;
+        if (type === 'weight') {
+            document.getElementById('caloriesGroup').style.display = 'none';
+            document.getElementById('weightGroup').style.display = 'flex';
+        } else {
+            document.getElementById('caloriesGroup').style.display = 'flex';
+            document.getElementById('weightGroup').style.display = 'none';
+        }
+    });
 
     function closeModal() { modal.style.display = 'none'; }
     let deleteTarget = { id: null, type: null };
@@ -1176,6 +1213,25 @@ $logs = $controller->listLogs();
             else alert('Erreur: ' + data.message);
         });
     });
-  </script>
+      function exportAdminDashboard() {
+        const element = document.querySelector('.admin-content');
+        const opt = {
+            margin:       [10, 10],
+            filename:     'Admin_NutriSmart_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        // Hide UI elements not needed in PDF
+        const actions = document.querySelectorAll('.log-actions-column');
+        const btn = document.querySelector('.btn-green');
+        actions.forEach(a => a.style.opacity = '0');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            actions.forEach(a => a.style.opacity = '1');
+        });
+    }
+</script>
 </body>
 </html>

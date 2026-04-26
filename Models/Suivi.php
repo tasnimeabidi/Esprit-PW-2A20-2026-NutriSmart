@@ -17,8 +17,11 @@ class Suivi {
                   FROM journal_sport s
                   WHERE s.id_utilisateur = :uid
                   UNION
-                  SELECT w.id, w.id_utilisateur as user_id, 'weight' as type, w.date_mesure as date, 0 as calories, CONCAT(w.poids, ' kg') as description 
+                  SELECT w.id, w.id_utilisateur as user_id, 'weight' as type, w.date_mesure as date, 0 as calories, 
+                         CONCAT(w.poids, ' kg (Sport: ', COALESCE(s.type_sport, 'N/A'), ', Cal: ', COALESCE(n.calories, '0'), ')') as description 
                   FROM journal_poids w
+                  LEFT JOIN journal_sport s ON w.id_sport = s.id
+                  LEFT JOIN journal_nutrition n ON w.id_nutrition = n.id
                   WHERE w.id_utilisateur = :uid
                   ORDER BY date DESC";
         
@@ -54,13 +57,16 @@ class Suivi {
         return $stmt->execute();
     }
 
-    // Create Weight Log
-    public function createWeight($user_id, $date, $poids) {
-        $query = "INSERT INTO journal_poids (id_utilisateur, poids, date_mesure) VALUES (:uid, :poids, :date)";
+    // Create Weight Log (as a junction table)
+    public function createWeight($user_id, $date, $poids, $id_sport = null, $id_nutrition = null) {
+        $query = "INSERT INTO journal_poids (id_utilisateur, poids, date_mesure, id_sport, id_nutrition) 
+                  VALUES (:uid, :poids, :date, :sid, :nid)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':uid', $user_id);
         $stmt->bindParam(':poids', $poids);
         $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':sid', $id_sport);
+        $stmt->bindParam(':nid', $id_nutrition);
         return $stmt->execute();
     }
 
@@ -84,6 +90,9 @@ class Suivi {
             // For meals in this app, update calories and a default quantity
             $stmt = $this->conn->prepare("UPDATE journal_nutrition SET calories = :cal, quantite = 100 WHERE id = :id");
             return $stmt->execute(['id' => $id, 'cal' => $cal]);
+        } elseif ($type === 'weight') {
+            $stmt = $this->conn->prepare("UPDATE journal_poids SET poids = :poids WHERE id = :id");
+            return $stmt->execute(['id' => $id, 'poids' => $cal]);
         } else {
             $stmt = $this->conn->prepare("UPDATE journal_sport SET calories_depensees = :cal, type_sport = :desc WHERE id = :id");
             return $stmt->execute(['id' => $id, 'cal' => $cal, 'desc' => $desc]);

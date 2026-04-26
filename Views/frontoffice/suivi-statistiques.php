@@ -26,6 +26,12 @@ if($remaining < 200) $aiTip = "Attention, vous approchez de votre limite caloriq
 if($totalBurned > 500) $aiTip = "Bravo pour votre activité physique ! Pensez à augmenter votre apport en protéines pour la récupération.";
 if($totalConsumed < 1200 && date('H') > 18) $aiTip = "Votre apport est faible pour aujourd'hui. Un dîner nutritif est recommandé pour éviter la fatigue demain.";
 
+// Get Weight History for Chart (Dynamic)
+$db = $controller->getDb();
+$weightLogs = $db->prepare("SELECT poids, date_mesure FROM journal_poids WHERE id_utilisateur = 1 ORDER BY date_mesure DESC, id DESC LIMIT 7");
+$weightLogs->execute();
+$chartWeights = array_reverse($weightLogs->fetchAll(PDO::FETCH_ASSOC));
+
 $logs = $controller->listLogs();
 ?>
 <!DOCTYPE html>
@@ -36,8 +42,9 @@ $logs = $controller->listLogs();
     <title>Suivi Intelligent — NutriSmart</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/shared-styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root {
             --primary: #4CAF50;
             --mid: #8BC34A;
             --lime: #C4D4A8;
@@ -605,7 +612,9 @@ $logs = $controller->listLogs();
             <p>Notre IA analyse vos données quotidiennes pour vous offrir des prévisions précises et des conseils nutritionnels personnalisés en temps réel.</p>
         </div>
         <div class="hero-visual">
-            <!-- Dynamic viz could go here -->
+            <button onclick="exportDashboard()" class="logger-btn" style="background: var(--white); color: var(--forest); border: 1px solid var(--forest); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; padding: 0.8rem 1.5rem;">
+                <span>📄 Exporter mon Rapport PDF</span>
+            </button>
         </div>
     </header>
 
@@ -651,6 +660,7 @@ $logs = $controller->listLogs();
                             <button onclick="saveLog('activity')" class="btn-primary" style="margin-top: 0.5rem; background: var(--orange); border: none; padding: 0.7rem 1rem; border-radius: 0.5rem; width: 100%; cursor: pointer;">Enregistrer l'activité</button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -688,38 +698,51 @@ $logs = $controller->listLogs();
         <!-- Predictive Weight -->
         <div class="stat-card col-8">
             <div class="card-header">
-                <h3 class="card-title">Courbe de Poids & Prévisions</h3>
-                <div class="card-icon">📈</div>
+                <div style="display: flex; flex-direction: column;">
+                    <h3 class="card-title">Courbe de Poids & Prévisions</h3>
+                    <?php if(!empty($chartWeights)): ?>
+                        <div style="font-size: 2.2rem; font-weight: 900; color: var(--forest); font-family: 'Playfair Display', serif;">
+                            <?php echo number_format(end($chartWeights)['poids'], 2); ?> <span style="font-size: 1rem; font-weight: 600; color: var(--gray);">kg</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="promptWeight()" style="background: var(--forest); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; font-weight: 700; box-shadow: 0 4px 10px rgba(45, 106, 45, 0.2);">⚖️ Étalonner</button>
+                    <div class="card-icon">📈</div>
+                </div>
             </div>
             <div class="trend-chart">
+                <?php 
+                $days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+                if(empty($chartWeights)): ?>
+                    <!-- NO DATA STATE: Entry Point -->
+                    <div style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: 100%; height: 100%;">
+                        <div style="font-size: 2.5rem;">⚖️</div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Prêt à démarrer ? Entrez votre poids de départ.</p>
+                        <button onclick="promptWeight()" style="background: var(--forest); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 1rem; cursor: pointer; font-weight: 700; transition: 0.3s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='var(--forest)'">
+                            Définir mon poids initial
+                        </button>
+                    </div>
+                <?php 
+                else:
+                    foreach($chartWeights as $w): 
+                        $h = min(100, ($w['poids'] / 120) * 100); // Scale 0-120kg
+                        $dayNum = date('w', strtotime($w['date_mesure']));
+                ?>
                 <div class="bar-group">
-                    <div class="bar-container"><div class="bar-actual" style="height: 95%;"></div></div>
-                    <span class="day-label">Lun</span>
+                    <div class="bar-container" title="<?php echo $w['poids']; ?> kg">
+                        <div class="bar-actual" style="height: <?php echo $h; ?>%;"></div>
+                    </div>
+                    <span class="day-label"><?php echo $days[$dayNum]; ?></span>
                 </div>
-                <div class="bar-group">
-                    <div class="bar-container"><div class="bar-actual" style="height: 90%;"></div></div>
-                    <span class="day-label">Mar</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar-container"><div class="bar-actual" style="height: 85%;"></div></div>
-                    <span class="day-label">Mer</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar-container"><div class="bar-actual" style="height: 85%;"></div></div>
-                    <span class="day-label">Jeu</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar-container"><div class="bar-actual" style="height: 80%;"></div></div>
-                    <span class="day-label">Hoy</span>
-                </div>
+                <?php endforeach; ?>
+                
+                <!-- Prediction Bar Area -->
                 <div class="bar-group prediction">
-                    <div class="bar-container"><div class="bar-predict" style="height: 75%;"></div></div>
-                    <span class="day-label">Dem</span>
+                    <div class="bar-container" title="Prédiction IA"><div class="bar-predict" style="height: 60%;"></div></div>
+                    <span class="day-label">IA</span>
                 </div>
-                <div class="bar-group prediction">
-                    <div class="bar-container"><div class="bar-predict" style="height: 70%;"></div></div>
-                    <span class="day-label">Dim</span>
-                </div>
+                <?php endif; ?>
             </div>
             <div class="ai-insight" style="background: rgba(242, 153, 74, 0.08); border-color: var(--orange);">
                 🔭 <strong>Prédiction:</strong> En maintenant ce rythme, vous atteindrez votre objectif de <strong>72kg</strong> dans 14 jours.
@@ -757,16 +780,19 @@ $logs = $controller->listLogs();
             <div class="activity-feed">
                 <?php foreach(array_reverse($logsList) as $row): ?>
                 <div class="act-card" id="log-<?php echo $row['id']; ?>">
-                    <div class="act-icon-box"><?php echo $row['type'] == 'meal' ? '🥗' : '🏃‍♂️'; ?></div>
+                    <div class="act-icon-box"><?php echo $row['type'] == 'meal' ? '🥗' : ($row['type'] == 'weight' ? '⚖️' : '🏃‍♂️'); ?></div>
                     <div class="act-desc">
                         <h4><?php echo htmlspecialchars($row['description']); ?></h4>
-                        <p><?php echo date('d M', strtotime($row['date'])); ?> • <?php echo ucfirst($row['type']); ?></p>
+                        <p><?php echo date('d M', strtotime($row['date'])); ?> • <?php echo ucfirst($row['type'] == 'weight' ? 'Poids' : ($row['type'] == 'meal' ? 'Repas' : 'Sport')); ?></p>
                     </div>
                     <div class="act-cal">
-                        <span class="cal-val" style="color: <?php echo $row['type'] == 'meal' ? 'var(--orange)' : 'var(--primary)'; ?>">
-                            <?php echo ($row['type'] == 'meal' ? '+' : '-') . $row['calories']; ?>
+                        <span class="cal-val" style="color: <?php echo $row['type'] == 'meal' ? 'var(--orange)' : ($row['type'] == 'weight' ? 'var(--forest)' : 'var(--primary)'); ?>">
+                            <?php 
+                                if($row['type'] == 'weight') echo 'Impact';
+                                else echo ($row['type'] == 'meal' ? '+' : '-') . $row['calories']; 
+                            ?>
                         </span>
-                        <div class="cal-lbl">kcal</div>
+                        <div class="cal-lbl"><?php echo $row['type'] == 'weight' ? 'Relatif' : 'kcal'; ?></div>
                     </div>
                     <div class="act-actions" style="margin-left: 10px; display: flex; gap: 8px;">
                         <button onclick="editLog(<?php echo $row['id']; ?>, '<?php echo $row['type']; ?>', '<?php echo addslashes($row['description']); ?>', <?php echo $row['calories']; ?>)" style="background: none; border: none; cursor: pointer; opacity: 0.6; font-size: 1.1rem;">✏️</button>
@@ -963,9 +989,15 @@ $logs = $controller->listLogs();
             formData.append('action', 'create');
             formData.append('user_id', '1');
             formData.append('type', type);
+            
+            if(!lastPrediction.desc) {
+                alert("Veuillez d'abord analyser votre entrée.");
+                return;
+            }
             formData.append('description', lastPrediction.desc);
             formData.append('calories', lastPrediction.cal);
             formData.append('quantite', lastPrediction.qty);
+            
             formData.append('date', new Date().toISOString().split('T')[0]);
 
             fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
@@ -974,6 +1006,26 @@ $logs = $controller->listLogs();
                 if(data.status === 'success') location.reload();
                 else alert("Erreur: " + data.message);
             });
+        }
+
+        function promptWeight() {
+            const w = prompt("Veuillez entrer votre poids actuel pour étalonner l'IA (kg) :", "70");
+            if (w && !isNaN(w)) {
+                const formData = new FormData();
+                formData.append('action', 'create');
+                formData.append('user_id', '1');
+                formData.append('type', 'weight');
+                formData.append('weight', w);
+                formData.append('description', w + ' kg (Étalonnage manuel)');
+                formData.append('date', new Date().toISOString().split('T')[0]);
+
+                fetch('../../controllers/SuiviController.php', { method: 'POST', body: formData })
+                .then(r => r.json())
+                .then(data => {
+                    if(data.status === 'success') location.reload();
+                    else alert("Erreur: " + data.message);
+                });
+            }
         }
 
         let deleteTarget = { id: null, type: null };
@@ -1045,6 +1097,36 @@ $logs = $controller->listLogs();
                 alert("Erreur de communication avec le serveur.");
             });
         });
+        async function exportDashboard() {
+            const { jsPDF } = window.jspdf;
+            const element = document.querySelector('.dashboard-grid');
+            
+            // Show loading or hide buttons
+            const btns = document.querySelectorAll('.act-actions, .logger-btn');
+            btns.forEach(b => b.style.opacity = '0');
+
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#F7F3EC'
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('Rapport_NutriSmart.pdf');
+            } catch (err) {
+                console.error(err);
+                alert("Erreur lors de la génération du PDF.");
+            } finally {
+                btns.forEach(b => b.style.opacity = '1');
+            }
+        }
     </script>
 </body>
 </html>
