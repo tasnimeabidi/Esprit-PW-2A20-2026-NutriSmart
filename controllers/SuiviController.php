@@ -12,6 +12,10 @@ class SuiviController {
         $this->suivi = new Suivi($this->db);
     }
 
+    public function getDb() {
+        return $this->db;
+    }
+
     public function listLogs($user_id = 1) {
         return $this->suivi->readAll($user_id);
     }
@@ -20,8 +24,8 @@ class SuiviController {
         $user_id = $data['user_id'] ?? 1;
         $date = $data['date'] ?? date('Y-m-d');
         $type = $data['type'];
-        $calories = abs($data['calories'] ?? 0);
-        $description = trim($data['description'] ?? 'Activité');
+        $calories = abs((int)($data['calories'] ?? 0));
+        $description = trim($data['description'] ?? 'Log');
 
         // Contrôle de saisie (Validation)
         if ($type === 'activity' || $type === 'meal') {
@@ -58,17 +62,50 @@ class SuiviController {
             }
 
             if ($this->suivi->createNutrition($active_uid, $date, $calories, $quantite, $aid)) {
-                return ["status" => "success", "message" => "Repas ajouté"];
+                $last_nid = $this->db->lastInsertId();
+                // DYNAMIC IMPACT: Auto-create a weight record reflecting the calorie intake
+                $lastWeight = $this->db->prepare("SELECT poids FROM journal_poids WHERE id_utilisateur = ? ORDER BY date_mesure DESC LIMIT 1");
+                $lastWeight->execute([$active_uid]);
+                $poidsBase = $lastWeight->fetchColumn();
+                
+                if ($poidsBase) {
+                    $newPoids = $poidsBase + ($calories / 7700); 
+                    $this->suivi->createWeight($active_uid, $date, $newPoids, null, $last_nid);
+                }
+                
+                return ["status" => "success", "message" => "Repas ajouté" . ($poidsBase ? " (Poids actualisé)" : "")];
             }
         } elseif ($type === 'activity') {
             if ($this->suivi->createSport($active_uid, $date, $description, $calories)) {
-                return ["status" => "success", "message" => "Activité ajoutée"];
+                $last_sid = $this->db->lastInsertId();
+                // DYNAMIC IMPACT: Auto-create a weight record reflecting the calorie burn
+                $lastWeight = $this->db->prepare("SELECT poids FROM journal_poids WHERE id_utilisateur = ? ORDER BY date_mesure DESC LIMIT 1");
+                $lastWeight->execute([$active_uid]);
+                $poidsBase = $lastWeight->fetchColumn(); 
+                
+                if ($poidsBase) {
+                    $newPoids = $poidsBase - ($calories / 7700); 
+                    $this->suivi->createWeight($active_uid, $date, $newPoids, $last_sid, null);
+                }
+
+                return ["status" => "success", "message" => "Activité ajoutée" . ($poidsBase ? " (Poids actualisé)" : "")];
             }
         }
         elseif ($type === 'weight') {
             $poids = $data['weight'] ?? 0;
-            if ($this->suivi->createWeight($user_id, $date, $poids)) {
-                return ["status" => "success", "message" => "Poids mis à jour"];
+            
+            // Get latest Sport ID for this user
+            $sidRow = $this->db->prepare("SELECT id FROM journal_sport WHERE id_utilisateur = ? ORDER BY date_seance DESC LIMIT 1");
+            $sidRow->execute([$active_uid]);
+            $sid = $sidRow->fetchColumn() ?: null;
+
+            // Get latest Nutrition ID for this user
+            $nidRow = $this->db->prepare("SELECT id FROM journal_nutrition WHERE id_utilisateur = ? ORDER BY date_entree DESC LIMIT 1");
+            $nidRow->execute([$active_uid]);
+            $nid = $nidRow->fetchColumn() ?: null;
+
+            if ($this->suivi->createWeight($active_uid, $date, $poids, $sid, $nid)) {
+                return ["status" => "success", "message" => "Poids mis à jour (lié à l'activité et à la nutrition récentes)"];
             }
         }
         return ["status" => "error", "message" => "Erreur lors de l'ajout"];
