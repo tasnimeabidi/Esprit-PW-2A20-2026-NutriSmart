@@ -15,6 +15,14 @@ CREATE TABLE `utilisateur` (
   `email` varchar(255) NOT NULL,
   `mot_de_passe` varchar(255) NOT NULL,
   `role` varchar(50) NOT NULL DEFAULT 'utilisateur',
+  `is_blocked` tinyint(1) NOT NULL DEFAULT 0,
+  `login_attempts` int(11) NOT NULL DEFAULT 0,
+  `reset_token` varchar(64) DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL,
+  `oauth_provider` varchar(50) DEFAULT NULL,
+  `oauth_id` varchar(255) DEFAULT NULL,
+  `facial_descriptor` text DEFAULT NULL,
+  `blocked_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

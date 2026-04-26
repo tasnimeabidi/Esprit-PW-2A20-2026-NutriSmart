@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Disable native HTML validation for a premium custom experience
+  document.querySelectorAll('form').forEach(form => {
+    form.setAttribute('novalidate', true);
+    form.reset();
+  });
+  
+  // Aggressive clear after 500ms to fight browser persistent autofill
+  setTimeout(() => {
+    document.querySelectorAll('input').forEach(input => {
+      if (input.type !== 'submit' && input.type !== 'button' && input.type !== 'checkbox' && input.type !== 'radio') {
+        input.value = '';
+      }
+    });
+  }, 500);
+
   // --- Configuration ---
   const config = {
     colors: {
@@ -11,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Validators ---
   const validators = {
-    nom: (val) => /^[a-zA-ZÀ-ÿ\s'-]{3,5}$/.test(val.trim()),
+    nom: (val) => /^[a-zA-ZÀ-ÿ\s'-]{3,10}$/.test(val.trim()),
     email: (val) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val.trim()),
-    password: (val) => /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(val),
+    password: (val) => val.trim().length > 0,
     login_password: (val) => val.trim().length > 0,
     age: (val) => {
       const v = parseInt(val);
@@ -33,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorMessages = {
     nom: "Le nom doit contenir au moins 3 lettres.",
     email: "Adresse e-mail invalide.",
-    password: "Min. 8 caractères, 1 majuscule, 1 chiffre.",
+    password: "Mot de passe requis.",
     login_password: "Le mot de passe est requis.",
     age: "Âge requis ",
     poids: "Poids requis ",
@@ -41,104 +56,340 @@ document.addEventListener("DOMContentLoaded", () => {
     message: "Le message doit contenir au moins 10 caractères.",
   };
 
-  // --- Core Functions ---
-
   const updateUI = (input, isValid, message) => {
     const parent = input.parentNode;
-
-    // Apply styles
-    input.style.borderColor = isValid
-      ? config.colors.success
-      : config.colors.error;
-    input.style.boxShadow = `0 0 0 4px ${isValid ? config.colors.successBg : config.colors.errorBg
-      }`;
-    input.style.transition = "all 0.3s ease";
-
-    // Handle Error Message
-    let errorDiv = parent.querySelector(".validation-msg");
-    if (!errorDiv) {
-      errorDiv = document.createElement("div");
-      errorDiv.className = "validation-msg";
-      errorDiv.style.fontSize = "0.78rem";
-      errorDiv.style.marginTop = "0.4rem";
-      errorDiv.style.fontWeight = "600";
-      parent.appendChild(errorDiv);
+    input.style.borderColor = isValid ? config.colors.success : config.colors.error;
+    let msg = parent.querySelector(".validation-msg");
+    if (!msg) {
+      msg = document.createElement("div");
+      msg.className = "validation-msg";
+      msg.style.cssText = "font-size:0.75rem; margin-top:0.3rem; font-weight:500;";
+      parent.appendChild(msg);
     }
-
-    if (isValid) {
-      errorDiv.innerText = "✓ Valide";
-      errorDiv.style.color = config.colors.success;
-    } else {
-      errorDiv.innerText = message;
-      errorDiv.style.color = config.colors.error;
-    }
+    msg.textContent = isValid ? "" : message;
+    msg.style.color = isValid ? config.colors.success : config.colors.error;
   };
 
   const validateInput = (input) => {
     const name = input.getAttribute("name");
-    const id = input.getAttribute("id");
-    const value = input.value;
-
-    // Determine which validator to use
-    let validatorKey = name;
-    if (id === "login_password") validatorKey = "login_password";
-    if (id === "edit_password" && value === "") return true; // Optional password in edit
-
-    if (validators[validatorKey]) {
-      const isValid = validators[validatorKey](value);
-      updateUI(input, isValid, errorMessages[validatorKey]);
+    const val = input.value;
+    if (validators[name]) {
+      const isValid = validators[name](val);
+      updateUI(input, isValid, errorMessages[name]);
       return isValid;
     }
-    return true; // No validator defined, skip
+    return true;
   };
 
-  const initForm = (formId) => {
-    const form = document.getElementById(formId);
-    if (!form) return;
+  // Attach input listeners
+  document.querySelectorAll('form input, form textarea').forEach(input => {
+    input.addEventListener("input", () => validateInput(input));
+    input.addEventListener("blur", () => validateInput(input));
+  });
 
-    const inputs = form.querySelectorAll(
-      'input:not([type="hidden"]), textarea, select'
-    );
+  // --- AGGRESSIVE GLOBAL SUBMIT INTERCEPTOR ---
+  document.addEventListener("submit", (e) => {
+    const form = e.target;
+    const formId = form.id;
+    const ajaxForms = ['loginForm', 'modalLoginForm', 'registerForm', 'profileForm'];
 
-    inputs.forEach((input) => {
-      // Immediate feedback on input
-      input.addEventListener("input", () => validateInput(input));
-      // Also on blur for completeness
-      input.addEventListener("blur", () => validateInput(input));
-    });
+    if (ajaxForms.includes(formId)) {
+      e.preventDefault();
+      e.stopPropagation();
 
-    form.addEventListener("submit", (e) => {
+      console.log("Interception AJAX du formulaire:", formId);
+
+      // Handle Error Containers based on form ID
+      let errorContainer, errorText;
+      if (formId === 'loginForm') {
+        errorContainer = document.getElementById('login-error-container');
+        errorText = document.getElementById('login-error-text');
+      } else if (formId === 'modalLoginForm') {
+        errorContainer = document.getElementById('modal-login-error');
+        errorText = document.getElementById('modal-error-text');
+      } else if (formId === 'registerForm') {
+        errorContainer = document.getElementById('register-error-container');
+        errorText = document.getElementById('register-error-text');
+        successContainer = document.getElementById('register-success-container');
+        successText = document.getElementById('register-success-text');
+      }
+
+      if (errorContainer) errorContainer.style.display = 'none';
+      if (typeof successContainer !== 'undefined' && successContainer) successContainer.style.display = 'none';
+
+      // LOADING STATE
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+
+      // --- NEW: PRE-SUBMIT VALIDATION ---
       let isFormValid = true;
-      inputs.forEach((input) => {
-        if (!validateInput(input)) {
-          isFormValid = false;
+      form.querySelectorAll('input, textarea').forEach(input => {
+        if (validators[input.name]) {
+          if (!validateInput(input)) isFormValid = false;
         }
       });
 
       if (!isFormValid) {
-        e.preventDefault();
-        // Scroll to first error
-        const firstError = form.querySelector(
-          '.validation-msg[style*="rgb(229, 57, 53)"]'
-        );
-        if (firstError)
-          firstError.parentNode.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+        form.classList.add('shake-anim');
+        setTimeout(() => form.classList.remove('shake-anim'), 500);
+        return;
       }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+      }
+      const action = form.getAttribute('action');
+      const formData = new FormData(form);
+
+      fetch(action, {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+          }
+
+          if (data.success) {
+            if (formId === 'registerForm' && typeof successContainer !== 'undefined' && successContainer) {
+              successText.textContent = data.message;
+              successContainer.style.display = 'flex';
+              form.style.display = 'none'; // Cacher le formulaire pour bien voir le message
+              if (errorContainer) errorContainer.style.display = 'none';
+              // Wait a bit before redirecting if redirect is present
+              if (data.redirect) {
+                setTimeout(() => { window.location.href = data.redirect; }, 3000);
+              }
+            } else {
+              window.location.href = data.redirect || 'nutrismart-home.html';
+            }
+          } else {
+            // Error: Show message and highlight inputs
+            if (errorContainer && errorText) {
+              errorText.innerText = data.message || 'Une erreur est survenue.';
+              errorContainer.style.display = 'flex';
+            } else {
+              alert(data.message);
+            }
+
+            // --- SECURITY: Disable button if too many attempts ---
+            const msg = (data.message || '').toLowerCase();
+            if (msg.includes('tentatives') || msg.includes('suspendu')) {
+              const submitBtn = form.querySelector('button[type="submit"]');
+              if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.textContent = 'Accès Blâmé';
+              }
+            }
+
+            // Highlight basic text/email/password inputs in red
+            form.querySelectorAll('input:not([type="checkbox"]):not([type="radio"])').forEach(input => {
+              input.style.borderColor = config.colors.error;
+            });
+
+            form.classList.remove('shake-anim');
+            void form.offsetWidth;
+            form.classList.add('shake-anim');
+          }
+        })
+        .catch(err => {
+          console.error('Fetch Error:', err);
+          alert("Erreur réseau ou réponse invalide du serveur.");
+        });
+    }
+  });
+
+  // Re-enable button and CLEAR styles when typing (smart refresh)
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('input', (e) => {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      
+      // 1. Reset button if it was disabled/blocked
+      if (submitBtn && (submitBtn.disabled || submitBtn.textContent === 'Accès Blâmé' || submitBtn.style.opacity === '0.5')) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+        if (form.id === 'loginForm' || form.id === 'modalLoginForm') submitBtn.textContent = 'Se connecter';
+        else if (form.id === 'registerForm') submitBtn.textContent = "S'inscrire";
+      }
+
+      // 2. Clear error message containers
+      const errorContainers = [
+        document.getElementById('login-error-container'),
+        document.getElementById('modal-login-error'),
+        document.getElementById('register-error-container'),
+        document.getElementById('register-success-container'),
+        document.querySelector('.error-container') // generic
+      ];
+      errorContainers.forEach(c => { if(c) c.style.display = 'none'; });
+
+      // 3. Reset input borders
+      form.querySelectorAll('input').forEach(input => {
+        input.style.borderColor = ''; // return to CSS default
+      });
     });
+  });
+
+  // --- Global Functions ---
+  window.togglePW = (id) => {
+    const input = document.getElementById(id);
+    const btn = input.nextElementSibling;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.classList.add('showing-pw');
+    } else {
+      input.type = 'password';
+      btn.classList.remove('showing-pw');
+    }
   };
 
-  // --- Initialize Forms ---
-  const formsToValidate = [
-    "registerForm",
-    "loginForm",
-    "profileForm",
-    "contactForm",
-    "addForm",
-    "editForm",
-  ];
+  window.openModal = () => {
+    const modal = document.getElementById('loginModal');
+    const overlay = document.getElementById('modalOverlay');
+    if (modal && overlay) {
+      modal.style.display = 'block';
+      overlay.style.display = 'block';
+      setTimeout(() => {
+        modal.classList.add('active');
+        overlay.classList.add('active');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+  };
 
-  formsToValidate.forEach((id) => initForm(id));
+  window.closeModal = () => {
+    const modal = document.getElementById('loginModal');
+    const overlay = document.getElementById('modalOverlay');
+    if (modal && overlay) {
+      modal.classList.remove('active');
+      overlay.classList.remove('active');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+      }, 300);
+      document.body.style.overflow = '';
+    }
+  };
+
+  window.openResetModal = () => {
+    window.closeModal();
+    const modal = document.getElementById('resetModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('active'), 10);
+    }
+  };
+
+  window.closeResetModal = () => {
+    const modal = document.getElementById('resetModal');
+    if (modal) {
+      modal.classList.remove('active');
+      setTimeout(() => modal.style.display = 'none', 300);
+    }
+  };
+
+  window.handleResetSubmit = () => {
+    const emailInput = document.getElementById('reset_email');
+    const email = emailInput ? emailInput.value : '';
+    const resetBtn = document.querySelector('#reset-initial-view button');
+
+    if (email && email.includes('@')) {
+      if (resetBtn) resetBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('email', email);
+
+      fetch('api.php?action=request_reset', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const initialView = document.getElementById('reset-initial-view');
+            const successView = document.getElementById('reset-success-view');
+            const emailDisplay = document.getElementById('reset-email-display');
+            if (initialView && successView) {
+              initialView.style.display = 'none';
+              successView.style.display = 'block';
+              if (emailDisplay) emailDisplay.textContent = email;
+            }
+          } else {
+            alert(data.message || 'Erreur lors de la réinitialisation.');
+            if (resetBtn) resetBtn.disabled = false;
+          }
+        })
+        .catch(() => {
+          alert("Erreur de connexion au serveur.");
+          if (resetBtn) resetBtn.disabled = false;
+        });
+    } else {
+      alert('Veuillez entrer un email valide.');
+    }
+  };
+
+  // Adaptive Navbar & Profile logic
+  fetch('api.php?action=session')
+    .then(res => res.json())
+    .then(data => {
+      if (data.loggedIn) {
+        // --- Populate Profile Page Badges if present ---
+        const profileName = document.getElementById('profile-user-name');
+        const profileEmail = document.getElementById('profile-user-email');
+        if (profileName) profileName.textContent = `👤 ${data.name}`;
+        if (profileEmail) profileEmail.textContent = `📧 ${data.email}`;
+
+        const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+        if (isAdmin) {
+          const userNav = document.getElementById('user-nav-auth');
+          const publicNav = document.getElementById('public-nav-auth');
+          if (userNav) userNav.style.display = 'none';
+          if (publicNav) publicNav.style.display = 'flex';
+        } else if (window.location.pathname.includes('nutrismart-website.html')) {
+          window.location.href = 'nutrismart-home.html';
+        }
+      }
+    })
+    .catch(() => { });
+
+  // Dropdown Logic
+  const dropdownToggle = document.getElementById('dropdownToggle');
+  const userDropdown = document.getElementById('userDropdown');
+  if (dropdownToggle && userDropdown) {
+    dropdownToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('show');
+    });
+    window.addEventListener('click', () => {
+      if (userDropdown && userDropdown.classList.contains('show')) userDropdown.classList.remove('show');
+    });
+  }
+
+  // --- URL Message Handler (for Email Verification, etc.) ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const successMsg = urlParams.get('success');
+  const errorMsg = urlParams.get('error');
+
+  if (successMsg) {
+    const successContainer = document.getElementById('login-success-container');
+    const successText = document.getElementById('login-success-text');
+    if (successContainer && successText) {
+      successText.textContent = successMsg;
+      successContainer.style.display = 'flex';
+    }
+  }
+
+  if (errorMsg) {
+    const errorContainer = document.getElementById('login-error-container');
+    const errorText = document.getElementById('login-error-text');
+    if (errorContainer && errorText) {
+      errorText.textContent = errorMsg;
+      errorContainer.style.display = 'flex';
+    }
+  }
 });

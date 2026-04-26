@@ -8,6 +8,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
     rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <style>
     *,
     *::before,
@@ -488,22 +490,6 @@
       border-radius: 3px;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: none
-      }
-    }
-
-    .content-card {
-      animation: fadeIn .4s ease both;
-    }
-
     /* ── MODAL ── */
     .modal {
       border: 1px solid var(--border);
@@ -602,15 +588,42 @@
         padding: 1.2rem;
       }
     }
-    /* Password Toggle Helpers */
-    .pw-wrapper { position: relative; display: flex; align-items: center; }
-    .pw-wrapper input { padding-right: 2.5rem !important; }
-    .toggle-pw {
-      position: absolute; right: 10px; background: none; border: none;
-      color: var(--muted); cursor: pointer; font-size: 1.1rem;
-      display: grid; place-items: center;
+
+    .toggle-pw:hover {
+      color: var(--primary);
     }
-    .toggle-pw:hover { color: var(--primary); }
+
+    /* Blocked User Styles */
+    .tr-blocked {
+      opacity: 0.6;
+      filter: grayscale(0.4);
+    }
+
+    .status-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.6rem;
+      border-radius: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .status-active {
+      background: rgba(61, 186, 82, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(61, 186, 82, 0.2);
+    }
+
+    .status-blocked {
+      background: rgba(229, 57, 53, 0.1);
+      color: var(--red);
+      border: 1px solid rgba(229, 57, 53, 0.2);
+    }
+
+    .action-btn.btn-warn:hover {
+      color: var(--red);
+      border-color: var(--red);
+    }
   </style>
 </head>
 
@@ -708,6 +721,10 @@
       <a class="nav-item" href="../frontoffice/nutrismart-website.html" style="color:var(--primary)">
         <span class="nav-icon">🌐</span> Voir le site
       </a>
+
+
+    </div>
+    </div>
     </div>
   </aside>
 
@@ -718,10 +735,10 @@
     <div class="page-header">
       <div>
         <div class="page-title">Gestion des Utilisateurs</div>
-        <div class="page-sub">Liste complète des 284 membres inscrits</div>
+        <div class="page-sub" id="count-summary">Liste complète des utilisateurs</div>
       </div>
       <div class="header-actions">
-        <button class="btn-sm btn-ghost">📤 Exporter PDF</button>
+        <button class="btn-sm btn-ghost" onclick="exportToPDF()">📤 Exporter PDF</button>
         <button class="btn-sm btn-green" onclick="document.getElementById('addUserModal').showModal()">+ Nouvel
           utilisateur</button>
       </div>
@@ -734,9 +751,8 @@
       <div class="table-controls">
         <div class="search-wrapper">
           <span class="search-icon">🔍</span>
-          <input type="text" class="search-input" placeholder="Rechercher par nom, email...">
+          <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par nom ...">
         </div>
-
       </div>
 
       <!-- Users Table -->
@@ -754,15 +770,11 @@
         </tbody>
       </table>
 
-      <!-- Pagination -->
+      <!-- Pagination (Visuel) -->
       <div class="pagination">
-        <div class="page-info">Affichage de 1-7 sur 284 utilisateurs</div>
+        <div class="page-info" id="pagination-info">Affichage de 0 utilisateurs</div>
         <div class="page-btns">
           <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn">...</button>
-          <button class="page-btn">41</button>
         </div>
       </div>
 
@@ -848,93 +860,196 @@
   </main>
 
   <script>
+    let allUsers = [];
+
+    // Global helper for avatar colors
+    const getAvatarColor = (name) => {
+      const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      return colors[Math.abs(hash) % colors.length];
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       const tbody = document.getElementById('usersTableBody');
+      const searchInput = document.getElementById('searchInput');
+
+      function renderTable(users) {
+        tbody.innerHTML = '';
+        if (!users || users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;">Aucun utilisateur trouvé.</td></tr>';
+          document.getElementById('pagination-info').textContent = "Affichage de 0 utilisateurs";
+          return;
+        }
+
+        document.getElementById('count-summary').textContent = `Liste complète des ${users.length} membres`;
+        document.getElementById('pagination-info').textContent = `Affichage de ${users.length} utilisateurs`;
+
+        users.forEach(u => {
+          const isBlocked = (parseInt(u.is_blocked) === 1);
+          const tr = document.createElement('tr');
+          if (isBlocked) tr.classList.add('tr-blocked');
+
+          const tdUser = document.createElement('td');
+          const userCell = document.createElement('div');
+          userCell.className = 'user-cell';
+          const avatar = document.createElement('div');
+          avatar.className = 'u-avatar';
+          avatar.style.background = getAvatarColor(u.nom || '');
+          avatar.textContent = (u.nom || '?').charAt(0).toUpperCase();
+          const userInfo = document.createElement('div');
+          const uNameWrap = document.createElement('div');
+          uNameWrap.style.display = 'flex';
+          uNameWrap.style.alignItems = 'center';
+          uNameWrap.style.gap = '0.5rem';
+
+          const uName = document.createElement('div');
+          uName.className = 'u-name';
+          uName.textContent = u.nom;
+          uNameWrap.appendChild(uName);
+
+          if (isBlocked) {
+            const badge = document.createElement('span');
+            badge.className = 'status-badge status-blocked';
+            badge.textContent = 'Suspendu';
+            uNameWrap.appendChild(badge);
+          }
+
+          const uEmail = document.createElement('div');
+          uEmail.className = 'u-email';
+          uEmail.textContent = u.email;
+          userInfo.appendChild(uNameWrap);
+          userInfo.appendChild(uEmail);
+          userCell.appendChild(avatar);
+          userCell.appendChild(userInfo);
+          tdUser.appendChild(userCell);
+
+          const tdId = document.createElement('td');
+          tdId.style.cssText = 'font-family:var(--mono);font-size:.75rem;color:var(--muted)';
+          tdId.textContent = u.id;
+
+          const tdRole = document.createElement('td');
+          tdRole.style.cssText = 'color:var(--white);font-weight:500';
+          tdRole.textContent = u.role;
+
+          const tdAge = document.createElement('td');
+          tdAge.style.color = 'var(--muted)';
+          tdAge.textContent = (u.age || '-') + ' ans';
+
+          const tdAct = document.createElement('td');
+
+          const blockBtn = document.createElement('button');
+          blockBtn.className = 'action-btn ' + (isBlocked ? '' : 'btn-warn');
+          blockBtn.title = isBlocked ? 'Débloquer' : 'Bloquer';
+          blockBtn.textContent = isBlocked ? '🔓' : '🔒';
+          blockBtn.onclick = () => toggleBlock(u.id);
+
+          // Hide block button for Admins
+          if (u.role && u.role.toLowerCase().trim() === 'admin') {
+            blockBtn.style.visibility = 'hidden';
+            blockBtn.style.pointerEvents = 'none';
+          }
+
+          const editBtn = document.createElement('button');
+          editBtn.className = 'action-btn';
+          editBtn.title = 'Modifier';
+          editBtn.textContent = '✏️';
+          editBtn.onclick = () => openEditModal(u.id, u.nom || '', u.email || '', u.role || '', u.age || '');
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'action-btn';
+          delBtn.title = 'Supprimer';
+          delBtn.textContent = '🗑️';
+          delBtn.onclick = () => deleteUser(u.id);
+
+          tdAct.appendChild(blockBtn);
+          tdAct.appendChild(editBtn);
+          tdAct.appendChild(delBtn);
+
+          tr.appendChild(tdUser);
+          tr.appendChild(tdId);
+          tr.appendChild(tdRole);
+          tr.appendChild(tdAge);
+          tr.appendChild(tdAct);
+          tbody.appendChild(tr);
+        });
+      }
 
       function loadUsers() {
         fetch('api_users.php')
-          .then(r => {
-            if (!r.ok) throw new Error('API non trouvée');
-            return r.json();
-          })
+          .then(r => r.json())
           .then(users => {
-            tbody.innerHTML = '';
-            if (!users || users.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;">Aucun utilisateur trouvé.</td></tr>';
-              return;
-            }
-            users.forEach(u => {
-              const tr = document.createElement('tr');
-
-              // Column: User info
-              const tdUser = document.createElement('td');
-              const userCell = document.createElement('div');
-              userCell.className = 'user-cell';
-              const avatar = document.createElement('div');
-              avatar.className = 'u-avatar';
-              avatar.style.background = '#3dba52';
-              avatar.textContent = (u.nom || '?').charAt(0).toUpperCase();
-              const userInfo = document.createElement('div');
-              const uName = document.createElement('div');
-              uName.className = 'u-name';
-              uName.textContent = u.nom;
-              const uEmail = document.createElement('div');
-              uEmail.className = 'u-email';
-              uEmail.textContent = u.email;
-              userInfo.appendChild(uName);
-              userInfo.appendChild(uEmail);
-              userCell.appendChild(avatar);
-              userCell.appendChild(userInfo);
-              tdUser.appendChild(userCell);
-
-              // Column: ID
-              const tdId = document.createElement('td');
-              tdId.style.cssText = 'font-family:var(--mono);font-size:.75rem;color:var(--muted)';
-              tdId.textContent = u.id;
-
-              // Column: Role
-              const tdRole = document.createElement('td');
-              tdRole.style.cssText = 'color:var(--white);font-weight:500';
-              tdRole.textContent = u.role;
-
-              // Column: Age
-              const tdAge = document.createElement('td');
-              tdAge.style.color = 'var(--muted)';
-              tdAge.textContent = (u.age || '-') + ' ans';
-
-              // Column: Actions
-              const tdAct = document.createElement('td');
-
-              const editBtn = document.createElement('button');
-              editBtn.className = 'action-btn';
-              editBtn.title = 'Modifier';
-              editBtn.textContent = '✏️';
-              editBtn.addEventListener('click', function() {
-                openEditModal(u.id, u.nom || '', u.email || '', u.role || '', u.age || '');
-              });
-
-              const delBtn = document.createElement('button');
-              delBtn.className = 'action-btn';
-              delBtn.title = 'Supprimer';
-              delBtn.textContent = '🗑️';
-              delBtn.addEventListener('click', function() {
-                deleteUser(u.id);
-              });
-
-              tdAct.appendChild(editBtn);
-              tdAct.appendChild(delBtn);
-
-              tr.appendChild(tdUser);
-              tr.appendChild(tdId);
-              tr.appendChild(tdRole);
-              tr.appendChild(tdAge);
-              tr.appendChild(tdAct);
-              tbody.appendChild(tr);
-            });
+            allUsers = users;
+            renderTable(allUsers);
           }).catch(e => {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--red);">Le rendu CRUD nécessite l'exécution sur serveur PHP (ex: XAMPP).</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--red);">Erreur lors du chargement des données.</td></tr>`;
           });
       }
+
+      // Live Search
+      searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        if (!term) {
+          renderTable(allUsers);
+          return;
+        }
+        const filtered = allUsers.filter(u =>
+          (u.nom || '').toLowerCase().includes(term) ||
+          (u.email || '').toLowerCase().includes(term)
+        );
+        renderTable(filtered);
+      });
+
+      // Export to PDF
+      window.exportToPDF = function () {
+        if (!allUsers || allUsers.length === 0) return alert("Aucun utilisateur à exporter.");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Styles and Header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(74, 124, 89); // NutriSmart Green
+        doc.text("NutriSmart", 14, 22);
+
+        doc.setFontSize(12);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Rapport de gestion des utilisateurs", 14, 30);
+        doc.text(`Date : ${new Date().toLocaleDateString('fr-FR')}`, 150, 30);
+
+        // Define the table data
+        const head = [["Nom", "Email", "ID Client", "Rôle", "Âge"]];
+        const body = allUsers.map(u => [
+          u.nom,
+          u.email,
+          u.id,
+          u.role,
+          (u.age || '-') + " ans"
+        ]);
+
+        // Generate Table
+        doc.autoTable({
+          startY: 40,
+          head: head,
+          body: body,
+          styles: { font: "helvetica", fontSize: 10 },
+          headStyles: { fillColor: [74, 124, 89], textColor: 255 },
+          alternateRowStyles: { fillColor: [245, 247, 249] },
+          margin: { top: 40 }
+        });
+
+        doc.save(`NutriSmart_Utilisateurs_${new Date().toISOString().split('T')[0]}.pdf`);
+      };
+
+      window.toggleBlock = function (id) {
+        fetch('api_users.php?action=toggleBlock&id=' + id)
+          .then(r => r.json())
+          .then(res => {
+            if (res.success) loadUsers();
+            else alert('Erreur : ' + res.message);
+          });
+      };
 
       window.deleteUser = function (id) {
         if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${id} ?`)) {
@@ -943,11 +1058,9 @@
             .then(res => {
               if (res.success) loadUsers();
               else alert('Erreur lors de la suppression.');
-            }).catch(() => alert("Veuillez lancer votre serveur local pour utiliser le backend."));
+            });
         }
       }
-
-      loadUsers();
 
       window.openEditModal = function (id, nom, email, role, age) {
         document.getElementById('edit_id').value = id;
@@ -959,55 +1072,61 @@
         document.getElementById('editModal').showModal();
       };
 
-      // Create
+      fetch('session_check.php')
+        .then(r => r.json())
+        .then(data => {
+          if (data.loggedIn) {
+            document.getElementById('admin-display-name').textContent = data.name;
+            const adminCircle = document.getElementById('admin-avatar-initial');
+            adminCircle.textContent = data.name.charAt(0).toUpperCase();
+            adminCircle.style.background = getAvatarColor(data.name);
+          }
+        });
+
+      loadUsers();
+
+      // Form Submits
       document.getElementById('addForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const fd = new FormData(this);
-        fetch('api_users.php?action=create', { method: 'POST', body: fd })
+        fetch('api_users.php?action=create', { method: 'POST', body: new FormData(this) })
           .then(r => r.json())
           .then(res => {
             if (res.success) {
-              alert('Utilisateur créé avec succès');
               document.getElementById('addUserModal').close();
               this.reset();
               loadUsers();
-            } else {
-              alert('Erreur : ' + res.message);
-            }
+            } else alert('Erreur : ' + res.message);
           });
       });
 
       document.getElementById('editForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const formData = new FormData(this);
-
-        fetch('api_users.php?action=update', {
-          method: 'POST',
-          body: formData
-        })
+        fetch('api_users.php?action=update', { method: 'POST', body: new FormData(this) })
           .then(r => r.json())
           .then(res => {
             if (res.success) {
               document.getElementById('editModal').close();
               loadUsers();
-            } else {
-              alert('Erreur: ' + (res.message || 'Mise à jour échouée'));
-            }
-          }).catch(err => {
-            alert('Erreur réseau. Lancez le serveur local.');
+            } else alert('Erreur');
           });
       });
     });
-    // Load real admin info from session
-    fetch('../frontoffice/get_session.php')
-      .then(r => r.json())
-      .then(data => {
-        if (data.loggedIn) {
-          document.getElementById('admin-display-name').textContent = data.name;
-          document.getElementById('admin-avatar-initial').textContent = data.name.charAt(0).toUpperCase();
-        }
-      })
-      .catch(err => console.error('Session error:', err));
+
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+    window.setLang = (l) => { console.log('Lang:', l); };
   </script>
   <script src="../frontoffice/js/validation.js"></script>
 </body>

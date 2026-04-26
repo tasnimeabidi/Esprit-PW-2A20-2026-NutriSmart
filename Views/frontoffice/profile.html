@@ -90,9 +90,9 @@
       </div>
     </a>
     <ul class="nav-links">
-      <li><a href="nutrismart-website.html">Accueil</a></li>
-      <li><a href="profile.html" class="active">Profil</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="nutrismart-website.html" data-i18n="nav_home">Accueil</a></li>
+      <li><a href="profile.html" class="active" data-i18n="nav_profile">Profil</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
     </ul>
     <div class="nav-auth" id="user-nav-auth" style="display: none;">
       <div class="user-dropdown">
@@ -116,32 +116,32 @@
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              Mon Profil
+              <span data-i18n="drop_profile">Mon Profil</span>
             </a>
-            <a href="logout.php" class="dropdown-item logout">
+            <a href="api.php?action=logout" class="dropdown-item logout">
               <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                 <polyline points="16 17 21 12 16 7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
-              Déconnexion
+              <span data-i18n="drop_logout">Déconnexion</span>
             </a>
           </div>
         </div>
       </div>
     </div>
     <div class="nav-auth" id="public-nav-auth">
-      <a href="register.html" class="nav-cta">Commencer gratuitement</a>
+      <a href="register.html" class="nav-cta" data-i18n="nav_cta">Commencer gratuitement</a>
     </div>
   </nav>
 
   <main class="profile-hero">
     <div class="profile-container">
       <header class="profile-header">
-        <p id="profile-welcome-badge" style="display:inline-block; background: rgba(74,124,89,0.2); border: 1px solid rgba(74,124,89,0.5); color: #8fbc8f; font-size: 0.85rem; font-weight: 600; padding: 0.4rem 1.1rem; border-radius: 2rem; letter-spacing: 0.05em; margin-bottom: 1rem;">Bienvenue !</p>
-        <h1>Complétez votre Profil</h1>
-        <p>Quelques informations pour personnaliser votre expérience NutriSmart.</p>
+        <p id="profile-welcome-badge" style="display:inline-block; background: rgba(74,124,89,0.2); border: 1px solid rgba(74,124,89,0.5); color: #8fbc8f; font-size: 0.85rem; font-weight: 600; padding: 0.4rem 1.1rem; border-radius: 2rem; letter-spacing: 0.05em; margin-bottom: 1rem;" data-i18n="prof_welcome">Bienvenue !</p>
+        <h1 data-i18n="prof_title">Complétez votre Profil</h1>
+        <p data-i18n="prof_sub">Quelques informations pour personnaliser votre expérience NutriSmart.</p>
         <div style="margin-top:1rem; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
           <span style="background:rgba(255,255,255,0.1); border-radius:2rem; padding:0.35rem 1rem; font-size:0.85rem; color:white;" id="profile-user-name">👤 Chargement...</span>
           <span style="background:rgba(255,255,255,0.1); border-radius:2rem; padding:0.35rem 1rem; font-size:0.85rem; color:rgba(255,255,255,0.7);" id="profile-user-email">📧 ...</span>
@@ -155,60 +155,98 @@
         <!-- mensurations via process_profile.php en    -->
         <!-- utilisant la clé de session de l'utilisateur.-->
         <!-- ========================================== -->
-        <form method="POST" action="process_profile.php" id="profileForm">
+        <form method="POST" action="api.php?action=update_profile" id="profileForm">
           <div class="form-grid">
             <div class="form-group">
-              <label>Âge</label>
-              <input type="number" name="age" value="" required min="1" max="120" placeholder="Tapez votre age" />
+              <label data-i18n="lbl_age">Âge</label>
+              <input type="number" name="age" value="" required min="1" max="120" placeholder="Tapez votre age" data-i18n-placeholder="ph_age" />
             </div>
             <div class="form-group">
-              <label>Genre</label>
+              <label data-i18n="lbl_gender">Genre</label>
               <select name="genre">
-                <option value="Aucun">Aucun</option>
-                <option value="Homme">Homme</option>
-                <option value="Femme">Femme</option>
+                <option value="Aucun" data-i18n="g_none">Aucun</option>
+                <option value="Homme" data-i18n="g_m">Homme</option>
+                <option value="Femme" data-i18n="g_f">Femme</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Poids Actuel (kg)</label>
-              <input type="number" name="poids" step="0.1" value="" required placeholder="Tapez votre poids" />
+              <label data-i18n="lbl_weight">Poids Actuel (kg)</label>
+              <input type="number" name="poids" step="0.1" value="" required placeholder="Tapez votre poids" data-i18n-placeholder="ph_weight" />
             </div>
             <div class="form-group">
-              <label>Taille (cm)</label>
-              <input type="number" name="taille" value="" required placeholder="Tapez votre taille" />
+              <label data-i18n="lbl_height">Taille (cm)</label>
+              <input type="number" name="taille" value="" required placeholder="Tapez votre taille" data-i18n-placeholder="ph_height" />
             </div>
           </div>
 
           <div class="form-group" style="margin-top: 1.5rem">
-            <label>Objectif Principal</label>
+            <label data-i18n="lbl_goal">Objectif Principal</label>
             <select name="objectif">
-              <option value="aucune">Aucune</option>
-              <option value="Maintien et Tonification">Maintien et Tonification</option>
-              <option value="Perte de poids">Perte de poids</option>
-              <option value="Prise de masse musculaire">Prise de masse musculaire</option>
-              <option value="Santé métabolique">Santé métabolique</option>
+              <option value="aucune" data-i18n="g_none">Aucune</option>
+              <option value="Maintien et Tonification" data-i18n="goal_1">Maintien et Tonification</option>
+              <option value="Perte de poids" data-i18n="goal_2">Perte de poids</option>
+              <option value="Prise de masse musculaire" data-i18n="goal_3">Prise de masse musculaire</option>
+              <option value="Santé métabolique" data-i18n="goal_4">Santé métabolique</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label>Préférences alimentaires</label>
+            <label data-i18n="lbl_pref">Préférences alimentaires</label>
             <select name="preference">
-              <option value="aucune">Aucune</option>
-              <option value="vegetarien">Végétarien</option>
-              <option value="vegan">Vegan</option>
-              <option value="sans-gluten">Sans gluten</option>
-              <option value="sans-lactose">Sans lactose</option>
-              <option value="low-carb">Low carb</option>
+              <option value="aucune" data-i18n="g_none">Aucune</option>
+              <option value="vegetarien" data-i18n="pref_1">Végétarien</option>
+              <option value="vegan" data-i18n="pref_2">Vegan</option>
+              <option value="sans-gluten" data-i18n="pref_3">Sans gluten</option>
+              <option value="sans-lactose" data-i18n="pref_4">Sans lactose</option>
+              <option value="low-carb" data-i18n="pref_5">Low carb</option>
             </select>
           </div>
 
           <div class="btn-update-container">
-            <button type="submit" class="btn-primary btn-small">
+            <button type="submit" class="btn-primary btn-small" data-i18n="btn_save_pref">
               Enregistrer les préférences &rarr;
             </button>
           </div>
+          </div>
         </form>
       </div>
+
+      <!-- Section: Reconnaissance Faciale (Face ID) -->
+      <div id="face-id-section" class="form-card profile-card" style="margin-top: 2rem; background: rgba(255,255,255,0.85); display: none;">
+        <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: #1a2f21;">
+          <svg style="width:24px; vertical-align:middle; margin-right:8px; color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span data-i18n="face_title">Sécurité Biométrique (Face ID)</span>
+        </h2>
+        
+        <div style="text-align: center; padding: 1rem;">
+          <p style="color:#64748b; margin-bottom: 1.5rem; font-size: 0.95rem;" data-i18n="face_desc">Associez votre visage à votre compte NutriSmart pour vous connecter d'un simple regard sans mot de passe.</p>
+          
+          <div id="face-id-container" style="display: flex; flex-direction: column; align-items: center;">
+            <div id="face-setup-view">
+              <video id="enrollVideo" width="320" height="240" autoplay muted style="border-radius: 12px; background: #000; margin-bottom: 1rem; border: 2px solid var(--primary); object-fit: cover;"></video>
+              <div id="enrollStatus" style="font-weight: 600; margin-bottom: 1rem; color: #333;" data-i18n="face_ready">Prêt à configurer.</div>
+              <button id="btnEnroll" type="button" class="btn-primary btn-small" style="width: 100%; max-width: 320px; margin-top: 1rem;" onclick="enrollFace('enrollVideo', 'enrollStatus', 'btnEnroll')" data-i18n="btn_face_enable">Activer Face ID</button>
+            </div>
+            
+            <div id="face-manage-view" style="display: none; width: 100%; max-width: 320px;">
+              <div style="background: rgba(61, 186, 82, 0.1); padding: 1.5rem; border-radius: 12px; text-align: center; border: 1px dashed var(--primary); margin-bottom: 1rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                <div style="font-weight: 700; color: #1a2f21;" data-i18n="face_enabled">Face ID est activé</div>
+                <div style="font-size: 0.8rem; color: #64748b;" data-i18n="face_secured">Votre compte est sécurisé par biométrie.</div>
+              </div>
+              <div id="deleteStatus" style="font-weight: 600; margin-bottom: 1rem; color: #333; text-align: center;"></div>
+              <div style="display: flex; gap: 0.8rem; justify-content: center;">
+                <button type="button" class="btn-sm" style="flex: 1; background: #f2994a; color: white; border: none; border-radius: 0.8rem; padding: 0.6rem; cursor: pointer; font-weight: 700;" onclick="document.getElementById('face-manage-view').style.display='none'; document.getElementById('face-setup-view').style.display='block';" data-i18n="btn_edit">✏️ Modifier</button>
+                <button id="btnDeleteFace" type="button" class="btn-sm" style="flex: 1; background: #e53935; color: white; border: none; border-radius: 0.8rem; padding: 0.6rem; cursor: pointer; font-weight: 700;" onclick="deleteFaceID('deleteStatus', 'btnDeleteFace')" data-i18n="btn_del">🗑️ Supprimer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
   <!-- FOOTER -->
@@ -318,44 +356,168 @@
         <a href="#">CGU</a>
         <a href="contact.html">Contact</a>
       </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span>Français</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="lang-popover" id="langPopover">
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+      </div>
     </div>
   </footer>
   <script src="js/validation.js"></script>
   <script>
-    // Adaptive navbar + pre-fill user info
     const dropdownToggle = document.getElementById('dropdownToggle');
-    const userDropdown   = document.getElementById('userDropdown');
+    const userDropdown = document.getElementById('userDropdown');
+
     if (dropdownToggle && userDropdown) {
+      // Toggle dropdown
       dropdownToggle.addEventListener('click', (e) => {
         e.stopPropagation();
-        userDropdown.classList.toggle('show');
+        const isShow = userDropdown.classList.contains('show');
+        if (isShow) {
+          userDropdown.classList.remove('show');
+          userDropdown.style.display = 'none';
+        } else {
+          userDropdown.classList.add('show');
+          userDropdown.style.display = 'block';
+        }
       });
-      window.addEventListener('click', () => userDropdown.classList.remove('show'));
+
+      // Close dropdown when clicking outside
+      window.addEventListener('click', () => {
+        userDropdown.classList.remove('show');
+        userDropdown.style.display = 'none';
+      });
     }
 
-    fetch('get_session.php')
-      .then(r => r.json())
+    // AJAX fetch session info
+    fetch('api.php?action=session')
+      .then(response => response.json())
       .then(data => {
         if (data.loggedIn) {
-          document.getElementById('user-nav-auth').style.display = 'flex';
-          document.getElementById('public-nav-auth').style.display = 'none';
-          document.getElementById('user-name-text').textContent  = data.name;
-          document.getElementById('dropdown-name').textContent   = data.name;
-          document.getElementById('user-initial').textContent    = data.name.charAt(0);
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          
+          if (!isAdmin) {
+            document.getElementById('user-nav-auth').style.display = 'flex';
+            document.getElementById('public-nav-auth').style.display = 'none';
+            document.getElementById('user-name-text').textContent = data.name;
+          } else {
+            document.getElementById('user-nav-auth').style.display = 'none';
+            document.getElementById('public-nav-auth').style.display = 'flex';
+          }
+
+          // Apply consistent dynamic color based on name
+          const getAvatarColor = (name) => {
+            const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+          };
+
+          const userCircle = document.getElementById('user-initial');
+          if (userCircle) {
+            userCircle.style.background = getAvatarColor(data.name);
+            userCircle.textContent = data.name.charAt(0).toUpperCase();
+          }
+
+          document.getElementById('dropdown-name').textContent = data.name;
           document.getElementById('user-email-text').textContent = data.email;
-          // Pre-fill welcome header
-          const firstName = data.name.split(' ')[0];
-          document.getElementById('profile-welcome-badge').textContent = '✨ Bienvenue, ' + firstName + ' !';
-          document.getElementById('profile-user-name').textContent  = '👤 ' + data.name;
-          document.getElementById('profile-user-email').textContent = '📧 ' + data.email;
+
+          // Pre-fill welcome header (specific to profile page)
+          const welcomeBadge = document.getElementById('profile-welcome-badge');
+          if (welcomeBadge) {
+            const firstName = data.name.split(' ')[0];
+            welcomeBadge.textContent = '✨ Bienvenue, ' + firstName + ' !';
+          }
+          const profileName = document.getElementById('profile-user-name');
+          if (profileName) profileName.textContent = '👤 ' + data.name;
+          const profileEmail = document.getElementById('profile-user-email');
+          if (profileEmail) profileEmail.textContent = '📧 ' + data.email;
+
+          // --- Verification Message Handling ---
+          const params = new URLSearchParams(window.location.search);
+          if (params.has('verified')) {
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = "background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #27ae60; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600;";
+            successMsg.setAttribute('data-i18n', 'msg_verified');
+            successMsg.textContent = "✅ Compte activé avec succès ! Bienvenue chez NutriSmart. Veuillez compléter votre profil.";
+            const container = document.querySelector('.profile-container');
+            if (container) container.prepend(successMsg);
+          }
+
+          // Show Bio security section only if logged in
+          const faceSection = document.getElementById('face-id-section');
+          if (faceSection) {
+            faceSection.style.display = 'block';
+            if (data.hasFaceId) {
+              document.getElementById('face-setup-view').style.display = 'none';
+              document.getElementById('face-manage-view').style.display = 'block';
+            } else {
+              document.getElementById('face-setup-view').style.display = 'block';
+              document.getElementById('face-manage-view').style.display = 'none';
+            }
+          }
+
         } else {
-          // Not logged in — show public nav button
           document.getElementById('public-nav-auth').style.display = 'flex';
           document.getElementById('user-nav-auth').style.display = 'none';
+
+          // Ensure Bio security section is hidden if not logged in
+          const faceSection = document.getElementById('face-id-section');
+          if (faceSection) faceSection.style.display = 'none';
         }
       })
       .catch(err => console.error('Erreur session:', err));
-  </script>
-</body>
 
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+
+  </script>
+    <script src="js/translations.js"></script>
+    <script>
+      // Monkey patch setLang for placeholders logic
+      const originalSetLang = window.setLang;
+      if (originalSetLang) {
+        window.setLang = (lang) => {
+          originalSetLang(lang);
+          // Apply translations to placeholders
+          document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (translations && translations[lang] && translations[lang][key]) {
+              el.setAttribute('placeholder', translations[lang][key]);
+            }
+          });
+        }
+        // initial trigger for placeholders
+        const savedLang = localStorage.getItem('preferred_lang') || 'fr';
+        window.setLang(savedLang);
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="js/face-auth.js"></script>
+  </body>
 </html>

@@ -897,9 +897,12 @@
     </a>
 
     <div style="margin-top:auto;padding-top:1.5rem">
-      <a class="nav-item" href="nutrismart-website.html" style="color:var(--primary)">
+      <a class="nav-item" href="../frontoffice/nutrismart-website.html" style="color:var(--primary)">
         <span class="nav-icon">🌐</span> Voir le site
       </a>
+
+    </div>
+    </div>
     </div>
   </aside>
 
@@ -1036,27 +1039,29 @@
               </tr>
             </thead>
             <tbody id="dashUsersBody">
-              <tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Chargement...</td></tr>
+              <tr>
+                <td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Chargement...</td>
+              </tr>
             </tbody>
           </table>
 
           <script>
-            (function() {
+            (function () {
               var tbody = document.getElementById('dashUsersBody');
               fetch('api_users.php')
-                .then(function(r){ return r.json(); })
-                .then(function(users) {
+                .then(function (r) { return r.json(); })
+                .then(function (users) {
                   tbody.innerHTML = '';
                   var list = users.slice(0, 5);
                   if (!list.length) {
                     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--muted)">Aucun utilisateur.</td></tr>';
                     return;
                   }
-                  list.forEach(function(u) {
+                  list.forEach(function (u) {
                     var pw = u.password_hash || u.mot_de_passe || '';
                     var tr = document.createElement('tr');
                     tr.innerHTML =
-                      '<td><div class="user-cell"><div class="u-avatar" style="background:#3dba52">' + (u.nom||'?').charAt(0).toUpperCase() + '</div>' +
+                      '<td><div class="user-cell"><div class="u-avatar" style="background:#3dba52">' + (u.nom || '?').charAt(0).toUpperCase() + '</div>' +
                       '<div><div class="u-name">' + u.nom + '</div><div class="u-email">' + u.email + '</div></div></div></td>' +
                       '<td><span class="status-pill s-active">' + u.role + '</span></td>' +
                       '<td style="font-family:var(--mono);font-size:0.62rem;color:var(--primary);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + pw + '">' + (pw ? pw : '••••••••') + '</td>' +
@@ -1065,7 +1070,7 @@
                     tbody.appendChild(tr);
                   });
                 })
-                .catch(function() {
+                .catch(function () {
                   tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--muted)">Requiert le serveur XAMPP.</td></tr>';
                 });
             })();
@@ -1320,16 +1325,58 @@
         }, 600);
       });
     });
+    // Global helper for avatar colors
+    const getAvatarColor = (name) => {
+      const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      return colors[Math.abs(hash) % colors.length];
+    };
+
     // Load real admin info from session
-    fetch('../frontoffice/get_session.php')
-      .then(r => r.json())
+    const sessionUrl = 'session_check.php';
+    fetch(sessionUrl)
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(data => {
+        console.log('[Dashboard] Session response:', data);
         if (data.loggedIn) {
-          document.getElementById('admin-display-name').textContent = data.name;
-          document.getElementById('admin-avatar-initial').textContent = data.name.charAt(0).toUpperCase();
+          const nameEl = document.getElementById('admin-display-name');
+          const circleEl = document.getElementById('admin-avatar-initial');
+          if (nameEl) nameEl.textContent = data.name;
+          if (circleEl) {
+            circleEl.textContent = data.name.charAt(0).toUpperCase();
+            circleEl.style.background = getAvatarColor(data.name);
+          }
+        } else {
+          console.warn('[Dashboard] Session not found - user not logged in or session expired');
+          if (document.getElementById('admin-display-name')) {
+            document.getElementById('admin-display-name').textContent = 'Non connecté';
+          }
         }
       })
-      .catch(err => console.error('Session error:', err));
+      .catch(err => {
+        console.error('[Dashboard] Session fetch error:', err);
+        document.getElementById('admin-display-name').textContent = 'Erreur session';
+      });
+
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+    window.setLang = (l) => { console.log('Lang:', l); };
   </script>
 </body>
 

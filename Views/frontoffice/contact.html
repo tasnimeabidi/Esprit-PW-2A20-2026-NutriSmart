@@ -167,7 +167,7 @@
               </svg>
               Mon Profil
             </a>
-            <a href="logout.php" class="dropdown-item logout">
+            <a href="api.php?action=logout" class="dropdown-item logout">
               <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -353,10 +353,29 @@
         <a href="#">CGU</a>
         <a href="contact.html">Contact</a>
       </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span>Français</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="lang-popover" id="langPopover">
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+      </div>
     </div>
   </footer>
   <script src="js/validation.js"></script>
   <script>
+    const dropdownToggle = document.getElementById('dropdownToggle');
+    const userDropdown = document.getElementById('userDropdown');
+
     if (dropdownToggle && userDropdown) {
       // Toggle dropdown
       dropdownToggle.addEventListener('click', (e) => {
@@ -378,20 +397,65 @@
       });
     }
 
-    // AJAX fetch session info (Adaptive Navbar)
-    fetch('get_session.php')
+    // AJAX fetch session info
+    fetch('api.php?action=session')
       .then(response => response.json())
       .then(data => {
         if (data.loggedIn) {
-          document.getElementById('user-nav-auth').style.display = 'flex';
-          document.getElementById('public-nav-auth').style.display = 'none';
-          document.getElementById('user-name-text').textContent = data.name;
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          
+          if (!isAdmin) {
+            document.getElementById('user-nav-auth').style.display = 'flex';
+            document.getElementById('public-nav-auth').style.display = 'none';
+            document.getElementById('user-name-text').textContent = data.name;
+          } else {
+            document.getElementById('user-nav-auth').style.display = 'none';
+            document.getElementById('public-nav-auth').style.display = 'flex';
+          }
+
+          // Apply consistent dynamic color based on name
+          const getAvatarColor = (name) => {
+            const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+          };
+
+          const userCircle = document.getElementById('user-initial');
+          if (userCircle) {
+            userCircle.style.background = getAvatarColor(data.name);
+            userCircle.textContent = data.name.charAt(0).toUpperCase();
+          }
+
           document.getElementById('dropdown-name').textContent = data.name;
-          document.getElementById('user-initial').textContent = data.name.charAt(0);
           document.getElementById('user-email-text').textContent = data.email;
+        } else {
+          document.getElementById('public-nav-auth').style.display = 'flex';
+          document.getElementById('user-nav-auth').style.display = 'none';
         }
       })
       .catch(err => console.error('Erreur session:', err));
+
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+
+    window.setLang = (lang) => {
+      console.log('Language changed to:', lang);
+    };
   </script>
 </body>
 

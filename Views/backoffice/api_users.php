@@ -2,6 +2,12 @@
 require_once __DIR__ . '/../../controllers/UserController.php';
 header('Content-Type: application/json');
 
+if (session_status() === PHP_SESSION_NONE) session_start();
+if (!isset($_SESSION['user_id']) || strtolower(trim($_SESSION['role'] ?? '')) !== 'admin') {
+    echo json_encode(['success' => false, 'message' => 'Accès non autorisé. Réservé aux administrateurs.']);
+    exit;
+}
+
 $controller = new UserController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -9,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($_GET['action'] === 'delete' && isset($_GET['id'])) {
             $success = $controller->deleteUser($_GET['id']);
             echo json_encode(['success' => $success]);
+            exit;
+        } else if ($_GET['action'] === 'toggleBlock' && isset($_GET['id'])) {
+            $result = $controller->toggleUserBlock($_GET['id']);
+            echo json_encode($result);
             exit;
         }
     }
