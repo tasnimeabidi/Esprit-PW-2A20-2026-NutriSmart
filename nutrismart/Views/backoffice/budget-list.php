@@ -1,42 +1,14 @@
 <?php
-require_once '../../Services/BudgetService.php';
-require_once '../../Services/UserService.php';
+/**
+ * Budget List View - Pure presentation layer
+ * This file should only contain HTML and minimal PHP for displaying data
+ * All business logic is handled by BudgetController
+ */
 
-$budgetService = new BudgetService();
-$userService = new UserService();
-
-// Budget CRUD via POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $isAjax = isset($_POST['ajax']) && $_POST['ajax'] === '1';
-        
-        switch ($_POST['action']) {
-            case 'create':
-            case 'update':
-                $userId = $_POST['user_id_select'] ?? $_POST['user_id'];
-                $success = $budgetService->setBudget($userId, $_POST['montant']);
-                if ($isAjax) {
-                    // For AJAX requests, return success status instead of redirecting
-                    echo $success ? 'success' : 'error';
-                    exit;
-                }
-                break;
-            case 'delete':
-                $budgetService->deleteBudget($_POST['user_id']);
-                if ($isAjax) {
-                    echo 'success';
-                    exit;
-                }
-                break;
-        }
-        // For non-AJAX requests, redirect as before
-        header('Location: budget-admin.php');
-        exit;
-    }
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-
-$budgets = $budgetService->getAllBudgets();
-$users = $userService->getAllUsers();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -45,14 +17,13 @@ $users = $userService->getAllUsers();
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NutriSmart — Budget & Courses</title>
 
- 
   <link rel="stylesheet" href="../../css/mp-dashboard.css" />
   <link rel="stylesheet" href="backoffice-shell.css" />
 </head>
 
 <body class="bo-shell-body">
 
-  
+  <!-- Top Navigation Bar -->
   <header class="topbar">
     <a href="nutrismart-dashboard.html" class="topbar-logo">
       <span style="color:#3dba52">Nutri</span><span style="color:#8bc34a">Smart</span>
@@ -72,7 +43,7 @@ $users = $userService->getAllUsers();
     </div>
   </header>
 
-  
+  <!-- Sidebar Navigation -->
   <aside class="bo-admin-sidebar" aria-label="Navigation administration">
     <div class="nav-section-label">Principal</div>
 
@@ -130,11 +101,12 @@ $users = $userService->getAllUsers();
     </div>
   </aside>
 
-  
+  <!-- Main Content Area -->
   <main class="bo-shell-main">
     <div class="app app--embed-dash">
       <div class="main dash-workspace">
 
+        <!-- Page Header -->
         <header class="bo-progression-head">
           <div>
             <h1 class="serif">Budget & Courses</h1>
@@ -147,6 +119,20 @@ $users = $userService->getAllUsers();
           </div>
         </header>
 
+        <!-- Success/Error Messages -->
+        <?php if (isset($_SESSION['success'])): ?>
+          <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            <?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
+          </div>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error'])): ?>
+          <div class="alert alert-error" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            <?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+          </div>
+        <?php endif; ?>
+
+        <!-- Metrics Cards -->
         <section class="metrics-row">
           <div class="metric-card border-forest">
             <div>
@@ -170,6 +156,7 @@ $users = $userService->getAllUsers();
           </div>
         </section>
 
+        <!-- Budgets Table -->
         <section class="panel-card" style="margin-top:20px;">
           <h3 class="serif">Suivi des budgets utilisateurs</h3>
 
@@ -184,27 +171,34 @@ $users = $userService->getAllUsers();
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($budgets as $budget): ?>
-              <tr>
-                <td><?php echo htmlspecialchars($budget['user_nom']); ?></td>
-                <td>
-                  <span class="budget-amount" data-user-id="<?php echo $budget['id_utilisateur']; ?>" onclick="editBudgetInline(this)"><?php echo htmlspecialchars($budget['montant']); ?></span> TND
-                </td>
-                <td><?php echo htmlspecialchars($budget['total_depense']); ?> TND</td>
-                <td style="color:<?php echo $budget['total_depense'] > $budget['montant'] ? 'red' : 'green'; ?>;">
-                  <?php echo $budget['total_depense'] > $budget['montant'] ? 'Dépassement' : 'OK'; ?>
-                </td>
-                <td>
-                  <button class="btn-sm btn-ghost" onclick="triggerInlineEdit(<?php echo $budget['id_utilisateur']; ?>)">Modifier</button>
-                  <button class="btn-sm btn-ghost" style="color: red;" onclick="deleteBudget(<?php echo $budget['id_utilisateur']; ?>, '<?php echo htmlspecialchars($budget['user_nom']); ?>')">Supprimer</button>
-                  <button class="btn-ghost" onclick="viewPurchases(<?php echo $budget['id_utilisateur']; ?>)">Voir achats</button>
-                </td>
-              </tr>
-              <?php endforeach; ?>
+              <?php if (empty($budgets)): ?>
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 2rem;">Aucun budget trouvé</td>
+                </tr>
+              <?php else: ?>
+                <?php foreach ($budgets as $budget): ?>
+                <tr>
+                  <td><?php echo htmlspecialchars($budget['user_nom'] . ' ' . $budget['user_prenom']); ?></td>
+                  <td>
+                    <span class="budget-amount" data-user-id="<?php echo $budget['id_utilisateur']; ?>" onclick="editBudgetInline(this)"><?php echo htmlspecialchars($budget['montant']); ?></span> TND
+                  </td>
+                  <td><?php echo htmlspecialchars($budget['total_depense']); ?> TND</td>
+                  <td style="color:<?php echo $budget['total_depense'] > $budget['montant'] ? 'red' : 'green'; ?>;">
+                    <?php echo $budget['total_depense'] > $budget['montant'] ? 'Dépassement' : 'OK'; ?>
+                  </td>
+                  <td>
+                    <button class="btn-sm btn-ghost" onclick="triggerInlineEdit(<?php echo $budget['id_utilisateur']; ?>)">Modifier</button>
+                    <button class="btn-sm btn-ghost" style="color: red;" onclick="deleteBudget(<?php echo $budget['id_utilisateur']; ?>, '<?php echo htmlspecialchars($budget['user_nom'] . ' ' . $budget['user_prenom']); ?>')">Supprimer</button>
+                    <button class="btn-ghost" onclick="viewPurchases(<?php echo $budget['id_utilisateur']; ?>)">Voir achats</button>
+                  </td>
+                </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </section>
 
+        <!-- Inline Editing Styles -->
         <style>
           .budget-amount {
             cursor: pointer;
@@ -229,6 +223,7 @@ $users = $userService->getAllUsers();
           }
         </style>
 
+        <!-- Purchases Section (Hidden by default) -->
         <section class="panel-card" id="purchases-section" style="display:none; margin-top:20px;">
           <h3 class="serif">Achats de l'utilisateur: <span id="user-name"></span></h3>
           <table class="bo-prog-users-table">
@@ -248,6 +243,74 @@ $users = $userService->getAllUsers();
       </div>
     </div>
   </main>
+
+  <!-- Budget Modal -->
+  <div id="budget-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; width: 400px; max-width: 90%;">
+      <h2 id="modal-title" style="margin-top: 0; color: #3dba52;">Ajouter un budget</h2>
+      <form id="modal-form" method="POST" action="budget-admin.php">
+        <input type="hidden" id="action" name="action" value="create">
+        <input type="hidden" id="user_id" name="user_id" value="">
+        <div style="margin-bottom: 1rem;">
+          <label for="user_select" style="display: block; margin-bottom: 0.5rem;">Utilisateur</label>
+          <select id="user_select" name="user_id_select" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Sélectionner un utilisateur</option>
+            <?php foreach ($users as $user): ?>
+              <option value="<?php echo $user['id_utilisateur']; ?>"><?php echo htmlspecialchars($user['nom'] . ' ' . $user['prenom']); ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="montant" style="display: block; margin-bottom: 0.5rem;">Budget (TND)</label>
+          <input type="number" id="montant" name="montant" step="0.01" min="0" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+          <button type="button" onclick="closeModal()" style="padding: 0.5rem 1rem; border: none; background: #ccc; border-radius: 4px; cursor: pointer;">Annuler</button>
+          <button type="submit" style="padding: 0.5rem 1rem; border: none; background: #3dba52; color: white; border-radius: 4px; cursor: pointer;">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Purchase Edit Modal -->
+  <div id="purchase-edit-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:12px; padding:2rem; width:420px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
+      <h3 class="serif" style="margin-top:0;">Modifier achat</h3>
+      <form id="edit-purchase-form" onsubmit="return submitPurchaseEdit()" style="display:grid; gap:1rem;">
+        <input type="hidden" id="edit-purchase-id" name="purchase_id" value="">
+        <div style="display:grid; gap:0.5rem;">
+          <label for="edit-quantite">Quantité</label>
+          <input id="edit-quantite" name="quantite" type="number" min="1" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:4px;">
+        </div>
+        <div style="display:grid; gap:0.5rem;">
+          <label for="edit-prix-total">Prix total (TND)</label>
+          <input id="edit-prix-total" name="prix_total" type="number" step="0.01" min="0" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:4px;">
+        </div>
+        <div style="display:flex; gap:1rem; justify-content:flex-end;">
+          <button type="button" class="btn-sm btn-ghost" onclick="hidePurchaseEditor()">Annuler</button>
+          <button type="submit" class="btn-sm btn-green">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Purchase Delete Modal -->
+  <div id="purchase-delete-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:12px; padding:2rem; width:400px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
+      <h3 class="serif" style="margin-top:0;">Confirmer la suppression</h3>
+      <p id="delete-purchase-message" style="margin-bottom:1.5rem;">Voulez-vous vraiment supprimer cet achat ?</p>
+      <div style="display:flex; gap:1rem; justify-content:flex-end;">
+        <button type="button" class="btn-sm btn-ghost" onclick="hideDeleteModal()">Annuler</button>
+        <button type="button" class="btn-sm btn-green" onclick="confirmDeletePurchase()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Delete Form -->
+  <form id="delete-form" method="POST" action="budget-admin.php" style="display:none;">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="user_id" value="">
+  </form>
 
   <script>
     let currentPurchasesUserId = null;
@@ -294,30 +357,22 @@ $users = $userService->getAllUsers();
     }
     
     function saveBudget(userId, newAmount, span) {
-      console.log('saveBudget called with userId:', userId, 'newAmount:', newAmount);
       // Create FormData for proper POST submission
       const formData = new FormData();
       formData.append('action', 'update');
       formData.append('user_id', userId);
       formData.append('montant', newAmount);
-      formData.append('ajax', '1'); // Add ajax flag
+      formData.append('ajax', '1');
       
-      fetch('', {
+      fetch('budget-admin.php', {
         method: 'POST',
         body: formData
       })
-      .then(response => {
-        console.log('Response status:', response.status);
-        return response.text();
-      })
+      .then(response => response.text())
       .then(text => {
-        console.log('Response text:', text);
-        // Check if response indicates success
         if (text.includes('success') || text.trim() === '' || text.includes('Budget')) {
-          // Update the span directly without reload
           span.classList.remove('editing');
           span.textContent = parseFloat(newAmount).toFixed(2);
-          console.log('Budget updated successfully');
         } else {
           throw new Error('Unexpected response: ' + text.substring(0, 100));
         }
@@ -422,13 +477,13 @@ $users = $userService->getAllUsers();
         }
       });
     }
+
     // Open budget modal for create or edit
     function openModal(mode, userId = null, montant = '') {
       document.getElementById('modal-title').textContent = mode === 'create' ? 'Ajouter un budget' : 'Modifier un budget';
       document.getElementById('action').value = mode;
       
       if (mode === 'edit') {
-        // For edit mode: set the user_id hidden field and disable the select
         document.getElementById('user_id').value = userId;
         document.getElementById('user_id').required = true;
         document.getElementById('user_select').value = userId;
@@ -436,7 +491,6 @@ $users = $userService->getAllUsers();
         document.getElementById('user_select').required = false;
         document.getElementById('montant').value = montant;
       } else {
-        // For create mode: enable the select and clear the hidden field
         document.getElementById('user_id').value = '';
         document.getElementById('user_id').required = false;
         document.getElementById('user_select').disabled = false;
@@ -464,9 +518,7 @@ $users = $userService->getAllUsers();
 
     // Trigger inline edit from Modifier button
     function triggerInlineEdit(userId) {
-      console.log('triggerInlineEdit called with userId:', userId);
       const span = document.querySelector(`.budget-amount[data-user-id="${userId}"]`);
-      console.log('Found span:', span);
       if (span) {
         editBudgetInline(span);
       } else {
@@ -482,70 +534,6 @@ $users = $userService->getAllUsers();
       }
     });
   </script>
-
-<div id="budget-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="background: white; padding: 2rem; border-radius: 8px; width: 400px; max-width: 90%;">
-    <h2 id="modal-title" style="margin-top: 0; color: #3dba52;">Ajouter un budget</h2>
-    <form id="modal-form" method="POST" action="">
-      <input type="hidden" id="action" name="action" value="create">
-      <input type="hidden" id="user_id" name="user_id" value="">
-      <div style="margin-bottom: 1rem;">
-        <label for="user_select" style="display: block; margin-bottom: 0.5rem;">Utilisateur</label>
-        <select id="user_select" name="user_id_select" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-          <option value="">Sélectionner un utilisateur</option>
-          <?php foreach ($users as $user): ?>
-            <option value="<?php echo $user['id_utilisateur']; ?>"><?php echo htmlspecialchars($user['nom'] . ' ' . $user['prenom']); ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-        <label for="montant" style="display: block; margin-bottom: 0.5rem;">Budget (TND)</label>
-        <input type="number" id="montant" name="montant" step="0.01" min="0" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-      </div>
-      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-        <button type="button" onclick="closeModal()" style="padding: 0.5rem 1rem; border: none; background: #ccc; border-radius: 4px; cursor: pointer;">Annuler</button>
-        <button type="submit" style="padding: 0.5rem 1rem; border: none; background: #3dba52; color: white; border-radius: 4px; cursor: pointer;">Enregistrer</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div id="purchase-edit-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
-  <div style="background:white; border-radius:12px; padding:2rem; width:420px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
-    <h3 class="serif" style="margin-top:0;">Modifier achat</h3>
-    <form id="edit-purchase-form" onsubmit="return submitPurchaseEdit()" style="display:grid; gap:1rem;">
-      <input type="hidden" id="edit-purchase-id" name="purchase_id" value="">
-      <div style="display:grid; gap:0.5rem;">
-        <label for="edit-quantite">Quantité</label>
-        <input id="edit-quantite" name="quantite" type="number" min="1" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:4px;">
-      </div>
-      <div style="display:grid; gap:0.5rem;">
-        <label for="edit-prix-total">Prix total (TND)</label>
-        <input id="edit-prix-total" name="prix_total" type="number" step="0.01" min="0" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:4px;">
-      </div>
-      <div style="display:flex; gap:1rem; justify-content:flex-end;">
-        <button type="button" class="btn-sm btn-ghost" onclick="hidePurchaseEditor()">Annuler</button>
-        <button type="submit" class="btn-sm btn-green">Enregistrer</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div id="purchase-delete-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
-  <div style="background:white; border-radius:12px; padding:2rem; width:400px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
-    <h3 class="serif" style="margin-top:0;">Confirmer la suppression</h3>
-    <p id="delete-purchase-message" style="margin-bottom:1.5rem;">Voulez-vous vraiment supprimer cet achat ?</p>
-    <div style="display:flex; gap:1rem; justify-content:flex-end;">
-      <button type="button" class="btn-sm btn-ghost" onclick="hideDeleteModal()">Annuler</button>
-      <button type="button" class="btn-sm btn-green" onclick="confirmDeletePurchase()">Supprimer</button>
-    </div>
-  </div>
-</div>
-
-<form id="delete-form" method="POST" action="" style="display:none;">
-  <input type="hidden" name="action" value="delete">
-  <input type="hidden" name="user_id" value="">
-</form>
 
 </body>
 </html>

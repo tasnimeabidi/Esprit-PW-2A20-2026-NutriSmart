@@ -18,6 +18,11 @@ class AchatService {
         return $this->db->prepare($sql)->execute([$id]);
     }
 
+    public function updatePurchase($id, $qty, $totalPrice) {
+        $sql = "UPDATE user_achat SET quantite = ?, prix_total = ? WHERE id = ?";
+        return $this->db->prepare($sql)->execute([$qty, $totalPrice, $id]);
+    }
+
     public function getUserHistory($userId) {
         $sql = "SELECT ua.*, a.nom as aliment_nom 
                 FROM user_achat ua 

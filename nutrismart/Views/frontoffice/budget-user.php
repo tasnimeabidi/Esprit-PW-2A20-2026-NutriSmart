@@ -1,5 +1,4 @@
 <?php
-// Check if user ID is provided in URL
 if (!isset($_GET['user_id']) || empty($_GET['user_id'])) {
     die('Erreur: ID utilisateur manquant');
 }
@@ -23,6 +22,15 @@ if (!$user) {
 
 // Get user's budget
 $budget = $budgetService->getBudgetByUserId($user_id);
+
+// Handle case where user has no budget
+if (!$budget && isset($_GET['no_budget'])) {
+    // User tried to access user-achat without budget, show message
+    $noBudgetMessage = "Vous devez d'abord définir un budget pour pouvoir effectuer des achats.";
+} else {
+    $noBudgetMessage = null;
+}
+
 $totalDepenses = $achatService->getTotalDepensesByUserId($user_id);
 
 // Get user's shopping list
@@ -422,6 +430,10 @@ $pourcentage = $budget ? min(100, ($totalDepenses / $budget['montant']) * 100) :
             <div class="alert alert-success">✓ Budget enregistré avec succès !</div>
         <?php elseif (isset($_GET['error'])): ?>
             <div class="alert alert-error">⚠ <?php echo htmlspecialchars($_GET['error']); ?></div>
+        <?php endif; ?>
+
+        <?php if ($noBudgetMessage): ?>
+            <div class="alert alert-error">⚠ <?php echo htmlspecialchars($noBudgetMessage); ?></div>
         <?php endif; ?>
 
         <!-- Budget Form -->
