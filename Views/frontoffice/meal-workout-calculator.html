@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Repas &amp; activité (scanner)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+    <style>
+      :root {
+        /* NutriSmart — aligné sur css/mp-dashboard.css (plateforme) */
+        --forest: #2d5a27;
+        --forest-dark: #1e3d1a;
+        --forest-cta: #1e5631;
+        --green-meal: #4a7c59;
+        --mint: #e8f5e9;
+        --mint-deep: #c8e6c9;
+        --bg: #f7f3ef;
+        --bg-alt: #f8f9fa;
+        --white: #ffffff;
+        --text: #1a1f1c;
+        --txt: #1a1f1c;
+        --muted: #6b7280;
+        --border: #e8ece9;
+        --orange: #f2994a;
+        --shadow-card: 0 4px 24px rgba(45, 90, 39, 0.1);
+        --card: rgba(255, 255, 255, 0.96);
+        --line: rgba(45, 90, 39, 0.18);
+        --accent-warm: #d4a012;
+        /* CTA / accents : vert NutriSmart (pas lime Tailwind) */
+        --grad-cta-start: #1e5631;
+        --grad-cta-end: #2d5a27;
+        --accent-primary: #2d5a27;
+        --accent-secondary: #4a7c59;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        height: 100%;
+        background: var(--bg);
+        color: var(--txt);
+        font-family: Inter, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection {
+        background: rgba(45, 90, 39, 0.18);
+        color: var(--text);
+      }
+
+      .app-wrap {
+        min-height: 100vh;
+        min-height: 100dvh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        width: 100%;
+        max-width: none;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        background: var(--bg);
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(ellipse 75% 55% at 50% 0%, rgba(232, 245, 233, 0.85), transparent 58%),
+          radial-gradient(ellipse 60% 45% at 100% 100%, rgba(200, 230, 201, 0.45), transparent 55%),
+          radial-gradient(circle at 0% 80%, rgba(45, 90, 39, 0.06), transparent 45%);
+      }
+
+      @keyframes appGradientShift {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.65;
+        }
+      }
+
+      .app::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(45, 90, 39, 0.05), transparent 55%),
+          radial-gradient(ellipse 55% 35% at 90% 100%, rgba(30, 86, 49, 0.06), transparent 50%);
+        animation: appGradientShift 16s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .app > * {
+        position: relative;
+        z-index: 2;
+      }
+
+      header.top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(45, 90, 39, 0.12);
+        background: rgba(247, 243, 236, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position: relative;
+        z-index: 50;
+        flex-shrink: 0;
+      }
+
+      .top-btn {
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .top-btn:hover {
+        background: rgba(45, 90, 39, 0.08);
+        color: var(--forest-dark);
+      }
+
+      .hdr-slot {
+        width: 40px;
+        height: 40px;
+        position: relative;
+      }
+
+      .hdr-slot .top-btn {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      a.top-btn {
+        text-decoration: none;
+        display: grid;
+        place-items: center;
+      }
+
+      .steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 16px 22px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+      }
+
+      .steps[hidden] {
+        display: none !important;
+      }
+
+      .step-node {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        font-size: 14px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--muted);
+      }
+
+      .step-node svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+
+      .step-node.active {
+        background: var(--forest-cta);
+        color: var(--white);
+        border-color: var(--forest-cta);
+        box-shadow: 0 2px 12px rgba(45, 90, 39, 0.25);
+      }
+
+      .step-node.past {
+        background: var(--mint);
+        color: var(--forest);
+        border-color: rgba(45, 90, 39, 0.25);
+      }
+
+      .step-line {
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        border-radius: 2px;
+        max-width: 48px;
+        min-width: 12px;
+        overflow: hidden;
+      }
+
+      .step-line-fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--forest-cta), var(--forest));
+        border-radius: 2px;
+        transition: width 0.25s ease;
+      }
+
+      .step-line-fill.on {
+        width: 100%;
+      }
+
+      main {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen--scanner {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 20px 32px;
+        box-sizing: border-box;
+      }
+
+      /* Autres étapes : marges page dans le flux scroll */
+      main > .screen:not(.screen--scanner) {
+        padding: 18px 16px 32px;
+        box-sizing: border-box;
+        flex: 1 0 auto;
+        min-height: 0;
+      }
+
+      .screen[hidden] {
+        display: none !important;
+      }
+
+      .glass {
+        border: 1px solid var(--border);
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 1rem;
+        padding: 22px 18px;
+        box-shadow: var(--shadow-card);
+        color: var(--text);
+      }
+
+      .glass.scanner-hero {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 8px 0 0;
+        backdrop-filter: none;
+        width: 100%;
+        max-width: 28rem;
+        margin: 0 auto;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .camera-badge-wrap {
+        position: relative;
+        width: 104px;
+        height: 104px;
+        margin: 0 auto 26px;
+      }
+
+      .camera-badge-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -18px;
+        border-radius: 32px;
+        background: radial-gradient(circle, rgba(45, 90, 39, 0.2) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .camera-badge {
+        position: relative;
+        z-index: 1;
+        width: 96px;
+        height: 96px;
+        border-radius: 20px;
+        margin: 4px;
+        background: linear-gradient(135deg, var(--grad-cta-start), var(--grad-cta-end));
+        color: var(--white);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0 0 1px rgba(45, 90, 39, 0.2), 0 8px 28px rgba(45, 90, 39, 0.2);
+      }
+
+      .camera-badge svg {
+        width: 46px;
+        height: 46px;
+        display: block;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+        font-size: clamp(28px, 8vw, 38px);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+
+      .text-gradient,
+      .title-em {
+        background-image: linear-gradient(to right, var(--grad-cta-start), var(--grad-cta-end));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .chips {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 0 auto 26px;
+        max-width: 100%;
+      }
+
+      .chips-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .chips-row--center {
+        justify-content: center;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(45, 90, 39, 0.06);
+      }
+
+      .chip-ekg {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--green-meal);
+      }
+
+      .chip-ekg svg {
+        width: 14px;
+        height: 9px;
+        flex-shrink: 0;
+      }
+
+      .chip-ic {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        line-height: 1;
+      }
+      .chip-ic--lime {
+        color: var(--forest);
+      }
+      .chip-ic--orange {
+        color: var(--orange);
+      }
+      .chip-ic--emerald {
+        color: var(--green-meal);
+      }
+
+      .btn {
+        width: 100%;
+        border: 0;
+        border-radius: 16px;
+        padding: 15px 16px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 16px;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-ic {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .btn-ic svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      @keyframes scan-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(45, 90, 39, 0.35);
+        }
+        70% {
+          box-shadow: 0 0 0 20px rgba(45, 90, 39, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(45, 90, 39, 0);
+        }
+      }
+
+      .btn-primary {
+        color: var(--white);
+        background: linear-gradient(90deg, var(--grad-cta-start), var(--grad-cta-end));
+        box-shadow: 0 4px 20px rgba(45, 90, 39, 0.22);
+        border: 0;
+        border-radius: 0.9rem;
+        font-weight: 700;
+      }
+
+      .btn-primary.animate-scan-pulse {
+        animation: scan-pulse 2s infinite;
+      }
+
+      .btn-primary svg {
+        stroke: var(--white);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-ghost {
+        color: var(--forest-dark);
+        border: 1px solid var(--border);
+        background: var(--white);
+        margin-top: 0;
+        border-radius: 0.9rem;
+        font-weight: 700;
+        box-shadow: var(--shadow-card);
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+
+      .btn-ghost:hover {
+        background: var(--mint);
+        border-color: rgba(45, 90, 39, 0.28);
+      }
+
+      .btn-ghost svg {
+        stroke: var(--forest);
+      }
+
+      .btn-row {
+        display: grid;
+        gap: 12px;
+        margin-top: 4px;
+        max-width: 100%;
+      }
+
+      .manual-link {
+        margin: 20px auto 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        line-height: 1.3;
+        font-family: inherit;
+        transition: color 0.15s ease;
+      }
+
+      .manual-link:hover {
+        color: var(--forest);
+      }
+
+      .manual-ico {
+        display: inline-flex;
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--muted);
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 12px;
+        line-height: 1.45;
+      }
+
+      .ocr-status {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 14px;
+        text-align: center;
+        color: var(--text);
+      }
+
+      .progress-outer {
+        height: 8px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+
+      .progress-inner {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--forest-cta), var(--forest));
+        transition: width 0.15s ease;
+      }
+
+      .ing-editor-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .ing-editor-head h1 {
+        margin: 0 0 4px;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      }
+
+      .ing-editor-head .subtitle {
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+        text-align: left;
+      }
+
+      .ing-editor-total {
+        text-align: right;
+        flex-shrink: 0;
+      }
+
+      .ing-editor-total-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        margin-bottom: 2px;
+      }
+
+      .ing-editor-total-kcal {
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--forest-cta);
+        line-height: 1;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      }
+
+      .ing-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 0 0 14px;
+      }
+
+      .ing-card {
+        border-radius: 16px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(45, 90, 39, 0.06);
+      }
+
+      .ing-card-main {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 14px 12px;
+      }
+
+      .ing-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 5px;
+        flex-shrink: 0;
+      }
+
+      .ing-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .ing-title {
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--text);
+        line-height: 1.25;
+      }
+
+      .ing-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+
+      .ing-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .ing-qty-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 2px 8px 2px 4px;
+      }
+
+      .ing-qty-row input {
+        width: 52px;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+        padding: 6px 2px;
+        font-family: inherit;
+      }
+
+      .ing-qty-row input:focus {
+        outline: none;
+      }
+
+      .ing-qty-suf {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .ing-line-kcal {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--forest);
+      }
+
+      .ing-trash {
+        border: 0;
+        padding: 6px;
+        margin: -2px -4px 0 0;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .ing-trash:hover {
+        color: #f87171;
+        background: rgba(248, 113, 113, 0.08);
+      }
+
+      .ing-trash svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .ing-card-footer {
+        height: 3px;
+        background: var(--border);
+      }
+
+      .ing-bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--forest-cta), var(--forest));
+        border-radius: 0 2px 2px 0;
+        transition: width 0.2s ease;
+      }
+
+      .btn-add-ing-toggle {
+        width: 100%;
+        margin-bottom: 14px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 2px dashed rgba(45, 90, 39, 0.35);
+        background: transparent;
+        color: var(--forest);
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+      }
+
+      .btn-add-ing-toggle:hover {
+        background: var(--mint);
+        border-color: var(--forest-cta);
+        color: var(--forest-dark);
+      }
+
+      .btn-add-ing-toggle[hidden] {
+        display: none !important;
+      }
+
+      .ing-add-card {
+        position: relative;
+        background: var(--mint);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px 20px 20px;
+        margin-bottom: 14px;
+      }
+
+      .ing-add-card[hidden] {
+        display: none !important;
+      }
+
+      .ing-add-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        border: 0;
+        padding: 6px 8px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        z-index: 2;
+      }
+
+      .ing-add-close:hover {
+        color: var(--forest);
+      }
+
+      .ing-add-search-wrap {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .ing-add-search-ic {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .ing-add-search-ic svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .ing-add-search {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 14px 14px 44px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--text);
+        font-size: 15px;
+        font-family: inherit;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .ing-add-search::placeholder {
+        color: var(--muted);
+      }
+
+      .ing-add-search:focus {
+        outline: none;
+        border-color: var(--forest-cta);
+        box-shadow: 0 0 0 1px rgba(30, 86, 49, 0.35);
+      }
+
+      .ing-add-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .ing-add-qty-wrap {
+        flex: 1.65;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0 12px 0 14px;
+      }
+
+      .ing-add-qty-inp {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 700;
+        padding: 14px 8px 14px 0;
+        font-family: inherit;
+      }
+
+      .ing-add-qty-inp:focus {
+        outline: none;
+      }
+
+      .ing-add-qty-suf {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .ing-add-btn {
+        flex: 0 0 36%;
+        max-width: 140px;
+        border: 0;
+        border-radius: 12px;
+        background: linear-gradient(90deg, var(--grad-cta-start), var(--grad-cta-end));
+        color: var(--white);
+        font-weight: 800;
+        font-size: 15px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: filter 0.12s ease, transform 0.12s ease;
+      }
+
+      .ing-add-btn:hover {
+        filter: brightness(1.05);
+      }
+
+      .ing-add-btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-valider-repas {
+        margin-top: 4px;
+      }
+
+      /* --- Bilan énergétique (Magic Patterns) --- */
+      #scr-breakdown.bilan-screen {
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        min-height: 0;
+      }
+
+      .bilan-card {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        padding: 8px 4px 16px;
+      }
+
+      .donut-row {
+        display: flex;
+        justify-content: center;
+        margin: 8px 0 20px;
+      }
+
+      .bilan-donut-card .donut {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        padding: 10px;
+        box-sizing: border-box;
+        background: conic-gradient(var(--border) 0% 100%);
+        box-shadow: none;
+        transform-origin: center;
+        will-change: transform, opacity;
+        transition: background 360ms ease;
+      }
+
+      .break-bars {
+        margin: 8px 0 16px;
+      }
+
+      .break-item {
+        margin-bottom: 12px;
+      }
+
+      .break-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .break-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .break-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .break-name span:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .break-bar-bg {
+        height: 10px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+      }
+
+      .break-bar {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--forest-cta), var(--green-meal));
+      }
+
+      .break-kcal {
+        color: var(--forest-cta);
+        font-weight: 800;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .break-bars--bilan .break-ing-name {
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .bilan-title {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: none;
+        color: var(--muted);
+        margin: 0 0 12px;
+      }
+
+      .bilan-hero {
+        text-align: center;
+        margin-bottom: 0;
+      }
+
+      .bilan-total-line {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 6px;
+        line-height: 0.9;
+        filter: drop-shadow(0 2px 12px rgba(45, 90, 39, 0.12));
+      }
+
+      .bilan-total-num {
+        color: var(--forest-dark);
+        letter-spacing: -0.04em;
+        font-size: clamp(2.75rem, 12vw, 3.75rem);
+        font-weight: 900;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      }
+
+      .bilan-total-unit {
+        color: var(--forest-cta);
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 4px;
+        align-self: flex-end;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      }
+
+      .bilan-macros {
+        display: flex;
+        justify-content: center;
+        gap: 1.25rem;
+        margin: 1rem 0 1.25rem;
+        padding: 0;
+      }
+
+      .bilan-macro {
+        flex: 0 0 auto;
+        text-align: center;
+        min-width: 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .bilan-macro-lab {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 500;
+        color: inherit;
+      }
+
+      .bilan-macro-val {
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      .bilan-macro-val--c {
+        color: #2563eb;
+      }
+      .bilan-macro-val--p {
+        color: var(--green-meal);
+      }
+      .bilan-macro-val--f {
+        color: #ca8a04;
+      }
+
+      .bilan-donut-card {
+        border: 1px solid var(--border);
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        border-radius: 1.5rem;
+        padding: 16px 12px 14px;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-card);
+      }
+
+      .donut-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--border);
+      }
+
+      .bilan-donut-flame {
+        position: relative;
+        z-index: 1;
+        font-size: 28px;
+        line-height: 1;
+        opacity: 0.55;
+        filter: drop-shadow(0 1px 4px rgba(45, 90, 39, 0.15));
+      }
+
+      .break-bars--bilan {
+        margin: 4px 0 0;
+        max-height: 220px;
+        overflow-y: auto;
+        padding: 0 2px 4px 0;
+      }
+
+      .break-bars--bilan .break-item {
+        margin-bottom: 14px;
+      }
+
+      .break-bars--bilan .break-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .bilan-insight {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: var(--mint);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 0 0 18px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .bilan-insight-ic {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--forest-cta);
+        color: var(--white);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 900;
+        font-style: normal;
+        font-family: Inter, system-ui, sans-serif;
+        margin-top: 1px;
+      }
+
+      .bilan-insight strong,
+      .bilan-bigm-strong {
+        color: var(--forest-cta);
+        font-weight: 800;
+      }
+
+      .btn-bilan-cta {
+        width: 100%;
+        border: 0;
+        border-radius: 1rem;
+        padding: 16px 20px;
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--white);
+        cursor: pointer;
+        font-family: inherit;
+        background: linear-gradient(90deg, var(--grad-cta-start), var(--grad-cta-end));
+        box-shadow: 0 4px 18px rgba(45, 90, 39, 0.2);
+        transition: filter 0.12s ease, transform 0.12s ease;
+        margin-top: 0;
+      }
+
+      .btn-bilan-cta:hover {
+        filter: brightness(1.04);
+      }
+
+      .btn-bilan-cta:active {
+        transform: scale(0.99);
+      }
+
+      .field {
+        margin-bottom: 12px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .field input {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--text);
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+
+      .sport-page-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0 0 6px;
+        color: var(--text);
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      .sport-hero {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px 16px 18px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .sport-hero-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .sport-hero-ic {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(145deg, var(--grad-cta-start), var(--grad-cta-end));
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(45, 90, 39, 0.18);
+      }
+
+      .sport-hero-ttl {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0 0 4px;
+      }
+
+      .sport-hero-sub {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      .sport-hero-sub strong {
+        color: var(--forest-cta);
+        font-weight: 800;
+      }
+
+      .sport-hero-sub .mp-lime-sp {
+        color: var(--forest-cta);
+        font-weight: 800;
+      }
+
+      .sport-hero-wrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .sport-hero-wlab {
+        font-size: 12px;
+        font-weight: 600;
+        color: #9ca3af;
+      }
+
+      .sport-hero-wval {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        padding: 2px 10px;
+        border-radius: 6px;
+      }
+
+      .sport-w-ctrl {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sport-w-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--forest);
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        padding: 0;
+        font-weight: 600;
+      }
+
+      .sport-w-btn:hover {
+        background: var(--mint);
+        color: var(--forest-dark);
+      }
+
+      .sport-w-range {
+        flex: 1;
+        height: 8px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .sport-w-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--forest-cta);
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(45, 90, 39, 0.25);
+        border: 2px solid var(--white);
+        margin-top: -8px;
+      }
+
+      .sport-w-range::-webkit-slider-runnable-track {
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .sport-w-range::-moz-range-track {
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .sport-w-range::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--forest-cta);
+        cursor: pointer;
+        border: 2px solid var(--white);
+        box-shadow: 0 2px 8px rgba(45, 90, 39, 0.25);
+      }
+
+      .sport-opts-h {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0 0 12px;
+      }
+
+      .sport-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .sport-card {
+        position: relative;
+        min-height: 120px;
+        border-radius: 1.5rem;
+        padding: 12px 10px 14px 12px;
+        background: var(--white);
+        border-width: 1px;
+        border-style: solid;
+        overflow: hidden;
+        box-shadow: var(--shadow-card);
+      }
+
+      .sport-card--g {
+        border-color: rgba(45, 90, 39, 0.35);
+        background: linear-gradient(to bottom right, rgba(232, 245, 233, 0.95), #ffffff);
+        --sc: #2d5a27;
+      }
+      .sport-card--r {
+        border-color: rgba(225, 29, 72, 0.28);
+        background: linear-gradient(to bottom right, rgba(255, 241, 242, 0.95), #ffffff);
+        --sc: #e11d48;
+      }
+      .sport-card--b {
+        border-color: rgba(37, 99, 235, 0.3);
+        background: linear-gradient(to bottom right, rgba(239, 246, 255, 0.95), #ffffff);
+        --sc: #2563eb;
+      }
+      .sport-card--t {
+        border-color: rgba(13, 148, 136, 0.3);
+        background: linear-gradient(to bottom right, rgba(240, 253, 250, 0.95), #ffffff);
+        --sc: #0d9488;
+      }
+      .sport-card--o {
+        border-color: rgba(217, 119, 6, 0.3);
+        background: linear-gradient(to bottom right, rgba(255, 251, 235, 0.95), #ffffff);
+        --sc: #d97706;
+      }
+      .sport-card--p {
+        border-color: rgba(124, 58, 237, 0.28);
+        background: linear-gradient(to bottom right, rgba(250, 245, 255, 0.95), #ffffff);
+        --sc: #7c3aed;
+      }
+
+      .sport-card-emoji {
+        font-size: 18px;
+        line-height: 1;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .sport-card-ring {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        color: var(--sc, #16a34a);
+      }
+
+      .sport-dur {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1.15;
+        margin-bottom: 4px;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      .sport-lab {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        color: var(--sc, #1e5631);
+        line-height: 1.2;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+
+      .sport-metas {
+        font-size: 10px;
+        color: #6b7280;
+        margin-top: 2px;
+      }
+
+      .sport-bottom-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      .btn-sport-new,
+      .btn-sport-share {
+        border: 0;
+        border-radius: 14px;
+        padding: 14px 12px;
+        font-size: 14px;
+        font-weight: 800;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: filter 0.12s ease, transform 0.1s ease;
+      }
+
+      .btn-sport-new {
+        background: var(--white);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-sport-new:hover {
+        background: var(--mint);
+      }
+
+      .btn-sport-share {
+        background: linear-gradient(90deg, var(--grad-cta-start), var(--grad-cta-end));
+        color: var(--white);
+        box-shadow: 0 4px 16px rgba(45, 90, 39, 0.2);
+      }
+
+      .btn-sport-share:hover {
+        filter: brightness(1.05);
+      }
+
+      .camera-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.85);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .camera-modal[hidden] {
+        display: none !important;
+      }
+
+      .camera-modal-box {
+        width: 100%;
+        max-width: 480px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .camera-modal video {
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 16px;
+        background: #000;
+        object-fit: cover;
+        transform: scaleX(1);
+      }
+
+      .camera-modal video.mirror {
+        transform: scaleX(-1);
+      }
+
+      .camera-modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+      }
+
+      .camera-modal .btn-cam-ghost,
+      .camera-modal .btn-cam-ok {
+        flex: 1;
+        border: 0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        font-weight: 800;
+        font-size: 15px;
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      .camera-modal .btn-cam-ghost {
+        background: #2a2a2a;
+        color: #f3f4f6;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .camera-modal .btn-cam-ok {
+        background: linear-gradient(90deg, var(--grad-cta-start), var(--grad-cta-end));
+        color: var(--white);
+        box-shadow: 0 4px 20px rgba(45, 90, 39, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-wrap">
+      <div class="app" id="app">
+        <header class="top">
+          <div class="hdr-slot">
+            <button type="button" class="top-btn" id="hdr-back-app" hidden title="Étape précédente">‹</button>
+            <a class="top-btn" id="hdr-plan" href="plan-repas.html" title="Plan repas">‹</a>
+          </div>
+          <div style="width: 40px" aria-hidden="true"></div>
+        </header>
+
+        <div class="steps" id="step-bar" hidden>
+          <div class="step-node" data-step-i="0" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          </div>
+          <div class="step-line"><div class="step-line-fill" data-line="0"></div></div>
+          <div class="step-node" data-step-i="1" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg>
+          </div>
+          <div class="step-line"><div class="step-line-fill" data-line="1"></div></div>
+          <div class="step-node" data-step-i="2" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+          </div>
+          <div class="step-line"><div class="step-line-fill" data-line="2"></div></div>
+          <div class="step-node" data-step-i="3" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <div class="step-line"><div class="step-line-fill" data-line="3"></div></div>
+          <div class="step-node" data-step-i="4" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+        </div>
+
+        <main>
+          <!-- SCANNER -->
+          <section class="screen screen--scanner" id="scr-scanner">
+            <div class="glass scanner-hero center">
+              <div class="camera-badge-wrap">
+                <div class="camera-badge" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#0f1f0c" d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                    <circle cx="12" cy="13" r="3" fill="#f0fdf4" />
+                  </svg>
+                </div>
+              </div>
+              <h1>Scanner votre repas <span class="title-em">de manière pro</span></h1>
+              <p class="subtitle">Prenez en photo votre plat, on s’occupe du reste.</p>
+              <div class="chips" role="list">
+                <span class="chip" role="listitem"
+                  ><span class="chip-ic chip-ic--lime" aria-hidden="true">⚡</span> Scanner OCR</span
+                >
+                <span class="chip" role="listitem"
+                  ><span class="chip-ic chip-ic--orange" aria-hidden="true">🔥</span> Calcul calories</span
+                >
+                <span class="chip" role="listitem"
+                  ><span class="chip-ic chip-ic--emerald chip-ekg" aria-hidden="true">
+                    <svg viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <path
+                        d="M0 5h3l1.5-3L7 8l2-10 2.5 9L14 2l2.5 3H20"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      /></svg> </span
+                  >Équivalent sport</span
+                >
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-primary animate-scan-pulse" id="btn-camera">
+                  <span class="btn-ic" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                      <circle cx="12" cy="13" r="3" />
+                    </svg>
+                  </span>
+                  Prendre une photo
+                </button>
+                <button type="button" class="btn btn-ghost" id="btn-gallery">
+                  <span class="btn-ic" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 5 17 10" />
+                      <line x1="12" y1="5" x2="12" y2="15" />
+                    </svg>
+                  </span>
+                  Importer une image
+                </button>
+              </div>
+              <input id="input-camera" type="file" accept="image/*" capture="environment" hidden />
+              <input id="input-gallery" type="file" accept="image/*" hidden />
+              <button type="button" class="manual-link" id="btn-mock">
+                <span class="manual-ico">T</span> Saisir manuellement (Démo)
+              </button>
+            </div>
+          </section>
+
+          <!-- OCR -->
+          <section class="screen" id="scr-ocr" hidden>
+            <div class="glass">
+              <p class="ocr-status" id="ocr-msg">Préparation du scanner…</p>
+              <div class="progress-outer"><div class="progress-inner" id="ocr-pct"></div></div>
+              <button type="button" class="btn btn-ghost" id="btn-ocr-cancel">Annuler</button>
+            </div>
+          </section>
+
+          <!-- EDITOR -->
+          <section class="screen" id="scr-editor" hidden>
+            <div class="glass">
+              <div class="ing-editor-head">
+                <div>
+                  <h1>Ingrédients</h1>
+                  <p class="subtitle">Ajustez les quantités détectées.</p>
+                </div>
+                <div class="ing-editor-total" id="ing-editor-total-wrap" hidden>
+                  <div class="ing-editor-total-label">TOTAL</div>
+                  <div class="ing-editor-total-kcal" id="ing-editor-total-kcal">0</div>
+                </div>
+              </div>
+              <div id="ing-list-wrap">
+                <div class="ing-list" id="ing-list"></div>
+              </div>
+              <button type="button" class="btn-add-ing-toggle" id="btn-add-ing-toggle">+ Ajouter un ingrédient</button>
+              <div class="ing-add-card" id="ing-add-card" hidden>
+                <button type="button" class="ing-add-close" id="btn-ing-add-close">Réduire</button>
+                <div class="ing-add-search-wrap">
+                  <span class="ing-add-search-ic" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.3-4.3" />
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    id="ing-add-search"
+                    class="ing-add-search"
+                    placeholder="Rechercher un aliment..."
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="ing-add-row">
+                  <div class="ing-add-qty-wrap">
+                    <input type="number" id="ing-add-qty" class="ing-add-qty-inp" min="1" step="1" value="100" />
+                    <span class="ing-add-qty-suf">g</span>
+                  </div>
+                  <button type="button" class="ing-add-btn" id="btn-ing-add-submit">Ajouter</button>
+                </div>
+              </div>
+              <p class="muted" id="ing-empty" hidden>Aucun ingrédient reconnu. Revenez en arrière ou utilisez la démo.</p>
+              <button type="button" class="btn btn-primary btn-valider-repas" id="btn-confirm-ing">Valider le repas →</button>
+            </div>
+          </section>
+
+          <!-- BREAKDOWN -->
+          <section class="screen bilan-screen" id="scr-breakdown" hidden>
+            <div class="glass bilan-card-outer">
+              <p class="bilan-title">Bilan énergétique</p>
+              <div class="bilan-hero">
+                <p class="bilan-total-line">
+                  <span class="bilan-total-num" id="bd-total">0</span>
+                  <span class="bilan-total-unit" id="bd-total-unit">kcal</span>
+                </p>
+              </div>
+              <div class="bilan-macros" id="bd-macros" aria-label="Macronutriments">
+                <div class="bilan-macro">
+                  <div class="bilan-macro-val bilan-macro-val--c" id="bd-m-c">0g</div>
+                  <div class="bilan-macro-lab">Glucides</div>
+                </div>
+                <div class="bilan-macro">
+                  <div class="bilan-macro-val bilan-macro-val--p" id="bd-m-p">0g</div>
+                  <div class="bilan-macro-lab">Protéines</div>
+                </div>
+                <div class="bilan-macro">
+                  <div class="bilan-macro-val bilan-macro-val--f" id="bd-m-f">0g</div>
+                  <div class="bilan-macro-lab">Lipides</div>
+                </div>
+              </div>
+              <div class="bilan-donut-card">
+                <div class="donut-row" style="margin: 0 0 0">
+                  <div class="donut" id="bd-donut">
+                    <div class="donut-inner">
+                      <span class="bilan-donut-flame" aria-hidden="true">🔥</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="break-bars break-bars--bilan" id="bd-bars"></div>
+              </div>
+              <p class="bilan-insight" id="bilan-insight">
+                <span class="bilan-insight-ic" aria-hidden="true">i</span>
+                <span id="bilan-insight-text"
+                  >Ce repas équivaut à environ <strong id="bd-bigm" class="bilan-bigm-strong">—</strong>
+                  <span aria-hidden="true">🍔</span></span>
+              </p>
+              <button type="button" class="btn-bilan-cta" id="btn-to-sport">Découvrir l'effort requis →</button>
+            </div>
+          </section>
+
+          <!-- SPORT -->
+          <section class="screen" id="scr-sport" hidden>
+            <div class="glass">
+              <h1 class="sport-page-title">Durée pour compenser</h1>
+              <p class="subtitle">Formule : (MET × 3,5 × poids kg) / 200 kcal/min</p>
+
+              <div class="sport-hero" id="sport-hero">
+                <div class="sport-hero-top">
+                  <div class="sport-hero-ic" aria-hidden="true">🏆</div>
+                  <div>
+                    <div class="sport-hero-ttl">Le plus rapide</div>
+                    <p class="sport-hero-sub" id="sport-hero-sub">Ajustez le poids et consultez les durées.</p>
+                  </div>
+                </div>
+                <div class="sport-hero-wrow">
+                  <span class="sport-hero-wlab">Poids de référence</span>
+                  <span class="sport-hero-wval" id="weight-kg-disp">70 kg</span>
+                </div>
+                <div class="sport-w-ctrl">
+                  <button type="button" class="sport-w-btn" id="w-minus" aria-label="Diminuer le poids">−</button>
+                  <input type="range" class="sport-w-range" id="weight-kg" min="30" max="200" value="70" step="0.5" />
+                  <button type="button" class="sport-w-btn" id="w-plus" aria-label="Augmenter le poids">+</button>
+                </div>
+              </div>
+
+              <h2 class="sport-opts-h">Vos options :</h2>
+              <div class="sport-grid" id="sport-grid"></div>
+
+              <div class="sport-bottom-row">
+                <button type="button" class="btn-sport-new" id="btn-reset" title="Nouveau repas">
+                  <span aria-hidden="true">↻</span> Nouveau
+                </button>
+                <button type="button" class="btn-sport-share" id="btn-sport-share" title="Partager">
+                  <span aria-hidden="true">⎘</span> Partager
+                </button>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <div id="camera-modal" class="camera-modal" hidden role="dialog" aria-modal="true" aria-label="Aperçu caméra">
+          <div class="camera-modal-box">
+            <video id="camera-preview" class="camera-preview" playsinline muted></video>
+            <canvas id="camera-canvas" hidden></canvas>
+            <div class="camera-modal-actions">
+              <button type="button" class="btn-cam-ghost" id="camera-cancel">Annuler</button>
+              <button type="button" class="btn-cam-ok" id="camera-shutter">Prendre la photo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var STEPS = ["SCANNER", "OCR_PROCESSING", "INGREDIENTS_EDITOR", "CALORIE_BREAKDOWN", "SPORT_RESULTS"];
+        var currentStep = "SCANNER";
+        var ingredients = [];
+        var ocrAbort = false;
+        var cameraStream = null;
+
+        function stopCameraStream() {
+          if (cameraStream) {
+            cameraStream.getTracks().forEach(function (t) {
+              t.stop();
+            });
+            cameraStream = null;
+          }
+          var pv = document.getElementById("camera-preview");
+          if (pv) {
+            pv.srcObject = null;
+            pv.classList.remove("mirror");
+          }
+        }
+
+        function closeCameraModal() {
+          var modal = document.getElementById("camera-modal");
+          if (modal) modal.setAttribute("hidden", "hidden");
+          stopCameraStream();
+        }
+
+        function setCameraMirrorForStream(stream) {
+          var v = document.getElementById("camera-preview");
+          if (!v || !stream) return;
+          var t = stream.getVideoTracks()[0];
+          if (!t || !t.getSettings) return;
+          var s = t.getSettings() || {};
+          var isUser = s.facingMode === "user";
+          v.classList.toggle("mirror", isUser);
+        }
+
+        function openCameraWithGetUserMedia() {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            return Promise.reject(new Error("no gUM"));
+          }
+          var c1 = { video: { facingMode: { ideal: "environment" } }, audio: false };
+          return navigator.mediaDevices
+            .getUserMedia(c1)
+            .catch(function () {
+              return navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            });
+        }
+
+        var foodDatabase = [
+          { name: "Poulet", kcal: 165, aliases: ["poulet", "blanc de poulet", "poulet rôti", "filet de poulet"] },
+          { name: "Boeuf", kcal: 250, aliases: ["boeuf", "steak", "viande hachée", "steak haché"] },
+          { name: "Porc", kcal: 242, aliases: ["porc", "côte de porc", "filet mignon"] },
+          { name: "Jambon", kcal: 145, aliases: ["jambon", "jambon blanc", "jambon de paris"] },
+          { name: "Saumon", kcal: 208, aliases: ["saumon", "pavé de saumon", "saumon fumé"] },
+          { name: "Thon", kcal: 132, aliases: ["thon", "thon en boîte", "miettes de thon"] },
+          { name: "Cabillaud", kcal: 82, aliases: ["cabillaud", "poisson blanc"] },
+          { name: "Riz", kcal: 130, aliases: ["riz", "riz blanc", "riz basmati", "riz complet"] },
+          { name: "Pâtes", kcal: 158, aliases: ["pâtes", "spaghetti", "macaroni", "coquillettes", "penne"] },
+          { name: "Pomme de terre", kcal: 85, aliases: ["pomme de terre", "patate", "pommes de terre"] },
+          { name: "Pain", kcal: 265, aliases: ["pain", "baguette", "pain de mie", "tartine"] },
+          { name: "Quinoa", kcal: 120, aliases: ["quinoa"] },
+          { name: "Semoule", kcal: 112, aliases: ["semoule", "couscous"] },
+          { name: "Farine", kcal: 364, aliases: ["farine", "farine de blé"] },
+          { name: "Avoine", kcal: 389, aliases: ["avoine", "flocons d'avoine"] },
+          { name: "Tomate", kcal: 18, aliases: ["tomate", "tomates", "sauce tomate", "coulis de tomate"] },
+          { name: "Oignon", kcal: 40, aliases: ["oignon", "oignons"] },
+          { name: "Carotte", kcal: 41, aliases: ["carotte", "carottes"] },
+          { name: "Salade", kcal: 15, aliases: ["salade", "laitue", "mâche", "roquette"] },
+          { name: "Courgette", kcal: 17, aliases: ["courgette", "courgettes"] },
+          { name: "Brocoli", kcal: 34, aliases: ["brocoli", "brocolis"] },
+          { name: "Haricots verts", kcal: 31, aliases: ["haricots verts", "haricot vert"] },
+          { name: "Poivron", kcal: 20, aliases: ["poivron", "poivrons"] },
+          { name: "Champignon", kcal: 22, aliases: ["champignon", "champignons", "champignons de paris"] },
+          { name: "Ail", kcal: 149, aliases: ["ail", "gousse d'ail"] },
+          { name: "Oeuf", kcal: 155, aliases: ["oeuf", "oeufs", "œuf", "œufs"] },
+          { name: "Fromage", kcal: 402, aliases: ["fromage", "gruyère", "emmental", "comté", "cheddar"] },
+          { name: "Mozzarella", kcal: 280, aliases: ["mozzarella", "mozza"] },
+          { name: "Lait", kcal: 42, aliases: ["lait", "lait demi-écrémé", "lait entier"] },
+          { name: "Beurre", kcal: 717, aliases: ["beurre", "beurre doux", "beurre salé"] },
+          { name: "Crème fraîche", kcal: 292, aliases: ["crème", "crème fraîche", "crème liquide"] },
+          { name: "Yaourt", kcal: 59, aliases: ["yaourt", "yaourt nature", "yogourt"] },
+          { name: "Huile d'olive", kcal: 884, aliases: ["huile", "huile d'olive", "huile de tournesol"] },
+          { name: "Sucre", kcal: 387, aliases: ["sucre", "sucre en poudre", "sucre roux"] },
+          { name: "Miel", kcal: 304, aliases: ["miel"] },
+          { name: "Chocolat", kcal: 546, aliases: ["chocolat", "chocolat noir", "chocolat au lait", "pépites de chocolat"] },
+          { name: "Mayonnaise", kcal: 680, aliases: ["mayo", "mayonnaise"] },
+          { name: "Ketchup", kcal: 112, aliases: ["ketchup"] },
+          { name: "Pomme", kcal: 52, aliases: ["pomme", "pommes"] },
+          { name: "Banane", kcal: 89, aliases: ["banane", "bananes"] },
+          { name: "Fraise", kcal: 32, aliases: ["fraise", "fraises"] },
+          { name: "Avocat", kcal: 160, aliases: ["avocat", "avocats"] },
+          { name: "Citron", kcal: 29, aliases: ["citron", "jus de citron"] },
+        ];
+
+        var MACROS_100G = {
+          Poulet: { c: 0, p: 23, f: 3.6 },
+          Boeuf: { c: 0, p: 26, f: 15 },
+          Porc: { c: 0, p: 20, f: 14 },
+          Jambon: { c: 1, p: 20, f: 4 },
+          Saumon: { c: 0, p: 20, f: 13 },
+          Thon: { c: 0, p: 29, f: 0.8 },
+          Cabillaud: { c: 0, p: 18, f: 0.7 },
+          Riz: { c: 28, p: 2.7, f: 0.3 },
+          Pâtes: { c: 31, p: 5.5, f: 1.1 },
+          "Pomme de terre": { c: 17, p: 2, f: 0.1 },
+          Pain: { c: 50, p: 8, f: 3.5 },
+          Quinoa: { c: 21, p: 4.4, f: 1.9 },
+          Semoule: { c: 23, p: 3.5, f: 0.4 },
+          Farine: { c: 76, p: 10, f: 1.5 },
+          Avoine: { c: 66, p: 17, f: 6.5 },
+          Tomate: { c: 3.9, p: 0.9, f: 0.2 },
+          Oignon: { c: 9, p: 1, f: 0.1 },
+          Carotte: { c: 7, p: 0.5, f: 0.2 },
+          Salade: { c: 1, p: 0.3, f: 0.2 },
+          Courgette: { c: 2, p: 1, f: 0.1 },
+          Brocoli: { c: 4, p: 2.5, f: 0.4 },
+          "Haricots verts": { c: 3, p: 1.7, f: 0.1 },
+          Poivron: { c: 4, p: 0.8, f: 0.2 },
+          Champignon: { c: 2, p: 1.5, f: 0.2 },
+          Ail: { c: 30, p: 6, f: 0.2 },
+          Oeuf: { c: 1, p: 12, f: 10 },
+          Fromage: { c: 1, p: 23, f: 33 },
+          Mozzarella: { c: 2, p: 18, f: 17 },
+          Lait: { c: 4.7, p: 3.3, f: 1.5 },
+          Beurre: { c: 0, p: 0.3, f: 83 },
+          "Crème fraîche": { c: 3, p: 2.1, f: 30 },
+          Yaourt: { c: 3.5, p: 3, f: 1.5 },
+          "Huile d'olive": { c: 0, p: 0, f: 100 },
+          Sucre: { c: 100, p: 0, f: 0 },
+          Miel: { c: 82, p: 0, f: 0 },
+          Chocolat: { c: 45, p: 5, f: 42 },
+          Mayonnaise: { c: 0.3, p: 1, f: 75 },
+          Ketchup: { c: 25, p: 1, f: 0.1 },
+          Pomme: { c: 12, p: 0.2, f: 0.1 },
+          Banane: { c: 22, p: 1, f: 0.2 },
+          Fraise: { c: 5, p: 0.5, f: 0.2 },
+          Avocat: { c: 1.5, p: 1.5, f: 14.5 },
+          Citron: { c: 3, p: 0.5, f: 0.1 },
+        };
+
+        function macroHundred(ing) {
+          var m = MACROS_100G[ing.name];
+          if (m) return m;
+          var k = ing.kcalPer100g;
+          return { c: (k * 0.5) / 4, p: (k * 0.25) / 4, f: (k * 0.25) / 9 };
+        }
+
+        function sumMealMacros() {
+          var C = 0,
+            P = 0,
+            F = 0;
+          for (var i = 0; i < ingredients.length; i++) {
+            var ing = ingredients[i];
+            var m = macroHundred(ing);
+            var fact = ing.quantity / 100;
+            C += m.c * fact;
+            P += m.p * fact;
+            F += m.f * fact;
+          }
+          return { c: Math.max(0, Math.round(C)), p: Math.max(0, Math.round(P)), f: Math.max(0, Math.round(F)) };
+        }
+
+        function bigMacPhrase(totalKcal) {
+          var ref = 550;
+          if (totalKcal <= 0) return "0 Big Mac";
+          var n = totalKcal / ref;
+          if (n < 0.12) return "moins d'un Big Mac";
+          return n.toFixed(1).replace(".", ",") + " Big Macs";
+        }
+
+        var sportsList = [
+          { id: "walking", name: "Marche rapide", labelUp: "MARCHE RAPIDE", met: 4.3, icon: "👟", theme: "g" },
+          { id: "running", name: "Course à pied", labelUp: "COURSE À PIED", met: 9.8, icon: "🏃", theme: "r" },
+          { id: "cycling", name: "Vélo", labelUp: "VÉLO", met: 7.5, icon: "🚴", theme: "b" },
+          { id: "swimming", name: "Natation", labelUp: "NATATION", met: 8.0, icon: "🏊", theme: "t" },
+          { id: "jumprope", name: "Corde à sauter", labelUp: "CORDE À SAUTER", met: 12.3, icon: "↕️", theme: "o" },
+          { id: "yoga", name: "Yoga", labelUp: "YOGA", met: 3.0, icon: "🧘", theme: "p" },
+        ];
+
+        function generateId() {
+          return Math.random().toString(36).substring(2, 9);
+        }
+
+        function findFoodInDatabase(searchStr) {
+          for (var f = 0; f < foodDatabase.length; f++) {
+            var food = foodDatabase[f];
+            for (var a = 0; a < food.aliases.length; a++) {
+              if (searchStr.indexOf(food.aliases[a]) !== -1) return food;
+            }
+          }
+          return null;
+        }
+
+        function parseIngredientsFromText(text) {
+          var lines = text.split("\n").filter(function (line) {
+            return line.trim().length > 0;
+          });
+          var list = [];
+          var regex = /^.*?(\d+(?:[.,]\d+)?)\s*(g|ml|cl|kg|cuillère|càs|càc|tranche|pincée)?\s*(?:de\s+|d')?\s*([a-zA-ZÀ-ÿ\s'-]+).*$/i;
+
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            var match = line.match(regex);
+            if (match) {
+              var rawQuantity = parseFloat(match[1].replace(",", "."));
+              var unit = match[2] ? match[2].toLowerCase() : "";
+              var foodNameRaw = match[3].trim().toLowerCase();
+              var quantityInGrams = rawQuantity;
+              if (unit === "kg") quantityInGrams = rawQuantity * 1000;
+              if (unit === "cuillère" || unit === "càs") quantityInGrams = rawQuantity * 15;
+              if (unit === "càc") quantityInGrams = rawQuantity * 5;
+              if (unit === "tranche") quantityInGrams = rawQuantity * 35;
+              if (unit === "ml" || unit === "cl") quantityInGrams = unit === "cl" ? rawQuantity * 10 : rawQuantity;
+              var matchedFood = findFoodInDatabase(foodNameRaw);
+              if (matchedFood) {
+                list.push({
+                  id: generateId(),
+                  name: matchedFood.name,
+                  quantity: Math.round(quantityInGrams),
+                  kcalPer100g: matchedFood.kcal,
+                  totalKcal: Math.round((quantityInGrams / 100) * matchedFood.kcal),
+                });
+              }
+            } else {
+              var m2 = findFoodInDatabase(line.trim().toLowerCase());
+              if (m2) {
+                list.push({
+                  id: generateId(),
+                  name: m2.name,
+                  quantity: 100,
+                  kcalPer100g: m2.kcal,
+                  totalKcal: m2.kcal,
+                });
+              }
+            }
+          }
+
+          var merged = {};
+          for (var j = 0; j < list.length; j++) {
+            var item = list[j];
+            if (merged[item.name]) {
+              merged[item.name].quantity += item.quantity;
+              merged[item.name].totalKcal += item.totalKcal;
+            } else {
+              merged[item.name] = item;
+            }
+          }
+          var out = [];
+          for (var k in merged) {
+            if (Object.prototype.hasOwnProperty.call(merged, k)) out.push(merged[k]);
+          }
+          return out;
+        }
+
+        function getMockIngredients() {
+          return [
+            { id: generateId(), name: "Pâtes", quantity: 200, kcalPer100g: 158, totalKcal: 316 },
+            { id: generateId(), name: "Poulet", quantity: 150, kcalPer100g: 165, totalKcal: 248 },
+            { id: generateId(), name: "Crème fraîche", quantity: 50, kcalPer100g: 292, totalKcal: 146 },
+            { id: generateId(), name: "Fromage", quantity: 30, kcalPer100g: 402, totalKcal: 121 },
+          ];
+        }
+
+        function calculateSportDuration(calories, met, weightKg) {
+          if (calories <= 0) return 0;
+          var kcalPerMinute = (met * 3.5 * weightKg) / 200;
+          return Math.round(calories / kcalPerMinute);
+        }
+
+        function formatDuration(minutes) {
+          if (minutes < 60) return minutes + " min";
+          var hours = Math.floor(minutes / 60);
+          var mins = minutes % 60;
+          return mins > 0 ? hours + "h" + String(mins).padStart(2, "0") : hours + "h";
+        }
+
+        function totalCalories() {
+          return ingredients.reduce(function (s, x) {
+            return s + x.totalKcal;
+          }, 0);
+        }
+
+        function setStep(step) {
+          currentStep = step;
+          var map = {
+            SCANNER: "scr-scanner",
+            OCR_PROCESSING: "scr-ocr",
+            INGREDIENTS_EDITOR: "scr-editor",
+            CALORIE_BREAKDOWN: "scr-breakdown",
+            SPORT_RESULTS: "scr-sport",
+          };
+          STEPS.forEach(function (s) {
+            var el = document.getElementById(map[s]);
+            if (el) el.hidden = s !== step;
+          });
+
+          var stepBar = document.getElementById("step-bar");
+          var hdrPlan = document.getElementById("hdr-plan");
+          var hdrBackApp = document.getElementById("hdr-back-app");
+          if (step === "SCANNER") {
+            stepBar.hidden = true;
+            hdrPlan.hidden = false;
+            hdrBackApp.hidden = true;
+          } else {
+            stepBar.hidden = false;
+            hdrPlan.hidden = true;
+            hdrBackApp.hidden = false;
+          }
+
+          var idx = STEPS.indexOf(step);
+          document.querySelectorAll(".step-node").forEach(function (node) {
+            var si = parseInt(node.getAttribute("data-step-i"), 10);
+            node.classList.remove("active", "past");
+            if (si === idx) node.classList.add("active");
+            else if (si < idx) node.classList.add("past");
+          });
+          document.querySelectorAll(".step-line-fill").forEach(function (fill) {
+            var li = parseInt(fill.getAttribute("data-line"), 10);
+            fill.classList.toggle("on", li < idx);
+          });
+        }
+
+        function handleBack() {
+          if (currentStep === "OCR_PROCESSING") {
+            ocrAbort = true;
+            setStep("SCANNER");
+          } else if (currentStep === "INGREDIENTS_EDITOR") setStep("SCANNER");
+          else if (currentStep === "CALORIE_BREAKDOWN") setStep("INGREDIENTS_EDITOR");
+          else if (currentStep === "SPORT_RESULTS") setStep("CALORIE_BREAKDOWN");
+        }
+
+        function ingDotColor(ing) {
+          var n = ing.name.toLowerCase();
+          if (
+            n.indexOf("crème") !== -1 ||
+            n.indexOf("fromage") !== -1 ||
+            n.indexOf("yaourt") !== -1 ||
+            n.indexOf("lait") !== -1 ||
+            n.indexOf("beurre") !== -1 ||
+            n.indexOf("mozzarella") !== -1
+          ) {
+            return "#ef4444";
+          }
+          if (
+            n.indexOf("pâte") !== -1 ||
+            n.indexOf("riz") !== -1 ||
+            n.indexOf("pain") !== -1 ||
+            n.indexOf("semoule") !== -1 ||
+            n.indexOf("quinoa") !== -1 ||
+            n.indexOf("couscous") !== -1
+          ) {
+            return "#eab308";
+          }
+          if (
+            n.indexOf("poulet") !== -1 ||
+            n.indexOf("boeuf") !== -1 ||
+            n.indexOf("porc") !== -1 ||
+            n.indexOf("jambon") !== -1 ||
+            n.indexOf("thon") !== -1 ||
+            n.indexOf("saumon") !== -1 ||
+            n.indexOf("cabillaud") !== -1 ||
+            n.indexOf("oeuf") !== -1
+          ) {
+            return "#eab308";
+          }
+          return "#4a7c59";
+        }
+
+        var trashSvg =
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>';
+
+        function updateEditorChrome() {
+          var t = totalCalories();
+          var elTotal = document.getElementById("ing-editor-total-kcal");
+          if (elTotal) elTotal.textContent = String(t);
+          document.querySelectorAll(".ing-card").forEach(function (card) {
+            var i = parseInt(card.getAttribute("data-i"), 10);
+            if (!isFinite(i) || !ingredients[i]) return;
+            var ing = ingredients[i];
+            var pct = t > 0 ? (ing.totalKcal / t) * 100 : 0;
+            var kEl = card.querySelector(".ing-line-kcal");
+            var bEl = card.querySelector(".ing-bar");
+            if (kEl) kEl.textContent = ing.totalKcal + " kcal";
+            if (bEl) bEl.style.width = Math.min(100, pct) + "%";
+          });
+        }
+
+        function renderEditor() {
+          var container = document.getElementById("ing-list");
+          var empty = document.getElementById("ing-empty");
+          var totalWrap = document.getElementById("ing-editor-total-wrap");
+          container.innerHTML = "";
+          if (!ingredients.length) {
+            empty.hidden = false;
+            if (totalWrap) totalWrap.hidden = true;
+            var btnEmpty = document.getElementById("btn-confirm-ing");
+            if (btnEmpty) btnEmpty.disabled = true;
+            return;
+          }
+          empty.hidden = true;
+          if (totalWrap) totalWrap.hidden = false;
+          var totalAll = totalCalories();
+          if (document.getElementById("ing-editor-total-kcal")) {
+            document.getElementById("ing-editor-total-kcal").textContent = String(totalAll);
+          }
+          ingredients.forEach(function (ing, idx) {
+            var pctBar = totalAll > 0 ? Math.min(100, (ing.totalKcal / totalAll) * 100) : 0;
+            var card = document.createElement("div");
+            card.className = "ing-card";
+            card.setAttribute("data-i", String(idx));
+            card.innerHTML =
+              '<div class="ing-card-main">' +
+              '<span class="ing-dot" style="background:' +
+              ingDotColor(ing) +
+              '"></span>' +
+              '<div class="ing-body">' +
+              '<div class="ing-title"></div>' +
+              '<div class="ing-meta"></div>' +
+              "</div>" +
+              '<div class="ing-right">' +
+              '<div class="ing-qty-row"><input type="number" class="ing-qty-inp" min="1" step="1" /><span class="ing-qty-suf">g</span></div>' +
+              '<div class="ing-line-kcal"></div>' +
+              "</div>" +
+              '<button type="button" class="ing-trash" title="Supprimer">' +
+              trashSvg +
+              "</button>" +
+              "</div>" +
+              '<div class="ing-card-footer"><div class="ing-bar" style="width:' +
+              pctBar +
+              '%"></div></div>';
+            card.querySelector(".ing-title").textContent = ing.name;
+            card.querySelector(".ing-meta").textContent = ing.kcalPer100g + " kcal / 100g";
+            card.querySelector(".ing-line-kcal").textContent = ing.totalKcal + " kcal";
+            var inp = card.querySelector(".ing-qty-inp");
+            inp.value = ing.quantity;
+            inp.addEventListener("input", function () {
+              var q = parseFloat(inp.value);
+              if (!isFinite(q) || q < 1) return;
+              var i = parseInt(card.getAttribute("data-i"), 10);
+              ingredients[i].quantity = Math.round(q);
+              ingredients[i].totalKcal = Math.round((ingredients[i].quantity / 100) * ingredients[i].kcalPer100g);
+              updateEditorChrome();
+            });
+            card.querySelector(".ing-trash").addEventListener("click", function () {
+              var i = parseInt(card.getAttribute("data-i"), 10);
+              ingredients.splice(i, 1);
+              renderEditor();
+            });
+            container.appendChild(card);
+          });
+          var btnOk = document.getElementById("btn-confirm-ing");
+          if (btnOk) btnOk.disabled = false;
+        }
+
+        function renderBreakdown() {
+          var total = totalCalories();
+          document.getElementById("bd-total").textContent = String(total);
+          var macros = sumMealMacros();
+          document.getElementById("bd-m-c").textContent = (!ingredients.length || total <= 0 ? 0 : macros.c) + "g";
+          document.getElementById("bd-m-p").textContent = (!ingredients.length || total <= 0 ? 0 : macros.p) + "g";
+          document.getElementById("bd-m-f").textContent = (!ingredients.length || total <= 0 ? 0 : macros.f) + "g";
+          var elBm = document.getElementById("bd-bigm");
+          if (elBm) elBm.textContent = !ingredients.length || total <= 0 ? "—" : bigMacPhrase(total);
+
+          var bars = document.getElementById("bd-bars");
+          var donutEl = document.getElementById("bd-donut");
+          bars.innerHTML = "";
+          animateDonut(donutEl);
+          if (!ingredients.length || total <= 0) {
+            donutEl.style.background = "conic-gradient(#e8ece9 0% 100%)";
+            return;
+          }
+          var barColors = [
+            "#2d5a27",
+            "#4a7c59",
+            "#1e5631",
+            "#2563eb",
+            "#0d9488",
+            "#1d4ed8",
+            "#2f6b3a",
+            "#d97706",
+          ];
+          var cum = 0;
+          var parts = [];
+          ingredients.forEach(function (ing, i) {
+            var pslice = (ing.totalKcal / total) * 100;
+            var next = i === ingredients.length - 1 ? 100 : cum + pslice;
+            var c = barColors[i % barColors.length];
+            parts.push(c + " " + cum + "% " + next + "%");
+            cum = next;
+          });
+          donutEl.style.background = "conic-gradient(" + parts.join(", ") + ")";
+
+          var maxK = Math.max.apply(
+            null,
+            ingredients.map(function (x) {
+              return x.totalKcal;
+            })
+          );
+          ingredients.forEach(function (ing, i) {
+            var pctBar = maxK ? Math.round((ing.totalKcal / maxK) * 100) : 0;
+            var c = barColors[i % barColors.length];
+            var div = document.createElement("div");
+            div.className = "break-item";
+            div.innerHTML =
+              '<div class="break-label"><div class="break-name"><span class="break-dot" style="background:' +
+              c +
+              '"></span><span class="break-ing-name">' +
+              escapeHtml(ing.name) +
+              '</span></div><span class="break-kcal">' +
+              ing.totalKcal +
+              " kcal</span></div>" +
+              '<div class="break-bar-bg"><div class="break-bar" style="width:' +
+              pctBar +
+              "%;background:" +
+              c +
+              '"></div></div>';
+            bars.appendChild(div);
+          });
+        }
+
+        function animateDonut(el) {
+          if (!el || !el.animate) return;
+          if (el._donutAnim && el._donutAnim.cancel) el._donutAnim.cancel();
+          el._donutAnim = el.animate(
+            [
+              { transform: "rotate(-180deg) scale(0.9)", opacity: 0.58, offset: 0 },
+              { transform: "rotate(14deg) scale(1.02)", opacity: 1, offset: 0.78 },
+              { transform: "rotate(0deg) scale(1)", opacity: 1, offset: 1 },
+            ],
+            { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" }
+          );
+        }
+
+        function escapeHtml(s) {
+          var d = document.createElement("div");
+          d.textContent = s;
+          return d.innerHTML;
+        }
+
+        function sportRingSvg(pct) {
+          var c = 2 * Math.PI * 14;
+          var off = c * (1 - Math.max(0, Math.min(1, pct)));
+          return (
+            '<svg class="sport-card-ring" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">' +
+            "<circle r=\"14\" cx=\"16\" cy=\"16\" fill=\"none\" stroke=\"#e8ece9\" stroke-width=\"2.5\" />" +
+            "<circle r=\"14\" cx=\"16\" cy=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" " +
+            'stroke-dasharray="' +
+            c +
+            '" stroke-dashoffset="' +
+            off +
+            '" transform="rotate(-90 16 16)" />' +
+            "</svg>"
+          );
+        }
+
+        function updateWeightDisp() {
+          var r = document.getElementById("weight-kg");
+          var d = document.getElementById("weight-kg-disp");
+          if (r && d) {
+            var w = parseFloat(r.value) || 70;
+            d.textContent = (Math.round(w * 10) / 10) + " kg";
+          }
+        }
+
+        function renderSports() {
+          var grid = document.getElementById("sport-grid");
+          var rW = document.getElementById("weight-kg");
+          var w = rW ? parseFloat(rW.value) || 70 : 70;
+          updateWeightDisp();
+          var cal = totalCalories();
+          var sub = document.getElementById("sport-hero-sub");
+          grid.innerHTML = "";
+
+          var durations = sportsList.map(function (sp) {
+            return { sp: sp, m: calculateSportDuration(cal, sp.met, w) };
+          });
+          var maxM = 0;
+          durations.forEach(function (d) {
+            if (d.m > maxM) maxM = d.m;
+          });
+          var best = durations[0];
+          for (var bi = 1; bi < durations.length; bi++) {
+            if (durations[bi].m < best.m) best = durations[bi];
+          }
+          if (sub) {
+            if (cal <= 0) {
+              sub.textContent = "Ajoutez des ingrédients pour estimer l’effort requis.";
+            } else {
+              var ds = formatDuration(best.m);
+              sub.innerHTML =
+                "Seulement <strong class=\"mp-lime-sp\">" +
+                escapeHtml(ds) +
+                "</strong> de " +
+                escapeHtml((best.sp.name || "").toLowerCase()) +
+                " !";
+            }
+          }
+
+          durations.forEach(function (d) {
+            var sp = d.sp;
+            var min = d.m;
+            var ringPct = maxM > 0 ? min / maxM : 0;
+            var card = document.createElement("div");
+            card.className = "sport-card sport-card--" + (sp.theme || "g");
+            var durStr = formatDuration(min);
+            card.innerHTML =
+              sportRingSvg(ringPct) +
+              '<span class="sport-card-emoji" aria-hidden="true">' +
+              (sp.icon || "") +
+              "</span>" +
+              '<div class="sport-dur">' +
+              escapeHtml(durStr) +
+              "</div>" +
+              '<div class="sport-lab">' +
+              escapeHtml(sp.labelUp || sp.name) +
+              "</div>" +
+              '<div class="sport-metas">MET ' +
+              sp.met +
+              "</div>";
+            grid.appendChild(card);
+          });
+        }
+
+        function goMock() {
+          ingredients = getMockIngredients();
+          setStep("INGREDIENTS_EDITOR");
+          renderEditor();
+        }
+
+        function runOcr(file) {
+          ocrAbort = false;
+          setStep("OCR_PROCESSING");
+          document.getElementById("ocr-pct").style.width = "0%";
+          document.getElementById("ocr-msg").textContent = "Préparation du scanner…";
+
+          function ocrLogger(m) {
+            if (ocrAbort) return;
+            var elPct = document.getElementById("ocr-pct");
+            var elMsg = document.getElementById("ocr-msg");
+            if (m.status === "recognizing text") {
+              var p = Math.round((m.progress || 0) * 100);
+              elPct.style.width = p + "%";
+              elMsg.textContent = "Analyse des ingrédients… " + p + "%";
+            } else if (m.status === "loading tesseract core") elMsg.textContent = "Chargement du moteur…";
+            else if (m.status === "initializing tesseract" || m.status === "initializing api") elMsg.textContent = "Initialisation…";
+            else if (m.status === "loading language traineddata") elMsg.textContent = "Téléchargement langue (fra)…";
+            else if (m.status === "initialized api") elMsg.textContent = "Préparation du scanner…";
+          }
+
+          function finishWithText(text) {
+            if (ocrAbort) return;
+            ingredients = parseIngredientsFromText(text || "");
+            if (!ingredients.length) goMock();
+            else {
+              setStep("INGREDIENTS_EDITOR");
+              renderEditor();
+            }
+          }
+
+          if (typeof Tesseract === "undefined") {
+            document.getElementById("ocr-msg").textContent = "OCR indisponible — démo.";
+            setTimeout(function () {
+              if (!ocrAbort) goMock();
+            }, 700);
+            return;
+          }
+
+          if (typeof Tesseract.recognize === "function") {
+            Tesseract.recognize(file, "fra", { logger: ocrLogger })
+              .then(function (res) {
+                var text = (res && res.data && res.data.text) || "";
+                finishWithText(text);
+              })
+              .catch(function () {
+                if (!ocrAbort) goMock();
+              });
+            return;
+          }
+
+          if (typeof Tesseract.createWorker !== "function") {
+            document.getElementById("ocr-msg").textContent = "OCR non supporté — démo.";
+            setTimeout(function () {
+              if (!ocrAbort) goMock();
+            }, 700);
+            return;
+          }
+
+          var wref = null;
+          Tesseract.createWorker("fra", 1, { logger: ocrLogger })
+            .then(function (worker) {
+              wref = worker;
+              return worker.recognize(file);
+            })
+            .then(function (res) {
+              var text = (res && res.data && res.data.text) || "";
+              return wref.terminate().then(function () {
+                return text;
+              });
+            })
+            .then(function (text) {
+              finishWithText(text);
+            })
+            .catch(function () {
+              var term = wref ? wref.terminate().catch(function () {}) : Promise.resolve();
+              term.finally(function () {
+                if (!ocrAbort) goMock();
+              });
+            });
+        }
+
+        document.getElementById("hdr-back-app").addEventListener("click", handleBack);
+
+        document.getElementById("btn-camera").addEventListener("click", function () {
+          var modal = document.getElementById("camera-modal");
+          var video = document.getElementById("camera-preview");
+          if (!modal || !video) {
+            document.getElementById("input-camera").click();
+            return;
+          }
+          openCameraWithGetUserMedia()
+            .then(function (stream) {
+              cameraStream = stream;
+              setCameraMirrorForStream(stream);
+              video.srcObject = stream;
+              video.muted = true;
+              var playP = video.play();
+              if (playP && typeof playP.then === "function") playP.catch(function () {});
+              modal.removeAttribute("hidden");
+            })
+            .catch(function () {
+              document.getElementById("input-camera").click();
+            });
+        });
+
+        document.getElementById("camera-cancel").addEventListener("click", function () {
+          closeCameraModal();
+        });
+
+        document.getElementById("camera-shutter").addEventListener("click", function () {
+          var video = document.getElementById("camera-preview");
+          var canvas = document.getElementById("camera-canvas");
+          if (!video || !canvas) return;
+          var take = function () {
+            var w = video.videoWidth;
+            var h = video.videoHeight;
+            if (!w || !h) {
+              window.requestAnimationFrame(take);
+              return;
+            }
+            canvas.width = w;
+            canvas.height = h;
+            var ctx = canvas.getContext("2d");
+            if (video.classList.contains("mirror")) {
+              ctx.translate(w, 0);
+              ctx.scale(-1, 1);
+            }
+            ctx.drawImage(video, 0, 0, w, h);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            canvas.toBlob(
+              function (blob) {
+                if (!blob) {
+                  closeCameraModal();
+                  return;
+                }
+                var file = new File([blob], "photo-repas.jpg", { type: "image/jpeg" });
+                closeCameraModal();
+                runOcr(file);
+              },
+              "image/jpeg",
+              0.92
+            );
+          };
+          take();
+        });
+        document.getElementById("btn-gallery").addEventListener("click", function () {
+          document.getElementById("input-gallery").click();
+        });
+        document.getElementById("btn-mock").addEventListener("click", goMock);
+
+        function onFile(ev) {
+          var f = ev.target.files && ev.target.files[0];
+          ev.target.value = "";
+          if (!f) return;
+          runOcr(f);
+        }
+        document.getElementById("input-camera").addEventListener("change", onFile);
+        document.getElementById("input-gallery").addEventListener("change", onFile);
+
+        document.getElementById("btn-ocr-cancel").addEventListener("click", function () {
+          ocrAbort = true;
+          setStep("SCANNER");
+        });
+
+        function openAddIngredientPanel() {
+          var card = document.getElementById("ing-add-card");
+          var toggle = document.getElementById("btn-add-ing-toggle");
+          if (card) card.hidden = false;
+          if (toggle) toggle.hidden = true;
+          var s = document.getElementById("ing-add-search");
+          window.setTimeout(function () {
+            if (s) s.focus();
+          }, 50);
+        }
+
+        function closeAddIngredientPanel() {
+          var card = document.getElementById("ing-add-card");
+          var toggle = document.getElementById("btn-add-ing-toggle");
+          if (card) card.hidden = true;
+          if (toggle) toggle.hidden = false;
+        }
+
+        function findFoodForAdd(searchStr) {
+          var t = (searchStr || "").trim().toLowerCase();
+          if (!t) return null;
+          var f = findFoodInDatabase(t);
+          if (f) return f;
+          for (var i = 0; i < foodDatabase.length; i++) {
+            if (foodDatabase[i].name.toLowerCase() === t) return foodDatabase[i];
+          }
+          return null;
+        }
+
+        function submitAddIngredient() {
+          var searchEl = document.getElementById("ing-add-search");
+          var qtyEl = document.getElementById("ing-add-qty");
+          var name = (searchEl && searchEl.value) || "";
+          var food = findFoodForAdd(name);
+          if (!food) {
+            window.alert("Aliment non reconnu. Essayez un nom proche (ex. « riz », « poulet »).");
+            return;
+          }
+          var q = qtyEl ? parseFloat(qtyEl.value) : 100;
+          if (!isFinite(q) || q < 1) {
+            window.alert("Indiquez une quantité valide (en grammes).");
+            return;
+          }
+          var grams = Math.round(q);
+          ingredients.push({
+            id: generateId(),
+            name: food.name,
+            quantity: grams,
+            kcalPer100g: food.kcal,
+            totalKcal: Math.round((grams / 100) * food.kcal),
+          });
+          if (searchEl) searchEl.value = "";
+          if (qtyEl) qtyEl.value = "100";
+          renderEditor();
+        }
+
+        document.getElementById("btn-add-ing-toggle").addEventListener("click", openAddIngredientPanel);
+        document.getElementById("btn-ing-add-close").addEventListener("click", closeAddIngredientPanel);
+
+        document.getElementById("btn-ing-add-submit").addEventListener("click", submitAddIngredient);
+        document.getElementById("ing-add-search").addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
+            submitAddIngredient();
+          }
+        });
+
+        document.getElementById("btn-confirm-ing").addEventListener("click", function () {
+          if (!ingredients.length) return;
+          setStep("CALORIE_BREAKDOWN");
+          renderBreakdown();
+        });
+
+        document.getElementById("btn-to-sport").addEventListener("click", function () {
+          setStep("SPORT_RESULTS");
+          renderSports();
+        });
+
+        document.getElementById("weight-kg").addEventListener("input", function () {
+          updateWeightDisp();
+          renderSports();
+        });
+
+        document.getElementById("w-minus").addEventListener("click", function () {
+          var el = document.getElementById("weight-kg");
+          if (!el) return;
+          var v = (parseFloat(el.value) || 70) - 0.5;
+          el.value = String(Math.max(30, Math.min(200, v)));
+          updateWeightDisp();
+          renderSports();
+        });
+
+        document.getElementById("w-plus").addEventListener("click", function () {
+          var el = document.getElementById("weight-kg");
+          if (!el) return;
+          var v = (parseFloat(el.value) || 70) + 0.5;
+          el.value = String(Math.max(30, Math.min(200, v)));
+          updateWeightDisp();
+          renderSports();
+        });
+
+        document.getElementById("btn-sport-share").addEventListener("click", function () {
+          var cal = totalCalories();
+          var txt =
+            "Repas : environ " + cal + " kcal. Durées d’effort (MET) selon mon poids sur NutriSmart / Meal to Workout.";
+          var u = window.location.href;
+          if (navigator.share) {
+            navigator
+              .share({ title: "Bilan effort repas", text: txt, url: u })
+              .catch(function () {
+                if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u + " — " + txt);
+              });
+          } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(u + "\n" + txt);
+            window.alert("Lien et texte copiés.");
+          } else {
+            window.prompt("Copier :", u + " — " + txt);
+          }
+        });
+
+        document.getElementById("btn-reset").addEventListener("click", function () {
+          ingredients = [];
+          ocrAbort = false;
+          setStep("SCANNER");
+        });
+
+        setStep("SCANNER");
+      })();
+    </script>
+  </body>
+</html>
