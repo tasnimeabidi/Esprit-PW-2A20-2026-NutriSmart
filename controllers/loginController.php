@@ -1,5 +1,9 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . "/../config/database.php";
 
 $db = new Database();
@@ -7,8 +11,8 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $email = trim($_POST["email"]);
-    $password = trim($_POST["password"]);
+    $email = trim($_POST["email"] ?? '');
+    $password = trim($_POST["password"] ?? '');
 
     if (empty($email) || empty($password)) {
         $_SESSION["error"] = "Tous les champs sont obligatoires.";
@@ -16,30 +20,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    // PDO query
-    $stmt = $conn->prepare("SELECT id_utilisateur, nom, mot_de_passe FROM utilisateur WHERE email = ?");
-    $stmt->execute([$email]);
+    $stmt = $conn->prepare("
+        SELECT id_utilisateur, nom, mot_de_passe 
+        FROM utilisateur 
+        WHERE email = ?
+    ");
 
+    $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
+    if ($user && password_verify($password, $user["mot_de_passe"])) {
 
-        if (password_verify($password, $user["mot_de_passe"])) {
+        // 🔥 FIXED SESSION (IMPORTANT)
+        $_SESSION["id_utilisateur"] = $user["id_utilisateur"];
+        $_SESSION["nom"] = $user["nom"];
 
-            $_SESSION["user_id"] = $user["id_utilisateur"];
-            $_SESSION["user_name"] = $user["nom"];
-
-            header("Location: ../Views/frontoffice/blog.php");
-            exit();
-
-        } else {
-            $_SESSION["error"] = "Mot de passe incorrect.";
-        }
+        header("Location: ../index.php?action=blog");
+        exit();
 
     } else {
-        $_SESSION["error"] = "Email introuvable.";
+        $_SESSION["error"] = "Email ou mot de passe incorrect.";
+        header("Location: ../Views/frontoffice/login.php");
+        exit();
     }
-
-    header("Location: ../Views/frontoffice/login.php");
-    exit();
 }

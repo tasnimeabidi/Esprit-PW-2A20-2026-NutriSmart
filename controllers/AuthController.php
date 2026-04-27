@@ -23,15 +23,15 @@ class AuthController {
 
             $data = $this->user->login($email);
 
-            if ($data && isset($data['mot_de_passe']) && password_verify($password, $data['mot_de_passe'])) {
+            if ($data && password_verify($password, $data['mot_de_passe'])) {
 
                 session_regenerate_id(true);
 
+                // 🔥 SAME SESSION KEY (CRITICAL FIX)
                 $_SESSION['id_utilisateur'] = $data['id_utilisateur'];
                 $_SESSION['nom'] = $data['nom'];
                 $_SESSION['role'] = $data['role'];
 
-                // ROLE REDIRECT
                 if ($data['role'] === 'admin') {
                     header("Location: index.php?action=admin_dashboard");
                     exit;

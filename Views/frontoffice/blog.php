@@ -151,9 +151,9 @@ if (!isset($_SESSION['id_utilisateur'])) {
     <!-- CREATE POST -->
     <div class="create-box">
       <form id="postForm" action="/ProjetNutrismart/index.php?action=create" method="POST" enctype="multipart/form-data">
-        <input type="text" name="titre" placeholder="Titre" >
-        <textarea name="contenu" placeholder="Contenu..." ></textarea>
-        <input type="file" name="image">
+        <input type="text" name="titre" placeholder="Titre">
+        <textarea name="contenu" placeholder="Contenu..."></textarea>
+        <input type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
         <button class="btn" type="submit">Publier</button>
       </form>
     </div>
@@ -163,9 +163,9 @@ if (!isset($_SESSION['id_utilisateur'])) {
 
       <div class="post-card">
 
+        <!-- EDIT POST -->
         <?php if (isset($_GET['edit']) && $_GET['edit'] == $p['id_publication']): ?>
 
-          <!-- EDIT MODE -->
           <form action="/ProjetNutrismart/index.php?action=update" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?= $p['id_publication'] ?>">
 
@@ -183,7 +183,7 @@ if (!isset($_SESSION['id_utilisateur'])) {
 
         <?php else: ?>
 
-          <!-- DISPLAY MODE -->
+          <!-- POST DISPLAY -->
           <div class="post-header">
             <div class="post-title"><?= htmlspecialchars($p['titre']) ?></div>
             <div class="post-meta"><?= htmlspecialchars($p['nom']) ?> • <?= $p['date_publication'] ?></div>
@@ -197,12 +197,65 @@ if (!isset($_SESSION['id_utilisateur'])) {
             <img src="/ProjetNutrismart/public/uploads/<?= $p['image'] ?>" width="250">
           <?php endif; ?>
 
-          <?php if ($p['id_utilisateur'] == $_SESSION['id_utilisateur']): ?>
+          <?php if (isset($_SESSION['id_utilisateur']) && $p['id_utilisateur'] == $_SESSION['id_utilisateur']): ?>
             <div class="post-actions">
               <a href="/ProjetNutrismart/index.php?action=blog&edit=<?= $p['id_publication'] ?>">Edit</a>
               <a href="/ProjetNutrismart/index.php?action=delete&id=<?= $p['id_publication'] ?>">Delete</a>
             </div>
           <?php endif; ?>
+
+          <!-- ========================= -->
+          <!-- COMMENTS SECTION -->
+          <!-- ========================= -->
+
+          <div class="comments">
+
+            <?php $comments = $commentModelForView->getByPostId($p['id_publication']); ?>
+
+            <?php foreach ($comments as $c): ?>
+
+              <div class="comment" data-id="<?= $c['id_commentaire'] ?>">
+
+                <strong><?= htmlspecialchars($c['nom']) ?></strong>
+
+                <!-- TEXT -->
+                <p class="comment-text"><?= htmlspecialchars($c['contenu']) ?></p>
+
+                <!-- EDIT BOX (hidden) -->
+                <textarea class="edit-box" style="display:none; width:100%;">
+                  <?= htmlspecialchars($c['contenu']) ?>
+                </textarea>
+
+                <small><?= $c['date_commentaire'] ?></small>
+
+                <?php if (isset($_SESSION['id_utilisateur']) && $c['id_utilisateur'] == $_SESSION['id_utilisateur']): ?>
+                  <div class="comment-actions">
+
+                    <button type="button" class="edit-btn">Edit</button>
+                    <button type="button" class="save-btn" style="display:none;">Save</button>
+                    <a href="/ProjetNutrismart/index.php?action=delete_comment&id=<?= $c['id_commentaire'] ?>">
+                      Delete
+                    </a>
+
+                  </div>
+                <?php endif; ?>
+
+              </div>
+
+            <?php endforeach; ?>
+
+          </div>
+
+          <!-- ADD COMMENT -->
+          <form action="/ProjetNutrismart/index.php?action=add_comment" method="POST">
+            <input type="hidden" name="id_publication" value="<?= $p['id_publication'] ?>">
+
+            <textarea name="contenu" maxlength="500" placeholder="Write a comment..." required></textarea>
+
+            <button class="btn" type="submit">Comment</button>
+          </form>
+
+          <!-- ========================= -->
 
         <?php endif; ?>
 
@@ -212,6 +265,10 @@ if (!isset($_SESSION['id_utilisateur'])) {
 
   </div>
 </main>
+
+<!-- AJAX COMMENTS SCRIPT -->
+<script src="/ProjetNutrismart/js/Comments.js"></script>
+
 <script src="/ProjetNutrismart/public/publication-validation.js"></script>
 </body>
 </html>
