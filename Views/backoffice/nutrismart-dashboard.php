@@ -1,7 +1,10 @@
 <?php
 include_once '../../controllers/SuiviController.php';
 $controller = new SuiviController();
-$logs = $controller->listLogs();
+
+$search = $_GET['search'] ?? '';
+$sort = $_GET['sort'] ?? 'date DESC';
+$logs = $controller->listLogs(1, $search, $sort);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -969,11 +972,25 @@ $logs = $controller->listLogs();
 
     <div class="main-grid" style="grid-template-columns: 1fr;">
       <div class="chart-card">
-        <div class="card-header">
+        <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
           <div>
             <div class="card-title">Flux de Suivi Utilisateur (Gestion Directe)</div>
             <div class="card-sub">Gérez tous les logs de progression</div>
           </div>
+          
+          <!-- Metier: Recherche et Tri (Backend) -->
+          <form method="GET" action="" style="display: flex; gap: 10px; align-items: center; margin-left: auto;">
+            <input type="hidden" name="view" value="view-suivi">
+            <input type="text" name="search" placeholder="Rechercher (ex: Pomme)..." value="<?php echo htmlspecialchars($search); ?>" style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--bg); color: white; outline: none;">
+            <select name="sort" style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--bg); color: white; outline: none;">
+                <option value="date DESC" <?php if($sort=='date DESC') echo 'selected'; ?>>Plus récents</option>
+                <option value="date ASC" <?php if($sort=='date ASC') echo 'selected'; ?>>Plus anciens</option>
+                <option value="calories DESC" <?php if($sort=='calories DESC') echo 'selected'; ?>>Calories (Max)</option>
+                <option value="calories ASC" <?php if($sort=='calories ASC') echo 'selected'; ?>>Calories (Min)</option>
+            </select>
+            <button type="submit" class="btn-sm btn-ghost">Filtrer</button>
+          </form>
+
           <button class="btn-sm btn-green" onclick="showAddModal()">+ Ajouter un Log</button>
         </div>
         <table class="users-table">

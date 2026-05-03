@@ -3,28 +3,26 @@ include_once '../../controllers/SuiviController.php';
 $controller = new SuiviController();
 $logs = $controller->listLogs();
 
-// Basic stats calculation for demo
-$totalConsumed = 0;
-$totalBurned = 0;
-$weeklyData = [];
-$logsList = [];
+// Real Advanced Business Logic Stats Calculation
+$statsResponse = $controller->getStatistics();
+$stats = $statsResponse['data'];
 
-while($row = $logs->fetch(PDO::FETCH_ASSOC)) {
-    $logsList[] = $row;
-    if($row['type'] === 'meal') $totalConsumed += $row['calories'];
-    if($row['type'] === 'activity') $totalBurned += $row['calories'];
-}
+$totalConsumed = $stats['consumed'];
+$totalBurned = $stats['burned'];
+$netConsumed = max(0, $totalConsumed - $totalBurned); // Use net calories
+$deficit = $stats['balance'];
+$aiTip = $stats['advice'];
+$bmi = $stats['bmi'];
+$currentWeight = $stats['weight'];
 
-// AI Analysis Logic
-$deficit = $totalConsumed - $totalBurned;
-$goal = 2100;
-$remaining = $goal - $totalConsumed;
-$progressPercent = min(100, ($totalConsumed / $goal) * 100);
+// Metier Avance
+$goal = $stats['dynamicGoal'];
+$predictionText = $stats['predictionText'];
+$recommendedFood = $stats['recommendedFood'];
+$streakDays = $stats['streakDays'];
 
-$aiTip = "Continuez comme ça !";
-if($remaining < 200) $aiTip = "Attention, vous approchez de votre limite calorique. Privilégiez l'eau et les fibres ce soir.";
-if($totalBurned > 500) $aiTip = "Bravo pour votre activité physique ! Pensez à augmenter votre apport en protéines pour la récupération.";
-if($totalConsumed < 1200 && date('H') > 18) $aiTip = "Votre apport est faible pour aujourd'hui. Un dîner nutritif est recommandé pour éviter la fatigue demain.";
+$remaining = $goal - $netConsumed;
+$progressPercent = $goal > 0 ? min(100, ($netConsumed / $goal) * 100) : 0;
 
 // Get Weight History for Chart (Dynamic)
 $db = $controller->getDb();
@@ -32,7 +30,12 @@ $weightLogs = $db->prepare("SELECT poids, date_mesure FROM journal_poids WHERE i
 $weightLogs->execute();
 $chartWeights = array_reverse($weightLogs->fetchAll(PDO::FETCH_ASSOC));
 
-$logs = $controller->listLogs();
+$searchQuery = $_GET['search'] ?? '';
+$sortOrder = $_GET['sort'] ?? 'date DESC';
+
+$logs = $controller->listLogs(1, $searchQuery, $sortOrder);
+$logsList = [];
+while($row = $logs->fetch(PDO::FETCH_ASSOC)) { $logsList[] = $row; }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -44,7 +47,9 @@ $logs = $controller->listLogs();
     <link rel="stylesheet" href="css/shared-styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
             --primary: #4CAF50;
             --mid: #8BC34A;
             --lime: #C4D4A8;
@@ -60,8 +65,12 @@ $logs = $controller->listLogs();
 
         body {
             background: var(--cream);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(76, 175, 80, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(242, 153, 74, 0.05) 0px, transparent 50%);
             color: #333;
             overflow-x: hidden;
+            background-attachment: fixed;
         }
 
         /* ── HERO ── */
@@ -138,16 +147,18 @@ $logs = $controller->listLogs();
             padding: 0 5rem 6rem;
             max-width: 1440px;
             margin: 0 auto;
+            perspective: 1000px; /* Enable 3D perspective */
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 2.2rem;
-            box-shadow: 0 8px 32px rgba(45, 106, 45, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(45, 106, 45, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
@@ -157,6 +168,12 @@ $logs = $controller->listLogs();
             transform: translateY(-8px);
             box-shadow: 0 15px 45px rgba(45, 106, 45, 0.12);
             background: var(--white);
+            z-index: 10;
+        }
+
+        .stat-card.perspective-card {
+            transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .col-4 { grid-column: span 4; }
@@ -178,14 +195,15 @@ $logs = $controller->listLogs();
         }
 
         .ai-insight {
-            background: rgba(76, 175, 80, 0.08);
-            padding: 1rem 1.5rem;
-            border-radius: 1.2rem;
-            font-size: 0.9rem;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.05));
+            padding: 1.2rem 1.8rem;
+            border-radius: 1.5rem;
+            font-size: 0.95rem;
             color: var(--forest);
-            border-left: 4px solid var(--primary);
+            border: 1px solid rgba(76, 175, 80, 0.2);
             margin-top: auto;
-            line-height: 1.5;
+            line-height: 1.6;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
         }
 
         /* ── DUAL LOGGER ── */
@@ -509,9 +527,21 @@ $logs = $controller->listLogs();
             gap: 1rem;
         }
 
-        .msg { max-width: 80%; padding: 1rem; border-radius: 1.2rem; font-size: 0.9rem; line-height: 1.5; }
+        .msg { max-width: 80%; padding: 1rem; border-radius: 1.2rem; font-size: 0.9rem; line-height: 1.5; position: relative; }
         .msg.bot { background: var(--sand); color: #333; border-bottom-left-radius: 2px; }
         .msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .msg.typing span {
+            width: 8px; height: 8px; background: var(--gray); display: inline-block;
+            border-radius: 50%; margin: 0 2px; animation: bounce 1.4s infinite ease-in-out;
+        }
+        .msg.typing span:nth-child(2) { animation-delay: 0.2s; }
+        .msg.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
 
         .chat-input {
             padding: 1.2rem;
@@ -554,6 +584,22 @@ $logs = $controller->listLogs();
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--forest); }
         .close-modal { cursor: pointer; font-size: 1.5rem; color: var(--gray); }
+
+        /* ── VISION SCANNER ── */
+        .vision-container { position: relative; width: 100%; height: 300px; background: #000; border-radius: 1rem; overflow: hidden; }
+        #visionFeed { width: 100%; height: 100%; object-fit: cover; }
+        .scan-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; height: 80%; border: 2px solid var(--lime);
+            box-shadow: 0 0 0 100vmax rgba(0,0,0,0.4);
+            border-radius: 1rem; pointer-events: none;
+            animation: scanPulse 2s infinite ease-in-out;
+        }
+        @keyframes scanPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+        }
+        .vision-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
 
         .edit-form { display: flex; flex-direction: column; gap: 1rem; }
         .f-group { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -638,7 +684,12 @@ $logs = $controller->listLogs();
                             <input type="text" id="foodInput" class="logger-field" placeholder="Qu'avez-vous mangé ?">
                             <input type="number" id="qtyInput" class="logger-field" placeholder="Qté (g/ml)" style="width: 100px;">
                         </div>
-                        <button onclick="analyzeAI('meal')" class="logger-btn" style="position: static; transform: none; width: 100%;">Analyser le repas</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="analyzeAI('meal')" class="logger-btn" style="flex: 2;">Analyser</button>
+                            <button onclick="openVision()" class="logger-btn" style="flex: 1; background: var(--white); color: var(--forest); border: 1px solid var(--lime); display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                📸 <span style="font-size: 0.7rem;">Vision IA</span>
+                            </button>
+                        </div>
                         <div id="mealAI" class="ai-calculating">🧬 L'IA analyse les nutriments...</div>
                         <div id="mealResult" class="predict-box">
                             <div>Prédiction IA: <strong id="predCal">450</strong> kcal</div>
@@ -681,13 +732,27 @@ $logs = $controller->listLogs();
                         <circle class="ring-fill" cx="70" cy="70" r="60" style="stroke-dashoffset: <?php echo 376.8 - (376.8 * ($progressPercent/100)); ?>;" />
                     </svg>
                     <div class="ring-inner-text">
-                        <span class="ring-val"><?php echo number_format($totalConsumed); ?></span>
-                        <span class="ring-lbl">Consommées</span>
+                        <span class="ring-val"><?php echo number_format($netConsumed); ?></span>
+                        <span class="ring-lbl">Nettes (kcal)</span>
                     </div>
                 </div>
                 <div style="text-align: center;">
                     <p style="font-size: 0.9rem; font-weight: 700; color: var(--forest);">Objectif: <?php echo $goal; ?> kcal</p>
                     <p style="font-size: 0.75rem; color: var(--gray);">Reste: <?php echo max(0, $remaining); ?> kcal</p>
+                </div>
+            </div>
+            <!-- AI Health Radar -->
+            <div class="stat-card col-4 perspective-card">
+                <div class="card-header">
+                    <h3 class="card-title">Balance Santé IA</h3>
+                    <div class="card-icon">🌀</div>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="healthRadar"></canvas>
+                </div>
+                <div class="ai-insight" style="background: rgba(196, 212, 168, 0.15); border: none; font-size: 0.8rem; padding: 0.8rem;">
+                    🎯 <strong>Score:</strong> Votre équilibre nutritionnel est de <?php echo round($progressPercent); ?>%. 
+                    <?php echo $deficit < 0 ? "Bonne gestion du déficit." : "Augmentez l'activité."; ?>
                 </div>
             </div>
             <div class="ai-insight">
@@ -749,37 +814,36 @@ $logs = $controller->listLogs();
             </div>
         </div>
 
-        <!-- Macros -->
-        <div class="stat-card col-6">
-            <div class="card-header">
-                <h3 class="card-title">Nutriments IA</h3>
-                <div class="card-icon">🧬</div>
-            </div>
-            <div class="macro-bars">
-                <div class="macro-item">
-                    <div class="macro-top"><span>Protéines (Cible +10g)</span><span>85g</span></div>
-                    <div class="bar-outer"><div class="bar-inner" style="width: 70%; background: var(--primary);"></div></div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-top"><span>Glucides (Stable)</span><span>210g</span></div>
-                    <div class="bar-outer"><div class="bar-inner" style="width: 84%; background: var(--orange);"></div></div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-top"><span>Lipides (Baisse conseillée)</span><span>45g</span></div>
-                    <div class="bar-outer"><div class="bar-inner" style="width: 64%; background: var(--peach);"></div></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Activity -->
-        <div class="stat-card col-6">
-            <div class="card-header">
+        <div class="stat-card col-12">
+            <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
                 <h3 class="card-title">Activités Analysées</h3>
+                <div style="display: flex; gap: 1rem; flex: 1; justify-content: flex-end; min-width: 300px;">
+                    <div style="display: flex; gap: 0.5rem; flex: 1;">
+                        <input type="text" id="liveSearch" placeholder="Rechercher une activité..." 
+                               onkeyup="filterLogs()"
+                               style="flex: 1; padding: 0.6rem 1rem; border-radius: 2rem; border: 1px solid #ddd; outline: none; font-size: 0.85rem;">
+                        <select id="liveSort" onchange="sortLogs()" 
+                                style="padding: 0.6rem 1rem; border-radius: 2rem; border: 1px solid #ddd; outline: none; font-size: 0.85rem; background: white; cursor: pointer;">
+                            <option value="newest">Plus récents</option>
+                            <option value="oldest">Plus anciens</option>
+                            <option value="cal-high">Calories (Max)</option>
+                            <option value="cal-low">Calories (Min)</option>
+                            <option value="alpha">Nom (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="card-icon">⚡</div>
             </div>
             <div class="activity-feed">
                 <?php foreach(array_reverse($logsList) as $row): ?>
-                <div class="act-card" id="log-<?php echo $row['id']; ?>">
+                <div class="act-card" 
+                     data-id="<?php echo $row['id']; ?>" 
+                     data-type="<?php echo $row['type']; ?>"
+                     data-desc="<?php echo strtolower(htmlspecialchars($row['description'])); ?>"
+                     data-cal="<?php echo $row['calories']; ?>"
+                     data-date="<?php echo strtotime($row['date']); ?>"
+                     id="log-<?php echo $row['id']; ?>">
                     <div class="act-icon-box"><?php echo $row['type'] == 'meal' ? '🥗' : ($row['type'] == 'weight' ? '⚖️' : '🏃‍♂️'); ?></div>
                     <div class="act-desc">
                         <h4><?php echo htmlspecialchars($row['description']); ?></h4>
@@ -807,6 +871,36 @@ $logs = $controller->listLogs();
         </div>
     </main>
 
+    <!-- VISION MODAL -->
+    <div id="visionModal" class="modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Scan Vision IA ✦</h3>
+                <span class="close-modal" onclick="closeVision()">×</span>
+            </div>
+            <div class="vision-container">
+                <video id="visionFeed" autoplay playsinline></video>
+                <div class="scan-overlay"></div>
+                <canvas id="visionCanvas" style="display: none;"></canvas>
+            </div>
+            <div id="visionStatus" style="margin-top: 1rem; text-align: center; color: var(--gray); font-size: 0.9rem;">
+                Centrez votre plat dans le cadre...
+            </div>
+            <div class="vision-actions">
+                <button onclick="captureVision()" class="logger-btn" style="width: 100%; margin: 0; background: var(--forest); color: white;">Scanner le repas</button>
+            </div>
+            <div id="visionResult" style="display: none; margin-top: 1.5rem; background: var(--sand); padding: 1rem; border-radius: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 id="visionFoodName" style="color: var(--forest); font-weight: 800;">Pomme Rouge</h4>
+                        <p id="visionCals" style="font-size: 1.2rem; color: var(--orange); font-weight: 900;">~52 kcal</p>
+                    </div>
+                    <button onclick="confirmVision()" class="logger-btn" style="margin: 0; background: var(--primary); color: white;">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- AI CHAT FLOATING -->
     <div class="ai-chat-toggle" onclick="toggleChat()">
         <span style="font-size: 2rem">🤖</span>
@@ -821,10 +915,10 @@ $logs = $controller->listLogs();
                 <p style="font-size: 0.75rem; opacity: 0.8">En ligne • Votre Expert Santé</p>
             </div>
         </div>
-        <div class="chat-messages">
+        <div class="chat-messages" id="chatMessages">
             <div class="msg bot">
-                Bonjour ! Je suis NutriBot. J'ai analysé vos activités d'aujourd'hui. Vous avez brillamment dépensé 890 kcal ! 
-                Voulez-vous que je vous suggère un menu pour demain ?
+                Bonjour ! Je suis NutriBot. Aujourd'hui, vous avez consommé <strong><?php echo $totalConsumed; ?> kcal</strong> et brûlé <strong><?php echo $totalBurned; ?> kcal</strong>. 
+                Comment puis-je vous aider dans votre progression ?
             </div>
             <div class="msg user">Oui, s'il te plaît. Quelque chose de riche en protéines.</div>
             <div class="msg bot">
@@ -833,8 +927,8 @@ $logs = $controller->listLogs();
             </div>
         </div>
         <div class="chat-input">
-            <input type="text" placeholder="Posez une question à l'IA...">
-            <button class="send-btn">➔</button>
+            <input type="text" id="chatInput" placeholder="Posez une question à l'IA..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button class="send-btn" onclick="sendMessage()">➔</button>
         </div>
     </div>
 
@@ -930,6 +1024,78 @@ $logs = $controller->listLogs();
         function toggleChat() {
             const chat = document.getElementById('aiChat');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            const text = input.value.trim();
+            if(!text) return;
+
+            // Add user message
+            const uMsg = document.createElement('div');
+            uMsg.className = 'msg user';
+            uMsg.innerText = text;
+            messages.appendChild(uMsg);
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            // Typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'msg bot typing';
+            typing.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+            messages.appendChild(typing);
+            messages.scrollTop = messages.scrollHeight;
+
+            // Real AI fetch from DeepSeek via Controller
+            const formData = new FormData();
+            formData.append('action', 'chat');
+            formData.append('message', text);
+
+            try {
+                const response = await fetch('../../controllers/SuiviController.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                messages.removeChild(typing);
+                const bMsg = document.createElement('div');
+                bMsg.className = 'msg bot';
+
+                // Check for insufficient balance and fallback to Local AI
+                if (data.answer && data.answer.includes("Insufficient Balance")) {
+                    console.warn("API Credit exhausted. Falling back to Local AI.");
+                    const localResp = getLocalAIResponse(text);
+                    bMsg.innerHTML = "<em>[Mode Éco Activé]</em> " + localResp;
+                } else {
+                    bMsg.innerHTML = data.answer || "Désolé, je ne peux pas répondre pour le moment.";
+                }
+
+                messages.appendChild(bMsg);
+                messages.scrollTop = messages.scrollHeight;
+            } catch (err) {
+                messages.removeChild(typing);
+                console.error(err);
+            }
+        }
+
+        // Hybrid Fallback Logic (Local AI)
+        function getLocalAIResponse(text) {
+            const lower = text.toLowerCase();
+            const prefixes = ["D'après mes calculs, ", "En analysant vos données, ", "Voici ce que je suggère : "];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+            if(lower.includes('faim') || lower.includes('manger')) {
+                return prefix + "<?php echo $recommendedFood ? 'votre corps a besoin de nutriments. Je vous recommande : <strong>' . addslashes($recommendedFood['nom']) . '</strong>.' : 'une pomme ou des noix seraient idéales.'; ?>";
+            } else if(lower.includes('poids') || lower.includes('objectif')) {
+                return prefix + "<?php echo addslashes($predictionText); ?>";
+            } else if(lower.includes('sport') || lower.includes('exercice')) {
+                return prefix + "vous avez brûlé <?php echo $totalBurned; ?> kcal aujourd'hui. Une marche légère serait un bon complément.";
+            } else if(lower.includes('conseil') || lower.includes('astuce')) {
+                return "<strong>Conseil :</strong> <?php echo addslashes($aiTip); ?>";
+            }
+            return "Je suis en mode économie d'énergie car vos crédits DeepSeek sont épuisés. Mais je peux toujours analyser vos calories (<?php echo $deficit; ?> kcal actuellement).";
         }
 
         const aiDatabase = {
@@ -1126,6 +1292,175 @@ $logs = $controller->listLogs();
             } finally {
                 btns.forEach(b => b.style.opacity = '1');
             }
+        }
+
+        // ── PERSPECTIVE 3D CARDS ──
+        const pCards = document.querySelectorAll('.perspective-card');
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            pCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardX = rect.left + rect.width / 2;
+                const cardY = rect.top + rect.height / 2;
+                
+                const angleX = (cardY - y) / 25;
+                const angleY = (x - cardX) / 25;
+                
+                card.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-8px)`;
+            });
+        });
+
+        // ── HEALTH RADAR CHART ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxRadar = document.getElementById('healthRadar').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['Nutrition', 'Activité', 'Régularité', 'Objectif', 'Énergie'],
+                    datasets: [{
+                        label: 'Profil Santé',
+                        data: [
+                            <?php echo min(100, ($totalConsumed / 2000) * 100); ?>, 
+                            <?php echo min(100, ($totalBurned / 500) * 100); ?>, 
+                            <?php echo min(100, ($streakDays * 10)); ?>, 
+                            <?php echo round($progressPercent); ?>, 
+                            <?php echo $deficit < 0 ? 90 : 60; ?>
+                        ],
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        borderColor: '#4CAF50',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#2D6A2D',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#2D6A2D'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+
+        // ── LIVE FILTER & SORT LOGS (No Reload) ──
+        function filterLogs() {
+            const query = document.getElementById('liveSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.activity-feed .act-card');
+            
+            cards.forEach(card => {
+                const desc = card.getAttribute('data-desc');
+                card.style.display = desc.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function sortLogs() {
+            const criteria = document.getElementById('liveSort').value;
+            const container = document.querySelector('.activity-feed');
+            const cards = Array.from(container.querySelectorAll('.act-card'));
+
+            cards.sort((a, b) => {
+                const valA = a.getAttribute(criteria === 'alpha' ? 'data-desc' : (criteria.includes('cal') ? 'data-cal' : 'data-date'));
+                const valB = b.getAttribute(criteria === 'alpha' ? 'data-desc' : (criteria.includes('cal') ? 'data-cal' : 'data-date'));
+
+                if (criteria === 'alpha') return valA.localeCompare(valB);
+                if (criteria === 'newest') return valB - valA;
+                if (criteria === 'oldest') return valA - valB;
+                if (criteria === 'cal-high') return valB - valA;
+                if (criteria === 'cal-low') return valA - valB;
+                return 0;
+            });
+
+            // Re-append sorted cards
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        // ── VISION IA SCANNER LOGIC ──
+        let stream = null;
+        function openVision() {
+            const modal = document.getElementById('visionModal');
+            const video = document.getElementById('visionFeed');
+            modal.style.display = 'grid';
+            
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = s;
+                })
+                .catch(err => {
+                    alert("Erreur d'accès à la caméra : " + err.message);
+                    closeVision();
+                });
+        }
+
+        function closeVision() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            document.getElementById('visionModal').style.display = 'none';
+            document.getElementById('visionResult').style.display = 'none';
+        }
+
+        function captureVision() {
+            const video = document.getElementById('visionFeed');
+            const canvas = document.getElementById('visionCanvas');
+            const status = document.getElementById('visionStatus');
+            const result = document.getElementById('visionResult');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const imageData = canvas.toDataURL('image/jpeg'); // Capture real frame
+            
+            status.innerHTML = "🧬 Analyse réelle par Vision IA (LLaVA)...";
+            
+            // Call Real AI Backend
+            const formData = new FormData();
+            formData.append('action', 'vision');
+            formData.append('image', imageData);
+
+            fetch('../../controllers/SuiviController.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    status.innerHTML = "✅ Analyse terminée !";
+                    document.getElementById('visionFoodName').innerText = data.food;
+                    document.getElementById('visionCals').innerText = "~" + data.calories + " kcal";
+                    result.style.display = 'block';
+                    
+                    // Prepare for saving - ENSURE CALORIES ARE STORED
+                    lastPrediction = { type: 'meal', desc: data.food, qty: 1, cal: data.calories };
+                    console.log("Vision Prediction Saved:", lastPrediction);
+                } else {
+                    status.innerHTML = "❌ Erreur: " + data.message;
+                }
+            })
+            .catch(err => {
+                status.innerHTML = "❌ Erreur de connexion au serveur local.";
+                console.error(err);
+            });
+        }
+
+        function confirmVision() {
+            saveLog('meal');
+            closeVision();
         }
     </script>
 </body>

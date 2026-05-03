@@ -1,32 +1,22 @@
 <?php
 class Aliment {
-    private $conn;
-    private $table_name = "aliment";
+    private $id;
+    private $nom;
+    private $categorie;
+    private $calories_100g;
 
-    public $id;
-    public $nom;
-    public $categorie;
-    public $calories_100g;
+    public function __construct() {}
 
-    public function __construct($db) {
-        $this->conn = $db;
-    }
+    public function getId() { return $this->id; }
+    public function setId($id) { $this->id = $id; }
 
-    // List all available food items (the second entity)
-    public function readAll() {
-        $query = "SELECT * FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
+    public function getNom() { return $this->nom; }
+    public function setNom($nom) { $this->nom = $nom; }
 
-    // Find a specific food item
-    public function readOne($id) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    public function getCategorie() { return $this->categorie; }
+    public function setCategorie($categorie) { $this->categorie = $categorie; }
+
+    public function getCalories100g() { return $this->calories_100g; }
+    public function setCalories100g($calories_100g) { $this->calories_100g = $calories_100g; }
 }
 ?>
