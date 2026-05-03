@@ -1,15 +1,11 @@
 <?php
-/**
- * Returns a PDO connection to the NutriSmart database.
- */
+
 function getConnection() {
     $host = 'localhost';
     $db_name = 'nutrismart';
     $username = 'root'; // Default XAMPP username
     $password = '';     // Default XAMPP password
 
-    // Static variable keeps the connection alive so it doesn't reconnect 
-    // multiple times during a single page load (Singleton-ish pattern)
     static $pdo = null;
 
     if ($pdo === null) {

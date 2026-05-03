@@ -25,6 +25,13 @@ if (!$user) {
 
 // Get user's budget and spending
 $budget = $budgetService->getBudgetByUserId($user_id);
+
+// If user has no budget, redirect to budget-user page to set one
+if (!$budget) {
+    header('Location: budget-user.php?user_id=' . $user_id . '&no_budget=1');
+    exit;
+}
+
 $totalDepenses = $achatService->getTotalDepensesByUserId($user_id);
 $reste = $budget ? ($budget['montant'] - $totalDepenses) : 0;
 
@@ -452,7 +459,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
                             <input type="hidden" name="prix_unitaire" value="<?php echo $aliment['prix']; ?>">
                             
                             <div class="purchase-form">
-                                <input type="number" name="quantite" class="qty-input" value="1" min="1" max="99" required>
+                                <input type="number" name="quantite" class="qty-input" value="0" min="1" max="99" required>
                                 <button type="submit" class="buy-btn" <?php echo ($reste <= 0) ? 'disabled' : ''; ?>>
                                     <?php echo ($reste <= 0) ? 'Budget insuffisant' : 'Acheter'; ?>
                                 </button>

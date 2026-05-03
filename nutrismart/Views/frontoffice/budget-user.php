@@ -1,5 +1,4 @@
 <?php
-// Check if user ID is provided in URL
 if (!isset($_GET['user_id']) || empty($_GET['user_id'])) {
     die('Erreur: ID utilisateur manquant');
 }
@@ -23,6 +22,15 @@ if (!$user) {
 
 // Get user's budget
 $budget = $budgetService->getBudgetByUserId($user_id);
+
+// Handle case where user has no budget
+if (!$budget && isset($_GET['no_budget'])) {
+    // User tried to access user-achat without budget, show message
+    $noBudgetMessage = "Vous devez d'abord définir un budget pour pouvoir effectuer des achats.";
+} else {
+    $noBudgetMessage = null;
+}
+
 $totalDepenses = $achatService->getTotalDepensesByUserId($user_id);
 
 // Get user's shopping list
@@ -141,6 +149,77 @@ $pourcentage = $budget ? min(100, ($totalDepenses / $budget['montant']) * 100) :
             background: #f8f9fa;
             border-radius: 1rem;
             margin-bottom: 1rem;
+        }
+
+        .budget-chart-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(45, 90, 39, 0.08);
+            border: 1px solid #e8ece9;
+            margin-bottom: 2.5rem;
+        }
+
+        .budget-chart-card h3 {
+            margin-bottom: 1rem;
+            color: #1e3d2f;
+            font-size: 1.25rem;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-tab {
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #d7e3d8;
+            border-radius: 999px;
+            cursor: pointer;
+            background: #f8faf7;
+            color: #38603d;
+            font-weight: 600;
+        }
+
+        .chart-tab.active {
+            background: #3dba52;
+            border-color: #3dba52;
+            color: white;
+        }
+
+        .chart-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .chart-summary-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .chart-summary-item strong {
+            display: block;
+            font-size: 1.2rem;
+            color: #1e3d2f;
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-summary-item p {
+            margin: 0;
+            color: #5c6b63;
+            font-size: 0.9rem;
+        }
+
+        .budget-chart-card canvas {
+            width: 100% !important;
+            max-height: 360px;
+            height: 320px !important;
+            display: block;
         }
 
         .stat-item:last-child {
@@ -424,6 +503,10 @@ $pourcentage = $budget ? min(100, ($totalDepenses / $budget['montant']) * 100) :
             <div class="alert alert-error">⚠ <?php echo htmlspecialchars($_GET['error']); ?></div>
         <?php endif; ?>
 
+        <?php if ($noBudgetMessage): ?>
+            <div class="alert alert-error">⚠ <?php echo htmlspecialchars($noBudgetMessage); ?></div>
+        <?php endif; ?>
+
         <!-- Budget Form -->
         <div class="budget-form-card">
             <h3>🎯 Définir votre budget mensuel</h3>
@@ -477,11 +560,50 @@ $pourcentage = $budget ? min(100, ($totalDepenses / $budget['montant']) * 100) :
             </div>
         </div>
 
+        <!-- Expense Trend Chart -->
+        <div class="budget-chart-card">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; align-items:center; margin-bottom:1rem;">
+                <div>
+                    <h3>📈 Historique des dépenses</h3>
+                    <p style="margin:0; color:#5c6b63;">Visualisez vos dépenses par semaine ou par mois et comparez-les à votre budget.</p>
+                </div>
+                <div class="chart-tabs">
+                    <button type="button" id="weeklyViewBtn" class="chart-tab active" onclick="setTrendView('weekly')">Semaine</button>
+                    <button type="button" id="monthlyViewBtn" class="chart-tab" onclick="setTrendView('monthly')">Mois</button>
+                </div>
+            </div>
+
+            <canvas id="budgetTrendChart" width="800" height="320"></canvas>
+
+            <div class="chart-summary">
+                <div class="chart-summary-item">
+                    <strong id="chart-max-expense">0 TND</strong>
+                    <p>Dépense maximale</p>
+                </div>
+                <div class="chart-summary-item">
+                    <strong id="chart-total-expense">0 TND</strong>
+                    <p>Total des dépenses</p>
+                </div>
+                <div class="chart-summary-item">
+                    <strong id="chart-budget-target">0 TND</strong>
+                    <p>Budget comparé</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Shopping List -->
         <div class="shopping-list-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                 <h2>🛒 Liste de courses</h2>
                 <a href="user-achat.php?user_id=<?php echo $user_id; ?>" class="btn" style="background: linear-gradient(135deg, #e67e22, #f39c12); color: white; padding: 0.75rem 1.5rem;">+ Acheter des aliments</a>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+                <label for="shopping-sort" style="font-weight:600; margin:0;">Trier par :</label>
+                <select id="shopping-sort" onchange="changeShoppingSort(this.value)" style="padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                    <option value="quantite" selected>Quantité</option>
+                    <option value="prix_total">Prix Total</option>
+                </select>
+                <button type="button" id="shopping-sort-order" onclick="toggleShoppingSortDirection()" style="padding:0.5rem 0.75rem; border:none; border-radius:4px; background:#3dba52; color:white; cursor:pointer;">Desc</button>
             </div>
 
             <?php if (empty($achats)): ?>
@@ -491,17 +613,202 @@ $pourcentage = $budget ? min(100, ($totalDepenses / $budget['montant']) * 100) :
                     <p style="margin-top: 1rem; font-size: 0.9rem; color: #5c6b63;">Commencez vos achats en visitant notre boutique d'aliments</p>
                 </div>
             <?php else: ?>
-                <?php foreach ($achats as $achat): ?>
-                    <div class="shopping-item">
-                        <span class="item-name"><?php echo htmlspecialchars($achat['nom_aliment']); ?></span>
-                        <strong class="item-price"><?php echo number_format($achat['prix_total'], 2); ?> TND</strong>
-                    </div>
-                <?php endforeach; ?>
+                <div id="shopping-items-container"></div>
             <?php endif; ?>
         </div>
 
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const shoppingData = <?php echo empty($achats) ? '[]' : json_encode($achats, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
+    const budgetAmount = <?php echo $budget ? floatval($budget['montant']) : 0; ?>;
+    let shoppingSort = { field: 'quantite', direction: 'desc' };
+    let trendView = 'weekly';
+    let trendChart = null;
+
+    function setTrendView(view) {
+        trendView = view;
+        document.getElementById('weeklyViewBtn').classList.toggle('active', view === 'weekly');
+        document.getElementById('monthlyViewBtn').classList.toggle('active', view === 'monthly');
+        renderTrendChart();
+    }
+
+    function formatCurrency(value) {
+        return parseFloat(value).toFixed(2) + ' TND';
+    }
+
+    function getWeeklyLabelsAndTotals(items) {
+        const weeks = {};
+
+        items.forEach(item => {
+            const date = new Date(item.date_achat);
+            if (Number.isNaN(date.getTime())) return;
+            const year = date.getFullYear();
+            const week = getWeekNumber(date);
+            const label = `${year}-S${week.toString().padStart(2, '0')}`;
+            weeks[label] = (weeks[label] || 0) + Number(item.prix_total || 0);
+        });
+
+        return Object.entries(weeks)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .reduce((acc, [label, value]) => {
+                acc.labels.push(label);
+                acc.totals.push(parseFloat(value.toFixed ? value.toFixed(2) : Number(value).toFixed(2)));
+                return acc;
+            }, { labels: [], totals: [] });
+    }
+
+    function getMonthlyLabelsAndTotals(items) {
+        const months = {};
+
+        items.forEach(item => {
+            const date = new Date(item.date_achat);
+            if (Number.isNaN(date.getTime())) return;
+            const label = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            months[label] = (months[label] || 0) + Number(item.prix_total || 0);
+        });
+
+        return Object.entries(months)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .reduce((acc, [label, value]) => {
+                acc.labels.push(label);
+                acc.totals.push(parseFloat(value.toFixed ? value.toFixed(2) : Number(value).toFixed(2)));
+                return acc;
+            }, { labels: [], totals: [] });
+    }
+
+    function getWeekNumber(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    function renderTrendChart() {
+        const data = trendView === 'weekly'
+            ? getWeeklyLabelsAndTotals(shoppingData)
+            : getMonthlyLabelsAndTotals(shoppingData);
+
+        const labels = data.labels.length ? data.labels : ['Aucune dépense'];
+        const totals = data.totals.length ? data.totals : [0];
+        const budgetLine = labels.map(() => trendView === 'weekly' ? parseFloat((budgetAmount / 4).toFixed(2)) : budgetAmount);
+        const maxExpense = Math.max(...totals, 0);
+        const totalExpense = totals.reduce((sum, value) => sum + value, 0);
+
+        document.getElementById('chart-max-expense').textContent = formatCurrency(maxExpense);
+        document.getElementById('chart-total-expense').textContent = formatCurrency(totalExpense);
+        document.getElementById('chart-budget-target').textContent = formatCurrency(trendView === 'weekly' ? budgetAmount / 4 : budgetAmount);
+
+        const chartData = {
+            labels,
+            datasets: [
+                {
+                    label: 'Dépenses',
+                    data: totals,
+                    borderColor: '#3dba52',
+                    backgroundColor: 'rgba(61, 186, 82, 0.18)',
+                    tension: 0.25,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#3dba52'
+                },
+                {
+                    label: 'Objectif budget',
+                    data: budgetLine,
+                    borderColor: '#ff8c00',
+                    backgroundColor: 'rgba(255, 140, 0, 0.12)',
+                    borderDash: [6, 4],
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: context => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#5c6b63'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#5c6b63',
+                            callback: value => `${value} TND`
+                        },
+                        grid: {
+                            color: 'rgba(232, 236, 233, 0.8)'
+                        }
+                    }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('budgetTrendChart').getContext('2d');
+        if (trendChart) {
+            trendChart.destroy();
+        }
+        trendChart = new Chart(ctx, config);
+    }
+
+    function changeShoppingSort(field) {
+        shoppingSort.field = field;
+        renderShoppingList();
+    }
+
+    function toggleShoppingSortDirection() {
+        shoppingSort.direction = shoppingSort.direction === 'asc' ? 'desc' : 'asc';
+        document.getElementById('shopping-sort-order').textContent = shoppingSort.direction === 'asc' ? 'Asc' : 'Desc';
+        renderShoppingList();
+    }
+
+    function renderShoppingList() {
+        const container = document.getElementById('shopping-items-container');
+        if (!container || !shoppingData.length) return;
+        const items = [...shoppingData];
+        items.sort((a, b) => {
+            let aValue = Number(a[shoppingSort.field] || 0);
+            let bValue = Number(b[shoppingSort.field] || 0);
+            if (aValue < bValue) return shoppingSort.direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return shoppingSort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+        container.innerHTML = items.map(item => `
+            <div class="shopping-item" style="display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem 0; border-bottom:1px solid #eee;">
+                <div>
+                    <span class="item-name" style="display:block; font-weight:600;">${item.aliment_nom || 'N/A'}</span>
+                    <small style="color:#5c6b63;">Quantité: ${item.quantite || 0}</small>
+                </div>
+                <strong class="item-price">${parseFloat(item.prix_total || 0).toFixed(2)} TND</strong>
+            </div>`).join('');
+    }
+
+    // Initial render
+    if (shoppingData.length > 0) {
+        renderShoppingList();
+    }
+    renderTrendChart();
+</script>
 </div>
 </body>
 </html>
