@@ -15,9 +15,7 @@ class BudgetController {
         $this->userService = new UserService();
     }
 
-    /**
-     * Display budget admin page with all budgets
-     */
+
     public function index() {
         $budgets = $this->budget->getAllWithUserDetails();
         $users = $this->userService->getAllUsers();
@@ -25,9 +23,7 @@ class BudgetController {
         include __DIR__ . '/../Views/backoffice/budget-list.php';
     }
 
-    /**
-     * Create or update a budget
-     */
+
     public function save() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;
@@ -61,9 +57,7 @@ class BudgetController {
         exit;
     }
 
-    /**
-     * Delete a budget
-     */
+ 
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;
@@ -86,7 +80,6 @@ class BudgetController {
             $_SESSION['error'] = "Failed to delete budget.";
         }
 
-        // Check if AJAX request
         if (isset($_POST['ajax']) && $_POST['ajax'] === '1') {
             echo $result ? 'success' : 'error';
             exit;
@@ -96,9 +89,7 @@ class BudgetController {
         exit;
     }
 
-    /**
-     * Get budget data for a specific user (AJAX)
-     */
+  
     public function getBudgetByUser() {
         header('Content-Type: application/json');
         
@@ -127,9 +118,7 @@ class BudgetController {
         exit;
     }
 
-    /**
-     * Handle budget actions (create, update, delete)
-     */
+
     public function handleAction() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;
@@ -153,7 +142,6 @@ class BudgetController {
     }
 }
 
-// Handle POST requests when this file is accessed directly
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['PHP_SELF']) === 'BudgetController.php') {
     $controller = new BudgetController();
     $action = $_POST['action'] ?? null;

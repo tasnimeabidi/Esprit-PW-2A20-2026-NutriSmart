@@ -1,11 +1,9 @@
 <?php
 require_once '../../Services/BudgetService.php';
 require_once '../../Services/UserService.php';
-
 $budgetService = new BudgetService();
 $userService = new UserService();
 
-// Budget CRUD via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         $isAjax = isset($_POST['ajax']) && $_POST['ajax'] === '1';
@@ -16,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userId = $_POST['user_id_select'] ?? $_POST['user_id'];
                 $success = $budgetService->setBudget($userId, $_POST['montant']);
                 if ($isAjax) {
-                    // For AJAX requests, return success status instead of redirecting
+             
                     echo $success ? 'success' : 'error';
                     exit;
                 }
@@ -29,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 break;
         }
-        // For non-AJAX requests, redirect as before
         header('Location: budget-admin.php');
         exit;
     }
@@ -231,6 +228,15 @@ $users = $userService->getAllUsers();
 
         <section class="panel-card" id="purchases-section" style="display:none; margin-top:20px;">
           <h3 class="serif">Achats de l'utilisateur: <span id="user-name"></span></h3>
+          <div style="display:flex; gap:0.75rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap;">
+            <label for="purchase-sort" style="font-weight:600; margin:0;">Trier par :</label>
+            <select id="purchase-sort" onchange="changePurchaseSort(this.value)" style="padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+              <option value="date" selected>Date</option>
+              <option value="quantite">Quantité</option>
+              <option value="prix_total">Prix Total</option>
+            </select>
+            <button type="button" id="purchase-sort-order" onclick="togglePurchaseSortDirection()" style="padding:0.5rem 0.75rem; border:none; border-radius:4px; background:#3dba52; color:white; cursor:pointer;">Desc</button>
+          </div>
           <table class="bo-prog-users-table">
             <thead>
               <tr>
@@ -238,6 +244,7 @@ $users = $userService->getAllUsers();
                 <th>Quantité</th>
                 <th>Prix Total</th>
                 <th>Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="purchases-tbody">
@@ -251,13 +258,61 @@ $users = $userService->getAllUsers();
 
   <script>
     let currentPurchasesUserId = null;
+    let currentPurchasesData = [];
+    let currentPurchasesSort = { field: 'date', direction: 'desc' };
 
-    // Inline budget editing
+    function changePurchaseSort(field) {
+      currentPurchasesSort.field = field;
+      renderPurchases();
+    }
+
+    function togglePurchaseSortDirection() {
+      currentPurchasesSort.direction = currentPurchasesSort.direction === 'asc' ? 'desc' : 'asc';
+      document.getElementById('purchase-sort-order').textContent = currentPurchasesSort.direction === 'asc' ? 'Asc' : 'Desc';
+      renderPurchases();
+    }
+
+    function renderPurchases() {
+      const tbody = document.getElementById('purchases-tbody');
+      tbody.innerHTML = '';
+      const purchases = [...currentPurchasesData];
+      purchases.sort((a, b) => {
+        let field = currentPurchasesSort.field;
+        if (field === 'date') field = 'date_achat';
+        
+        let aValue = a[field];
+        let bValue = b[field];
+        if (currentPurchasesSort.field === 'date') {
+          aValue = new Date(aValue || '1970-01-01');
+          bValue = new Date(bValue || '1970-01-01');
+        } else {
+          aValue = Number(aValue || 0);
+          bValue = Number(bValue || 0);
+        }
+        if (aValue < bValue) return currentPurchasesSort.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return currentPurchasesSort.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+      purchases.forEach(purchase => {
+        const safeAlimentName = String(purchase.aliment_nom).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        const row = `<tr>
+          <td>${purchase.aliment_nom}</td>
+          <td>${purchase.quantite}</td>
+          <td>${purchase.prix_total} TND</td>
+          <td>${purchase.date_achat}</td>
+          <td>
+            <button class="btn-sm btn-ghost" onclick="showPurchaseEditor(${purchase.id}, ${purchase.quantite}, ${purchase.prix_total})">Modifier</button>
+            <button class="btn-sm btn-ghost" style="color:red;" onclick="showDeleteModal(${purchase.id}, '${safeAlimentName}')">Supprimer</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
     function editBudgetInline(span) {
       const userId = span.dataset.userId;
       const currentAmount = parseFloat(span.textContent).toFixed(2);
       
-      // Create input field
       const input = document.createElement('input');
       input.type = 'number';
       input.step = '0.01';
@@ -265,26 +320,25 @@ $users = $userService->getAllUsers();
       input.value = currentAmount;
       input.className = 'budget-input';
       
-      // Replace span content with input
       span.classList.add('editing');
       span.textContent = '';
       span.appendChild(input);
       input.focus();
       input.select();
       
-      // Save on blur
+   
       input.addEventListener('blur', function() {
         saveBudget(userId, input.value, span);
       });
       
-      // Save on Enter
+  
       input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           saveBudget(userId, input.value, span);
         }
       });
       
-      // Cancel on Escape
+  
       input.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           span.classList.remove('editing');
@@ -295,7 +349,6 @@ $users = $userService->getAllUsers();
     
     function saveBudget(userId, newAmount, span) {
       console.log('saveBudget called with userId:', userId, 'newAmount:', newAmount);
-      // Create FormData for proper POST submission
       const formData = new FormData();
       formData.append('action', 'update');
       formData.append('user_id', userId);
@@ -312,9 +365,7 @@ $users = $userService->getAllUsers();
       })
       .then(text => {
         console.log('Response text:', text);
-        // Check if response indicates success
         if (text.includes('success') || text.trim() === '' || text.includes('Budget')) {
-          // Update the span directly without reload
           span.classList.remove('editing');
           span.textContent = parseFloat(newAmount).toFixed(2);
           console.log('Budget updated successfully');
@@ -336,26 +387,14 @@ $users = $userService->getAllUsers();
         .then(response => response.json())
         .then(data => {
           document.getElementById('user-name').textContent = data.user_name;
-          const tbody = document.getElementById('purchases-tbody');
-          tbody.innerHTML = '';
-          data.purchases.forEach(purchase => {
-            const row = `<tr>
-              <td>${purchase.aliment_nom}</td>
-              <td>${purchase.quantite}</td>
-              <td>${purchase.prix_total} TND</td>
-              <td>${purchase.date_achat}</td>
-              <td>
-                <button class="btn-sm btn-ghost" onclick="showPurchaseEditor(${purchase.id}, ${purchase.quantite}, ${purchase.prix_total})">Modifier</button>
-                <button class="btn-sm btn-ghost" style="color:red;" onclick="showDeleteModal(${purchase.id}, ${JSON.stringify(purchase.aliment_nom)})">Supprimer</button>
-              </td>
-            </tr>`;
-            tbody.innerHTML += row;
-          });
+          currentPurchasesData = data.purchases || [];
+          renderPurchases();
           document.getElementById('purchases-section').style.display = 'block';
         });
     }
 
     function showPurchaseEditor(id, quantite, prixTotal) {
+      console.log('showPurchaseEditor', { id, quantite, prixTotal });
       document.getElementById('edit-purchase-id').value = id;
       document.getElementById('edit-quantite').value = quantite;
       document.getElementById('edit-prix-total').value = prixTotal;
@@ -390,25 +429,44 @@ $users = $userService->getAllUsers();
       const purchaseId = document.getElementById('edit-purchase-id').value;
       const quantite = document.getElementById('edit-quantite').value;
       const prixTotal = document.getElementById('edit-prix-total').value;
-      fetch('update_purchase.php', {
+      const bodyData = new URLSearchParams();
+      bodyData.append('id', purchaseId);
+      bodyData.append('quantite', quantite);
+      bodyData.append('prix_total', prixTotal);
+
+      console.log('submitPurchaseEdit payload', {
+        id: purchaseId,
+        quantite: quantite,
+        prix_total: prixTotal
+      });
+      fetch('./update_purchase.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: purchaseId, quantite: quantite, prix_total: prixTotal })
+        body: bodyData
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP error ' + response.status);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('update_purchase response', data);
         if (data.success) {
           hidePurchaseEditor();
           viewPurchases(currentPurchasesUserId);
         } else {
-          alert('Erreur lors de la mise à jour : ' + (data.error || 'Veuillez réessayer.'));
+          alert('Erreur lors de la mise à jour : ' + (data.error || 'Veuillez réessayer.') + '\nValeurs reçues : ' + JSON.stringify(data.received || {}));
         }
+      })
+      .catch(error => {
+        console.error('Erreur lors de la mise à jour de l\'achat', error);
+        alert('Erreur lors de la mise à jour de l\'achat. Vérifiez la console du navigateur.');
       });
       return false;
     }
 
     function removePurchase(purchaseId) {
-      fetch('delete_purchase.php', {
+      fetch('./delete_purchase.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: purchaseId })
@@ -422,13 +480,11 @@ $users = $userService->getAllUsers();
         }
       });
     }
-    // Open budget modal for create or edit
     function openModal(mode, userId = null, montant = '') {
       document.getElementById('modal-title').textContent = mode === 'create' ? 'Ajouter un budget' : 'Modifier un budget';
       document.getElementById('action').value = mode;
       
       if (mode === 'edit') {
-        // For edit mode: set the user_id hidden field and disable the select
         document.getElementById('user_id').value = userId;
         document.getElementById('user_id').required = true;
         document.getElementById('user_select').value = userId;
@@ -436,7 +492,6 @@ $users = $userService->getAllUsers();
         document.getElementById('user_select').required = false;
         document.getElementById('montant').value = montant;
       } else {
-        // For create mode: enable the select and clear the hidden field
         document.getElementById('user_id').value = '';
         document.getElementById('user_id').required = false;
         document.getElementById('user_select').disabled = false;
@@ -448,12 +503,12 @@ $users = $userService->getAllUsers();
       document.getElementById('budget-modal').style.display = 'flex';
     }
 
-    // Close budget modal
+
     function closeModal() {
       document.getElementById('budget-modal').style.display = 'none';
     }
 
-    // Delete budget with confirmation
+  
     function deleteBudget(userId, userName) {
       if (confirm('Êtes-vous sûr de vouloir supprimer le budget de ' + userName + ' ?')) {
         const form = document.getElementById('delete-form');
@@ -462,7 +517,7 @@ $users = $userService->getAllUsers();
       }
     }
 
-    // Trigger inline edit from Modifier button
+   
     function triggerInlineEdit(userId) {
       console.log('triggerInlineEdit called with userId:', userId);
       const span = document.querySelector(`.budget-amount[data-user-id="${userId}"]`);
@@ -475,10 +530,25 @@ $users = $userService->getAllUsers();
       }
     }
 
-    // Close modal when clicking outside
-    document.getElementById('budget-modal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal();
+    window.addEventListener('DOMContentLoaded', function() {
+      const budgetModal = document.getElementById('budget-modal');
+      if (budgetModal) {
+        budgetModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+      }
+
+      const purchasesTbody = document.getElementById('purchases-tbody');
+      if (purchasesTbody) {
+        purchasesTbody.addEventListener('click', function(e) {
+          const button = e.target.closest('button[data-action]');
+          if (!button) return;
+          if (button.dataset.action === 'edit') {
+            showPurchaseEditor(button.dataset.purchaseId, button.dataset.quantite, button.dataset.prixTotal);
+          }
+        });
       }
     });
   </script>

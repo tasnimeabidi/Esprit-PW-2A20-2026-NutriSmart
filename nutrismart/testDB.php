@@ -1,4 +1,4 @@
-<?php
+ <?php
 require_once 'config/db_connect.php';
 
 // Get the connection object

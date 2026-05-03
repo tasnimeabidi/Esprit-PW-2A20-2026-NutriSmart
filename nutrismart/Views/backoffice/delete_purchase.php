@@ -7,7 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+if (!is_array($data)) {
+    parse_str($input, $data);
+}
+if (!is_array($data)) {
+    $data = $_POST;
+}
 $purchaseId = intval($data['id'] ?? 0);
 
 if ($purchaseId <= 0) {

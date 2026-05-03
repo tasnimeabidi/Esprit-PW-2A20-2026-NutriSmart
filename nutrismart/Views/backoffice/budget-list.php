@@ -1,11 +1,5 @@
 <?php
-/**
- * Budget List View - Pure presentation layer
- * This file should only contain HTML and minimal PHP for displaying data
- * All business logic is handled by BudgetController
- */
 
-// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -23,7 +17,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <body class="bo-shell-body">
 
-  <!-- Top Navigation Bar -->
   <header class="topbar">
     <a href="nutrismart-dashboard.html" class="topbar-logo">
       <span style="color:#3dba52">Nutri</span><span style="color:#8bc34a">Smart</span>
@@ -101,12 +94,10 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </aside>
 
-  <!-- Main Content Area -->
   <main class="bo-shell-main">
     <div class="app app--embed-dash">
       <div class="main dash-workspace">
 
-        <!-- Page Header -->
         <header class="bo-progression-head">
           <div>
             <h1 class="serif">Budget & Courses</h1>
@@ -119,7 +110,7 @@ if (session_status() === PHP_SESSION_NONE) {
           </div>
         </header>
 
-        <!-- Success/Error Messages -->
+
         <?php if (isset($_SESSION['success'])): ?>
           <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
             <?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
@@ -132,7 +123,6 @@ if (session_status() === PHP_SESSION_NONE) {
           </div>
         <?php endif; ?>
 
-        <!-- Metrics Cards -->
         <section class="metrics-row">
           <div class="metric-card border-forest">
             <div>
@@ -156,7 +146,6 @@ if (session_status() === PHP_SESSION_NONE) {
           </div>
         </section>
 
-        <!-- Budgets Table -->
         <section class="panel-card" style="margin-top:20px;">
           <h3 class="serif">Suivi des budgets utilisateurs</h3>
 
@@ -198,7 +187,6 @@ if (session_status() === PHP_SESSION_NONE) {
           </table>
         </section>
 
-        <!-- Inline Editing Styles -->
         <style>
           .budget-amount {
             cursor: pointer;
@@ -223,9 +211,17 @@ if (session_status() === PHP_SESSION_NONE) {
           }
         </style>
 
-        <!-- Purchases Section (Hidden by default) -->
         <section class="panel-card" id="purchases-section" style="display:none; margin-top:20px;">
           <h3 class="serif">Achats de l'utilisateur: <span id="user-name"></span></h3>
+          <div style="display:flex; gap:0.75rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap;">
+            <label for="purchase-sort" style="font-weight:600; margin:0;">Trier par :</label>
+            <select id="purchase-sort" onchange="changePurchaseSort(this.value)" style="padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+              <option value="date" selected>Date</option>
+              <option value="quantite">Quantité</option>
+              <option value="prix_total">Prix Total</option>
+            </select>
+            <button type="button" id="purchase-sort-order" onclick="togglePurchaseSortDirection()" style="padding:0.5rem 0.75rem; border:none; border-radius:4px; background:#3dba52; color:white; cursor:pointer;">Desc</button>
+          </div>
           <table class="bo-prog-users-table">
             <thead>
               <tr>
@@ -233,6 +229,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <th>Quantité</th>
                 <th>Prix Total</th>
                 <th>Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="purchases-tbody">
@@ -244,7 +241,6 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </main>
 
-  <!-- Budget Modal -->
   <div id="budget-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 2rem; border-radius: 8px; width: 400px; max-width: 90%;">
       <h2 id="modal-title" style="margin-top: 0; color: #3dba52;">Ajouter un budget</h2>
@@ -272,7 +268,6 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </div>
 
-  <!-- Purchase Edit Modal -->
   <div id="purchase-edit-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
     <div style="background:white; border-radius:12px; padding:2rem; width:420px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
       <h3 class="serif" style="margin-top:0;">Modifier achat</h3>
@@ -294,7 +289,6 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </div>
 
-  <!-- Purchase Delete Modal -->
   <div id="purchase-delete-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1200; justify-content:center; align-items:center;">
     <div style="background:white; border-radius:12px; padding:2rem; width:400px; max-width:90%; box-shadow:0 16px 40px rgba(0,0,0,0.18);">
       <h3 class="serif" style="margin-top:0;">Confirmer la suppression</h3>
@@ -306,7 +300,6 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </div>
 
-  <!-- Hidden Delete Form -->
   <form id="delete-form" method="POST" action="budget-admin.php" style="display:none;">
     <input type="hidden" name="action" value="delete">
     <input type="hidden" name="user_id" value="">
@@ -314,13 +307,61 @@ if (session_status() === PHP_SESSION_NONE) {
 
   <script>
     let currentPurchasesUserId = null;
+    let currentPurchasesData = [];
+    let currentPurchasesSort = { field: 'date', direction: 'desc' };
 
-    // Inline budget editing
+    function changePurchaseSort(field) {
+      currentPurchasesSort.field = field;
+      renderPurchases();
+    }
+
+    function togglePurchaseSortDirection() {
+      currentPurchasesSort.direction = currentPurchasesSort.direction === 'asc' ? 'desc' : 'asc';
+      document.getElementById('purchase-sort-order').textContent = currentPurchasesSort.direction === 'asc' ? 'Asc' : 'Desc';
+      renderPurchases();
+    }
+
+    function renderPurchases() {
+      const tbody = document.getElementById('purchases-tbody');
+      tbody.innerHTML = '';
+      const purchases = [...currentPurchasesData];
+      purchases.sort((a, b) => {
+        let field = currentPurchasesSort.field;
+        if (field === 'date') field = 'date_achat';
+        
+        let aValue = a[field];
+        let bValue = b[field];
+        if (currentPurchasesSort.field === 'date') {
+          aValue = new Date(aValue || '1970-01-01');
+          bValue = new Date(bValue || '1970-01-01');
+        } else {
+          aValue = Number(aValue || 0);
+          bValue = Number(bValue || 0);
+        }
+        if (aValue < bValue) return currentPurchasesSort.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return currentPurchasesSort.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+      purchases.forEach(purchase => {
+        const safeAlimentName = String(purchase.aliment_nom).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        const row = `<tr>
+          <td>${purchase.aliment_nom}</td>
+          <td>${purchase.quantite}</td>
+          <td>${purchase.prix_total} TND</td>
+          <td>${purchase.date_achat}</td>
+          <td>
+            <button type="button" class="btn-sm btn-ghost" data-action="edit" data-purchase-id="${purchase.id}" data-quantite="${purchase.quantite}" data-prix-total="${purchase.prix_total}">Modifier</button>
+            <button type="button" class="btn-sm btn-ghost" style="color:red;" onclick="showDeleteModal(${purchase.id}, '${safeAlimentName}')">Supprimer</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
     function editBudgetInline(span) {
       const userId = span.dataset.userId;
       const currentAmount = parseFloat(span.textContent).toFixed(2);
       
-      // Create input field
       const input = document.createElement('input');
       input.type = 'number';
       input.step = '0.01';
@@ -328,26 +369,22 @@ if (session_status() === PHP_SESSION_NONE) {
       input.value = currentAmount;
       input.className = 'budget-input';
       
-      // Replace span content with input
       span.classList.add('editing');
       span.textContent = '';
       span.appendChild(input);
       input.focus();
       input.select();
       
-      // Save on blur
       input.addEventListener('blur', function() {
         saveBudget(userId, input.value, span);
       });
       
-      // Save on Enter
       input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           saveBudget(userId, input.value, span);
         }
       });
       
-      // Cancel on Escape
       input.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           span.classList.remove('editing');
@@ -357,7 +394,6 @@ if (session_status() === PHP_SESSION_NONE) {
     }
     
     function saveBudget(userId, newAmount, span) {
-      // Create FormData for proper POST submission
       const formData = new FormData();
       formData.append('action', 'update');
       formData.append('user_id', userId);
@@ -391,26 +427,14 @@ if (session_status() === PHP_SESSION_NONE) {
         .then(response => response.json())
         .then(data => {
           document.getElementById('user-name').textContent = data.user_name;
-          const tbody = document.getElementById('purchases-tbody');
-          tbody.innerHTML = '';
-          data.purchases.forEach(purchase => {
-            const row = `<tr>
-              <td>${purchase.aliment_nom}</td>
-              <td>${purchase.quantite}</td>
-              <td>${purchase.prix_total} TND</td>
-              <td>${purchase.date_achat}</td>
-              <td>
-                <button class="btn-sm btn-ghost" onclick="showPurchaseEditor(${purchase.id}, ${purchase.quantite}, ${purchase.prix_total})">Modifier</button>
-                <button class="btn-sm btn-ghost" style="color:red;" onclick="showDeleteModal(${purchase.id}, ${JSON.stringify(purchase.aliment_nom)})">Supprimer</button>
-              </td>
-            </tr>`;
-            tbody.innerHTML += row;
-          });
+          currentPurchasesData = data.purchases || [];
+          renderPurchases();
           document.getElementById('purchases-section').style.display = 'block';
         });
     }
 
     function showPurchaseEditor(id, quantite, prixTotal) {
+      console.log('showPurchaseEditor', { id, quantite, prixTotal });
       document.getElementById('edit-purchase-id').value = id;
       document.getElementById('edit-quantite').value = quantite;
       document.getElementById('edit-prix-total').value = prixTotal;
@@ -445,25 +469,44 @@ if (session_status() === PHP_SESSION_NONE) {
       const purchaseId = document.getElementById('edit-purchase-id').value;
       const quantite = document.getElementById('edit-quantite').value;
       const prixTotal = document.getElementById('edit-prix-total').value;
-      fetch('update_purchase.php', {
+      const bodyData = new URLSearchParams();
+      bodyData.append('id', purchaseId);
+      bodyData.append('quantite', quantite);
+      bodyData.append('prix_total', prixTotal);
+
+      console.log('submitPurchaseEdit payload', {
+        id: purchaseId,
+        quantite: quantite,
+        prix_total: prixTotal
+      });
+      fetch('./update_purchase.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: purchaseId, quantite: quantite, prix_total: prixTotal })
+        body: bodyData
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP error ' + response.status);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('update_purchase response', data);
         if (data.success) {
           hidePurchaseEditor();
           viewPurchases(currentPurchasesUserId);
         } else {
-          alert('Erreur lors de la mise à jour : ' + (data.error || 'Veuillez réessayer.'));
+          alert('Erreur lors de la mise à jour : ' + (data.error || 'Veuillez réessayer.') + '\nValeurs reçues : ' + JSON.stringify(data.received || {}));
         }
+      })
+      .catch(error => {
+        console.error('Erreur lors de la mise à jour de l\'achat', error);
+        alert('Erreur lors de la mise à jour de l\'achat. Vérifiez la console du navigateur.');
       });
       return false;
     }
 
     function removePurchase(purchaseId) {
-      fetch('delete_purchase.php', {
+      fetch('./delete_purchase.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: purchaseId })
@@ -528,9 +571,25 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 
     // Close modal when clicking outside
-    document.getElementById('budget-modal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal();
+    window.addEventListener('DOMContentLoaded', function() {
+      const budgetModal = document.getElementById('budget-modal');
+      if (budgetModal) {
+        budgetModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+      }
+
+      const purchasesTbody = document.getElementById('purchases-tbody');
+      if (purchasesTbody) {
+        purchasesTbody.addEventListener('click', function(e) {
+          const button = e.target.closest('button[data-action]');
+          if (!button) return;
+          if (button.dataset.action === 'edit') {
+            showPurchaseEditor(button.dataset.purchaseId, button.dataset.quantite, button.dataset.prixTotal);
+          }
+        });
       }
     });
   </script>
