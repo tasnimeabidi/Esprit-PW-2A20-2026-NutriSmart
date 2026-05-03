@@ -145,6 +145,31 @@ body {
   text-decoration: none;
   opacity: 0.9;
 }
+.btn-ghost{
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--forest);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-decoration: none;
+  border: 1px solid var(--forest);
+  cursor: pointer;
+}
+.btn-green{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--forest);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
 
 .fo-topnav-admin:hover {
   text-decoration: underline;
