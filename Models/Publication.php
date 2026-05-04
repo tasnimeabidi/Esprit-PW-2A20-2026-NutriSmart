@@ -84,4 +84,27 @@ class Publication {
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+public function getLikes($id) {
+
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) 
+        FROM reaction 
+        WHERE id_publication = ? AND type_reaction = 'like'
+    ");
+
+    $stmt->execute([$id]);
+    return $stmt->fetchColumn();
+}
+
+public function getDislikes($id) {
+
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) 
+        FROM reaction 
+        WHERE id_publication = ? AND type_reaction = 'dislike'
+    ");
+
+    $stmt->execute([$id]);
+    return $stmt->fetchColumn();
+}
 }
