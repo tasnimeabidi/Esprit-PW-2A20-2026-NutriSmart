@@ -122,6 +122,19 @@ switch ($action) {
         break;
 
     // ==========================================
+    // 5.c. MODULE IA : RECOMMANDATIONS (SMART PICKS)
+    // ==========================================
+    case 'get_ai_picks':
+        if (!isset($_SESSION['user_id'])) {
+            respondJson(['success' => false, 'message' => 'Non connecté']);
+        }
+        $forceRefresh  = ($_POST['forceRefresh']  ?? 'false') === 'true';
+        $shownTitles   = json_decode($_POST['shownTitles'] ?? '[]', true) ?: [];
+        $result = $controller->getAiPicks($_SESSION['user_id'], $forceRefresh, $shownTitles);
+        respondJson($result ?: ['success' => false, 'message' => 'Erreur IA.']);
+        break;
+
+    // ==========================================
     // 6. VÉRIFICATION DE LA SESSION ACTIVE
     // ==========================================
     case 'session':
@@ -144,6 +157,8 @@ switch ($action) {
                     'name' => trim($user['nom']),
                     'email' => trim($user['email']),
                     'role' => trim($user['role']),
+                    'genre' => trim($user['genre'] ?? ''),
+                    'objectifs' => trim($user['objectifs'] ?? ''),
                     'hasFaceId' => !empty($user['facial_descriptor'])
                 ];
             } elseif ($isAdmin) {
@@ -175,6 +190,24 @@ switch ($action) {
         // Redirection classique de retour à l'accueil visiteur
         header("Location: nutrismart-website.html");
         exit;
+
+    // ==========================================
+    // 8. FORMULAIRE DE CONTACT
+    // ==========================================
+    case 'contact':
+        $nom = $_POST['nom'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $sujet = $_POST['sujet'] ?? '';
+        $message = $_POST['message'] ?? '';
+
+        if (empty($nom) || empty($email) || empty($message)) {
+            respondJson(['success' => false, 'message' => 'Veuillez remplir tous les champs obligatoires.']);
+        }
+        
+        // Ici, on pourrait enregistrer en base ou envoyer un mail.
+        // Pour la démo, on simule un succès.
+        respondJson(['success' => true, 'message' => 'Votre message a été envoyé avec succès ! Notre équipe vous répondra sous 24h.']);
+        break;
 
     // ==========================================
     // PAR DÉFAUT (ERREUR)

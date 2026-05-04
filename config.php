@@ -14,7 +14,7 @@ define('SMTP_FROM_NAME', 'NutriSmart');
 
 // OAuth Configuration (Google)
 define('OAUTH_GOOGLE_CLIENT_ID', '783998000082-6njhv9j0m41nheki10e7293n0rovm7l2.apps.googleusercontent.com');
-define('OAUTH_GOOGLE_CLIENT_SECRET', 'VOTRE_SECRET_GOOGLE_ICI_POUR_GITHUB');
+define('OAUTH_GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET');
 
 // OAuth Configuration (Facebook)
 define('OAUTH_FACEBOOK_CLIENT_ID', '1296056348517578');

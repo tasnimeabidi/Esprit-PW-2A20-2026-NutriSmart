@@ -8,69 +8,215 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="css/shared-styles.css" />
+   <link rel="stylesheet" href="css/shared-styles.css" />
+  <script src="js/avatar-utils.js"></script>
   <style>
-    /* Page-specific layout tweaks */
-    .profile-hero {
-      padding: 6rem 0 8rem 0; /* Add space between the form and footer */
-      min-height: calc(100vh - 80px);
+    /* Modern Split Layout for Profile */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fdfdfd;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .split-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Side Image / Info */
+    .profile-side-info {
+      flex: 1.1;
+      background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      padding: 4rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      color: white;
+      position: relative;
     }
 
-    .profile-container {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-
-    body {
-      background: #0f1a11;
-      min-height: 100vh;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
+    .profile-side-info::after {
+      content: '';
+      position: absolute;
       top: 0;
-      left: 0;
+      right: 0;
       width: 100%;
       height: 100%;
-      background: url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=80") center/cover fixed;
-      filter: blur(10px) brightness(0.7);
-      z-index: -2;
-      transform: scale(1.1); /* Avoid blurred edge artifacts */
+      background: linear-gradient(135deg, rgba(74, 124, 89, 0.4), rgba(34, 60, 42, 0.6));
+      z-index: 1;
     }
 
-    .profile-header {
-      text-align: center;
-      margin-bottom: 3rem;
-      color: white;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    .info-content {
+      position: relative;
+      z-index: 2;
     }
 
-    .profile-header h1 {
+    .info-content h1 {
       font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
       font-weight: 900;
-      font-size: 2.8rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
     }
 
-    .profile-header p {
+    .info-content p {
       font-size: 1.2rem;
       opacity: 0.9;
-      max-width: 600px;
-      margin: 0 auto;
+      margin-bottom: 3rem;
+    }
+
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .benefit-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+    }
+
+    /* Form Section */
+    .profile-form-section {
+      flex: 1;
+      background: #fdfdfd;
+      display: grid;
+      place-items: center;
+      padding: 4rem;
+    }
+
+    .form-container-inner {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .profile-card {
+      background: rgb(255, 255, 255);
+      border-radius: 2rem;
+      padding: 3rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    /* Glass Badges Style */
+    .glass-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.8rem 1.6rem;
+      border-radius: 4rem;
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .glass-badge:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .glass-badge.green {
+      background: rgba(74, 124, 89, 0.3);
+      border-color: rgba(74, 124, 89, 0.4);
+    }
+
+    .input-box-modern {
+      margin-bottom: 1.2rem;
+    }
+
+    .input-box-modern label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a7c59;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-box-modern input,
+    .input-box-modern select {
+      width: 100%;
+      padding: 0.8rem 1.4rem;
+      border-radius: 3rem;
+      border: 1.5px solid #eee;
+      background: #f9f9f9;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2d3436;
+      transition: all 0.3s;
+    }
+
+    .input-box-modern input:focus,
+    .input-box-modern select:focus {
+      outline: none;
+      border-color: #4a7c59;
+      background: white;
+      box-shadow: 0 8px 20px rgba(74, 124, 89, 0.1);
+    }
+
+    .btn-save-modern {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 3rem;
+      background: #4a7c59;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .btn-save-modern:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(74, 124, 89, 0.2);
+    }
+
+    @media (max-width: 1100px) {
+      .split-wrapper {
+        flex-direction: column;
+      }
+
+      .profile-side-info {
+        padding: 4rem 2rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <!-- NAV -->
-  <nav id="navbar">
-    <a href="nutrismart-website.html" class="nav-logo">
+  <nav>
+    <a href="nutrismart-home.html" class="nav-logo">
       <!-- logo -->
       <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
         style="overflow: visible">
@@ -136,119 +282,171 @@
     </div>
   </nav>
 
-  <main class="profile-hero">
-    <div class="profile-container">
-      <header class="profile-header">
-        <p id="profile-welcome-badge" style="display:inline-block; background: rgba(74,124,89,0.2); border: 1px solid rgba(74,124,89,0.5); color: #8fbc8f; font-size: 0.85rem; font-weight: 600; padding: 0.4rem 1.1rem; border-radius: 2rem; letter-spacing: 0.05em; margin-bottom: 1rem;" data-i18n="prof_welcome">Bienvenue !</p>
+  <div class="split-wrapper">
+    <!-- Left Side: Welcome & Benefits -->
+    <section class="profile-side-info">
+      <div class="info-content">
+        <div class="badges-row">
+          <div id="profile-welcome-badge" class="glass-badge green" data-i18n="prof_welcome">Bienvenue !</div>
+        </div>
         <h1 data-i18n="prof_title">Complétez votre Profil</h1>
         <p data-i18n="prof_sub">Quelques informations pour personnaliser votre expérience NutriSmart.</p>
-        <div style="margin-top:1rem; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-          <span style="background:rgba(255,255,255,0.1); border-radius:2rem; padding:0.35rem 1rem; font-size:0.85rem; color:white;" id="profile-user-name">👤 Chargement...</span>
-          <span style="background:rgba(255,255,255,0.1); border-radius:2rem; padding:0.35rem 1rem; font-size:0.85rem; color:rgba(255,255,255,0.7);" id="profile-user-email">📧 ...</span>
-        </div>
-      </header>
 
-      <div class="form-card profile-card">
-        <!-- ========================================== -->
-        <!-- CRUD : UPDATE (Mise à jour du profil)      -->
-        <!-- Ce formulaire enverra les nouvelles        -->
-        <!-- mensurations via process_profile.php en    -->
-        <!-- utilisant la clé de session de l'utilisateur.-->
-        <!-- ========================================== -->
-        <form method="POST" action="api.php?action=update_profile" id="profileForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label data-i18n="lbl_age">Âge</label>
-              <input type="number" name="age" value="" required min="1" max="120" placeholder="Tapez votre age" data-i18n-placeholder="ph_age" />
+
+
+        <ul class="benefits-list">
+          <li class="benefit-item">
+            <span class="benefit-icon">🥗</span>
+            <span data-i18n="benefit_1">Plan alimentaire personnalisé selon vos besoins</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">📈</span>
+            <span data-i18n="benefit_2">Suivi de progression en temps réel</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">🤖</span>
+            <span data-i18n="benefit_3">Assistant nutritionnel AI à votre écoute</span>
+          </li>
+        </ul>
+
+        <div style="margin-top: 4rem; display: flex; flex-wrap: wrap;">
+          <div class="glass-badge" id="profile-user-name">
+            <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span id="profile-user-name-span">Chargement...</span>
+          </div>
+          <div class="glass-badge" id="profile-user-email">
+            <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <span id="profile-user-email-span">...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Side: Form -->
+    <section class="profile-form-section">
+      <div class="form-container-inner">
+        <div class="profile-card">
+          <form method="POST" action="api.php?action=update_profile" id="profileForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_age">Âge</label>
+                <input type="number" name="age" required min="1" max="120" placeholder="Ex: 25"
+                  data-i18n-placeholder="ph_age" />
+              </div>
+              <div class="input-box-modern">
+                <label data-i18n="lbl_gender">Genre</label>
+                <select name="genre">
+                  <option value="Aucun" data-i18n="g_none">Aucun</option>
+                  <option value="Homme" data-i18n="g_m">Homme</option>
+                  <option value="Femme" data-i18n="g_f">Femme</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label data-i18n="lbl_gender">Genre</label>
-              <select name="genre">
-                <option value="Aucun" data-i18n="g_none">Aucun</option>
-                <option value="Homme" data-i18n="g_m">Homme</option>
-                <option value="Femme" data-i18n="g_f">Femme</option>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_weight">Poids (kg)</label>
+                <input type="number" name="poids" step="0.1" required placeholder="Ex: 70"
+                  data-i18n-placeholder="ph_weight" />
+              </div>
+              <div class="input-box-modern">
+                <label data-i18n="lbl_height">Taille (cm)</label>
+                <input type="number" name="taille" required placeholder="Ex: 175" data-i18n-placeholder="ph_height" />
+              </div>
+            </div>
+
+            <div class="input-box-modern">
+              <label data-i18n="lbl_goal">Objectif Principal</label>
+              <select name="objectif">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="Maintien et Tonification" data-i18n="goal_1">Maintien et Tonification</option>
+                <option value="Perte de poids" data-i18n="goal_2">Perte de poids</option>
+                <option value="Prise de masse musculaire" data-i18n="goal_3">Prise de masse musculaire</option>
+                <option value="Santé métabolique" data-i18n="goal_4">Santé métabolique</option>
               </select>
             </div>
-            <div class="form-group">
-              <label data-i18n="lbl_weight">Poids Actuel (kg)</label>
-              <input type="number" name="poids" step="0.1" value="" required placeholder="Tapez votre poids" data-i18n-placeholder="ph_weight" />
+
+            <div class="input-box-modern">
+              <label data-i18n="lbl_pref">Préférences alimentaires</label>
+              <select name="preference">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="vegetarien" data-i18n="pref_1">Végétarien</option>
+                <option value="vegan" data-i18n="pref_2">Vegan</option>
+                <option value="sans-gluten" data-i18n="pref_3">Sans gluten</option>
+                <option value="sans-lactose" data-i18n="pref_4">Sans lactose</option>
+                <option value="low-carb" data-i18n="pref_5">Low carb</option>
+              </select>
             </div>
-            <div class="form-group">
-              <label data-i18n="lbl_height">Taille (cm)</label>
-              <input type="number" name="taille" value="" required placeholder="Tapez votre taille" data-i18n-placeholder="ph_height" />
-            </div>
-          </div>
 
-          <div class="form-group" style="margin-top: 1.5rem">
-            <label data-i18n="lbl_goal">Objectif Principal</label>
-            <select name="objectif">
-              <option value="aucune" data-i18n="g_none">Aucune</option>
-              <option value="Maintien et Tonification" data-i18n="goal_1">Maintien et Tonification</option>
-              <option value="Perte de poids" data-i18n="goal_2">Perte de poids</option>
-              <option value="Prise de masse musculaire" data-i18n="goal_3">Prise de masse musculaire</option>
-              <option value="Santé métabolique" data-i18n="goal_4">Santé métabolique</option>
-            </select>
-          </div>
 
-          <div class="form-group">
-            <label data-i18n="lbl_pref">Préférences alimentaires</label>
-            <select name="preference">
-              <option value="aucune" data-i18n="g_none">Aucune</option>
-              <option value="vegetarien" data-i18n="pref_1">Végétarien</option>
-              <option value="vegan" data-i18n="pref_2">Vegan</option>
-              <option value="sans-gluten" data-i18n="pref_3">Sans gluten</option>
-              <option value="sans-lactose" data-i18n="pref_4">Sans lactose</option>
-              <option value="low-carb" data-i18n="pref_5">Low carb</option>
-            </select>
-          </div>
-
-          <div class="btn-update-container">
-            <button type="submit" class="btn-primary btn-small" data-i18n="btn_save_pref">
-              Enregistrer les préférences &rarr;
+            <button type="submit" class="btn-save-modern" data-i18n="btn_save_pref">
+              Enregistrer mon profil
             </button>
-          </div>
-          </div>
-        </form>
-      </div>
+          </form>
 
-      <!-- Section: Reconnaissance Faciale (Face ID) -->
-      <div id="face-id-section" class="form-card profile-card" style="margin-top: 2rem; background: rgba(255,255,255,0.85); display: none;">
-        <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: #1a2f21;">
-          <svg style="width:24px; vertical-align:middle; margin-right:8px; color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          <span data-i18n="face_title">Sécurité Biométrique (Face ID)</span>
-        </h2>
-        
-        <div style="text-align: center; padding: 1rem;">
-          <p style="color:#64748b; margin-bottom: 1.5rem; font-size: 0.95rem;" data-i18n="face_desc">Associez votre visage à votre compte NutriSmart pour vous connecter d'un simple regard sans mot de passe.</p>
-          
-          <div id="face-id-container" style="display: flex; flex-direction: column; align-items: center;">
+          <!-- Face ID Section Premium Design -->
+          <div id="face-id-section" class="face-id-card" style="display: none; margin-top: 3rem;">
+            <h3 class="face-id-title">
+              <svg style="width:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path
+                  d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span data-i18n="face_title">Biométrie Face ID</span>
+            </h3>
+
+            <!-- Setup View -->
             <div id="face-setup-view">
-              <video id="enrollVideo" width="320" height="240" autoplay muted style="border-radius: 12px; background: #000; margin-bottom: 1rem; border: 2px solid var(--primary); object-fit: cover;"></video>
-              <div id="enrollStatus" style="font-weight: 600; margin-bottom: 1rem; color: #333;" data-i18n="face_ready">Prêt à configurer.</div>
-              <button id="btnEnroll" type="button" class="btn-primary btn-small" style="width: 100%; max-width: 320px; margin-top: 1rem;" onclick="enrollFace('enrollVideo', 'enrollStatus', 'btnEnroll')" data-i18n="btn_face_enable">Activer Face ID</button>
+              <div class="face-id-video-container">
+                <video id="enrollVideo" class="face-id-video" autoplay muted></video>
+                <div id="scanLine" class="scanning-line"></div>
+              </div>
+              <div id="enrollStatus" class="face-id-status" data-i18n="face_ready">Prêt à configurer</div>
+              <button id="btnEnroll" type="button" class="btn-face-id"
+                onclick="enrollFace('enrollVideo', 'enrollStatus', 'btnEnroll')" data-i18n="btn_face_enable">
+                Activer Face ID
+              </button>
             </div>
-            
-            <div id="face-manage-view" style="display: none; width: 100%; max-width: 320px;">
-              <div style="background: rgba(61, 186, 82, 0.1); padding: 1.5rem; border-radius: 12px; text-align: center; border: 1px dashed var(--primary); margin-bottom: 1rem;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
-                <div style="font-weight: 700; color: #1a2f21;" data-i18n="face_enabled">Face ID est activé</div>
-                <div style="font-size: 0.8rem; color: #64748b;" data-i18n="face_secured">Votre compte est sécurisé par biométrie.</div>
+
+            <!-- Manage View (When already enabled) -->
+            <div id="face-manage-view" style="display: none;">
+              <div
+                style="background: rgba(74, 124, 89, 0.1); padding: 2rem; border-radius: 2rem; text-align: center; border: 1.5px dashed #4a7c59; margin-bottom: 1.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
+                <div style="font-weight: 800; color: #4a7c59; font-size: 1.1rem;" data-i18n="face_enabled">Face ID
+                  Activé</div>
+                <p style="font-size: 0.85rem; color: #4a7c59; opacity: 0.8; margin-top: 0.5rem;">Votre visage est
+                  enregistré en toute sécurité.</p>
               </div>
-              <div id="deleteStatus" style="font-weight: 600; margin-bottom: 1rem; color: #333; text-align: center;"></div>
-              <div style="display: flex; gap: 0.8rem; justify-content: center;">
-                <button type="button" class="btn-sm" style="flex: 1; background: #f2994a; color: white; border: none; border-radius: 0.8rem; padding: 0.6rem; cursor: pointer; font-weight: 700;" onclick="document.getElementById('face-manage-view').style.display='none'; document.getElementById('face-setup-view').style.display='block';" data-i18n="btn_edit">✏️ Modifier</button>
-                <button id="btnDeleteFace" type="button" class="btn-sm" style="flex: 1; background: #e53935; color: white; border: none; border-radius: 0.8rem; padding: 0.6rem; cursor: pointer; font-weight: 700;" onclick="deleteFaceID('deleteStatus', 'btnDeleteFace')" data-i18n="btn_del">🗑️ Supprimer</button>
+              <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn-face-id" style="flex: 1; padding: 0.7rem; font-size: 0.9rem;"
+                  onclick="document.getElementById('face-manage-view').style.display='none'; document.getElementById('face-setup-view').style.display='block';"
+                  data-i18n="btn_edit">
+                  Refaire le scan
+                </button>
+                <button id="btnDeleteFace" type="button" class="btn-face-id"
+                  style="flex: 1; padding: 0.7rem; font-size: 0.9rem; border-color: #ef4444 !important; color: #ef4444 !important;"
+                  onclick="deleteFaceID('deleteStatus', 'btnDeleteFace')" data-i18n="btn_del">
+                  Supprimer
+                </button>
               </div>
+              <div id="deleteStatus"
+                style="font-size: 0.85rem; margin-top: 1rem; text-align: center; font-weight: 600;"></div>
             </div>
           </div>
         </div>
       </div>
-
-    </div>
-  </main>
+  </div>
+  </section>
+  </div>
   <!-- FOOTER -->
   <footer id="contact">
     <div class="footer-inner">
@@ -335,10 +533,23 @@
       <div class="footer-col">
         <h5>Suivez-nous</h5>
         <div class="footer-social-wrap">
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
         </div>
         <h5>Légal</h5>
         <ul>
@@ -361,15 +572,28 @@
       <div class="lang-selector-wrap">
         <button class="lang-btn" id="langBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
           <span>Français</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </button>
         <div class="lang-popover" id="langPopover">
-          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
         </div>
       </div>
     </div>
@@ -406,7 +630,7 @@
       .then(data => {
         if (data.loggedIn) {
           const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
-          
+
           if (!isAdmin) {
             document.getElementById('user-nav-auth').style.display = 'flex';
             document.getElementById('public-nav-auth').style.display = 'none';
@@ -416,18 +640,12 @@
             document.getElementById('public-nav-auth').style.display = 'flex';
           }
 
-          // Apply consistent dynamic color based on name
-          const getAvatarColor = (name) => {
-            const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            return colors[Math.abs(hash) % colors.length];
-          };
-
           const userCircle = document.getElementById('user-initial');
           if (userCircle) {
-            userCircle.style.background = getAvatarColor(data.name);
             userCircle.textContent = data.name.charAt(0).toUpperCase();
+            const style = getAvatarStyle(data.name);
+            userCircle.style.background = style.bg;
+            userCircle.style.color = style.text;
           }
 
           document.getElementById('dropdown-name').textContent = data.name;
@@ -439,20 +657,21 @@
             const firstName = data.name.split(' ')[0];
             welcomeBadge.textContent = '✨ Bienvenue, ' + firstName + ' !';
           }
-          const profileName = document.getElementById('profile-user-name');
-          if (profileName) profileName.textContent = '👤 ' + data.name;
-          const profileEmail = document.getElementById('profile-user-email');
-          if (profileEmail) profileEmail.textContent = '📧 ' + data.email;
+          const profileName = document.getElementById('profile-user-name-span');
+          if (profileName) profileName.textContent = data.name;
+          const profileEmail = document.getElementById('profile-user-email-span');
+          if (profileEmail) profileEmail.textContent = data.email;
 
           // --- Verification Message Handling ---
           const params = new URLSearchParams(window.location.search);
           if (params.has('verified')) {
             const successMsg = document.createElement('div');
-            successMsg.style.cssText = "background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #27ae60; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600;";
+            successMsg.className = "glass-badge";
+            successMsg.style.cssText = "background: rgba(46, 204, 113, 0.2); border: 1px solid rgba(46, 204, 113, 0.4); color: white; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600; width: 100%; justify-content: center;";
             successMsg.setAttribute('data-i18n', 'msg_verified');
-            successMsg.textContent = "✅ Compte activé avec succès ! Bienvenue chez NutriSmart. Veuillez compléter votre profil.";
-            const container = document.querySelector('.profile-container');
-            if (container) container.prepend(successMsg);
+            successMsg.textContent = "✅ Compte activé avec succès !";
+            const infoContent = document.querySelector('.info-content');
+            if (infoContent) infoContent.prepend(successMsg);
           }
 
           // Show Bio security section only if logged in
@@ -497,27 +716,28 @@
     }
 
   </script>
-    <script src="js/translations.js"></script>
-    <script>
-      // Monkey patch setLang for placeholders logic
-      const originalSetLang = window.setLang;
-      if (originalSetLang) {
-        window.setLang = (lang) => {
-          originalSetLang(lang);
-          // Apply translations to placeholders
-          document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if (translations && translations[lang] && translations[lang][key]) {
-              el.setAttribute('placeholder', translations[lang][key]);
-            }
-          });
-        }
-        // initial trigger for placeholders
-        const savedLang = localStorage.getItem('preferred_lang') || 'fr';
-        window.setLang(savedLang);
+  <script src="js/translations.js"></script>
+  <script>
+    // Monkey patch setLang for placeholders logic
+    const originalSetLang = window.setLang;
+    if (originalSetLang) {
+      window.setLang = (lang) => {
+        originalSetLang(lang);
+        // Apply translations to placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (translations && translations[lang] && translations[lang][key]) {
+            el.setAttribute('placeholder', translations[lang][key]);
+          }
+        });
       }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    <script src="js/face-auth.js"></script>
-  </body>
+      // initial trigger for placeholders
+      const savedLang = localStorage.getItem('preferred_lang') || 'fr';
+      window.setLang(savedLang);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="js/face-auth.js"></script>
+</body>
+
 </html>

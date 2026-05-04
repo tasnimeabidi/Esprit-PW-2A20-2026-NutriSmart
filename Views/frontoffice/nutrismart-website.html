@@ -8,7 +8,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="css/shared-styles.css" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=2" />
+  <script src="js/avatar-utils.js"></script>
   <style>
     /* ── HERO ── */
     .hero {
@@ -196,67 +197,7 @@
       animation: fadeUp 0.8s 0.5s ease both;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--mid));
-      color: var(--white);
-      padding: 0.85rem 2rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-primary:hover,
-    .nav-cta:hover {
-      background: var(--lime) !important;
-      color: var(--forest) !important;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(196, 212, 168, 0.4);
-    }
-
-    .btn-primary:active,
-    .nav-cta:active {
-      background: var(--orange) !important;
-      color: var(--white) !important;
-      transform: translateY(0);
-      box-shadow: 0 4px 12px rgba(242, 153, 74, 0.4);
-    }
-
-    .btn-gradient {
-      background: linear-gradient(135deg, var(--orange), var(--peach));
-      color: var(--white);
-      padding: 0.85rem 2rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-gradient:hover {
-      background: var(--lime) !important;
-      color: var(--forest) !important;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(196, 212, 168, 0.4);
-    }
-
-    .btn-gradient:active {
-      background: var(--primary) !important;
-      color: var(--white) !important;
-      transform: translateY(0);
-      box-shadow: 0 4px 12px rgba(74, 124, 89, 0.4);
-    }
+    /* Hero Buttons now handled globally by shared-styles.css */
 
     .btn-outline {
       background: transparent;
@@ -765,7 +706,7 @@
     }
 
     .ai-visual {
-      background: linear-gradient(to right, rgba(34, 60, 42, 0.85), rgba(34, 60, 42, 0.7)), url(\'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80\') center/cover;
+      background: linear-gradient(to right, rgba(34, 60, 42, 0.85), rgba(34, 60, 42, 0.7)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80') center/cover;
       border-radius: 1.8rem;
       padding: 2rem;
       position: relative;
@@ -883,13 +824,15 @@
       background: var(--light-g) !important;
       color: var(--forest) !important;
       transform: translateY(-2px);
+    }
   </style>
 </head>
 
 <body>
+
   <!-- NAV -->
   <nav id="navbar">
-    <a href="#" class="nav-logo">
+    <a href="nutrismart-website.html" class="nav-logo">
       <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
         style="overflow: visible">
         <mask id="biteMask">
@@ -975,7 +918,7 @@
           onclick="event.preventDefault(); document.getElementById('loginModal').style.display='flex'">
           Connexion
         </a>
-        <a href="#features" class="btn-gradient"> Fonctionnalités</a>
+        <a href="#features" class="btn-beige"> Fonctionnalités</a>
       </div>
       <div class="hero-stats">
         <div class="stat-item">
@@ -1010,14 +953,6 @@
         filter: blur(20px); /* Ajout d'un flou pour un effet halo plus doux mais intense */
       "></div>
 
-      <!-- Mini Floating Plates -->
-      <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"
-        class="mini-plate p-1" alt="mini-dish">
-      <img src="https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=400&q=80"
-        class="mini-plate p-2" alt="mini-dish">
-      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80"
-        class="mini-plate p-3" alt="mini-dish">
-
       <!-- DOTS PATTERNS HERO AGRANDIS -->
       <div class="dots-pattern dots-tl" style="width: 250px; height: 250px; top: 5%; left: 5%;"></div>
       <div class="dots-pattern dots-br" style="width: 250px; height: 250px; bottom: 5%; right: 5%;"></div>
@@ -1038,9 +973,12 @@
         </div>
       </div>
 
-      <div class="card-float green-card tall">
-        <h4 data-i18n="cal_title">Objectif calories</h4>
-        <p style="margin-bottom: 0.5rem" data-i18n="cal_sub">2 100 kcal / jour</p>
+      <div class="card-float green-card tall" style="position: relative; z-index: 5;">
+
+        <div style="position: relative; z-index: 2;">
+          <h4 data-i18n="cal_title">Objectif calories</h4>
+          <p style="margin-bottom: 0.5rem" data-i18n="cal_sub">2 100 kcal / jour</p>
+        </div>
         <div class="progress-ring">
           <svg viewBox="0 0 70 70" width="70" height="70">
             <circle cx="35" cy="35" r="29" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="6" />
@@ -1120,7 +1058,16 @@
   </section>
 
   <!-- FEATURES -->
-  <section class="section" id="features">
+  <section class="section" id="features" style="position:relative; overflow:hidden;">
+    <!-- 🎨 Stickers -->
+    <img src="../../image/s.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:120px; top:40px; left:-10px; transform:rotate(-13deg); opacity:0.88; pointer-events:none; filter:drop-shadow(2px 5px 10px rgba(0,0,0,0.18));">
+    <img src="../../image/sti.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:95px; top:80px; right:-5px; transform:rotate(10deg); opacity:0.82; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.15));">
+    <img src="../../image/stick.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:85px; bottom:60px; left:-8px; transform:rotate(16deg); opacity:0.80; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.14));">
+    <img src="../../image/sticker.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:75px; bottom:30px; right:-5px; transform:rotate(-11deg); opacity:0.85; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.16));">
     <div class="section-tag" data-i18n="feat_tag">Fonctionnalités</div>
     <h2 data-i18n="feat_title">Tout ce dont vous avez besoin,<br />en un seul endroit.</h2>
     <p class="section-sub" data-i18n="feat_sub">
@@ -1130,8 +1077,7 @@
 
     <div class="features-grid">
       <div class="feat-card card-forest">
-        <img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Health Data" />
+        <img src="../../image/user.jpg" class="feat-img" alt="Health Data" />
         <h3 data-i18n="f1_t">Profil Personnalisé</h3>
         <p data-i18n="f1_d">
           Créez votre profil nutritionnel avec vos objectifs, restrictions
@@ -1141,8 +1087,7 @@
       </div>
 
       <div class="feat-card card-primary">
-        <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Aliments" />
+        <img src="../../image/base.jpg" class="feat-img" alt="Aliments" />
         <h3 data-i18n="f2_t">Base de Données Alimentaire</h3>
         <p data-i18n="f2_d">
           Accédez à une base de données riche d'aliments avec valeurs
@@ -1152,8 +1097,7 @@
       </div>
 
       <div class="feat-card card-orange">
-        <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Planification" />
+        <img src="../../image/repas.jpg" class="feat-img" alt="Planification" />
         <h3 data-i18n="f3_t">Planification Intelligente</h3>
         <p data-i18n="f3_d">
           Notre algorithme génère automatiquement des plans de repas
@@ -1163,8 +1107,7 @@
       </div>
 
       <div class="feat-card card-peach">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Tracking" />
+        <img src="../../image/suivi.jpg" class="feat-img" alt="Tracking" />
         <h3 data-i18n="f4_t">Suivi de Progression</h3>
         <p data-i18n="f4_d">
           Visualisez votre évolution avec des graphiques interactifs. Suivez
@@ -1174,8 +1117,7 @@
       </div>
 
       <div class="feat-card card-lime">
-        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Budget" />
+        <img src="../../image/grocery.jpg" class="feat-img" alt="Budget" />
         <h3 data-i18n="f5_t">Courses & Budget</h3>
         <p data-i18n="f5_d">
           Générez automatiquement votre liste de courses depuis votre plan de
@@ -1185,8 +1127,7 @@
       </div>
 
       <div class="feat-card card-mid">
-        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"
-          class="feat-img" alt="Recettes" />
+        <img src="../../image/ground.jpg" class="feat-img" alt="Recettes" />
         <h3 data-i18n="f6_t">Carnet de Recettes</h3>
         <p data-i18n="f6_d">
           Accédez à des centaines de recettes gourmandes et saines. Sauvegardez
@@ -1198,7 +1139,12 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="how-section" id="comment">
+  <section class="how-section" id="comment" style="position:relative; overflow:hidden;">
+    <!-- 🎨 Stickers -->
+    <img src="../../image/sti.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:100px; top:30px; right:-5px; transform:rotate(-14deg); opacity:0.82; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.15));">
+    <img src="../../image/s.png" aria-hidden="true" draggable="false"
+      style="position:absolute; width:90px; bottom:20px; left:-8px; transform:rotate(18deg); opacity:0.78; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.13));">
     <div class="section-tag" data-i18n="how_tag">Comment ça marche</div>
     <h2 data-i18n="how_title">Simple. Intelligent. Efficace.</h2>
     <p class="section-sub" data-i18n="how_sub">
@@ -1241,6 +1187,48 @@
     </div>
   </section>
 
+  <!-- ABOUT US SECTION -->
+  <section class="section" id="about" style="background: white; padding: 8rem 5rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; align-items: center;">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
+          style="width: 100%; border-radius: 2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.1); object-fit: cover; height: 550px;"
+          alt="NutriSmart Team">
+        <div
+          style="position: absolute; bottom: -2rem; right: -2rem; background: var(--primary); color: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 15px 30px rgba(74, 124, 89, 0.3);">
+          <div style="font-size: 2.5rem; font-family: 'Playfair Display', serif; font-weight: 900;">10k+</div>
+          <div style="font-size: 0.9rem; opacity: 0.8; font-weight: 600;">Utilisateurs Actifs</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-tag">À propos de nous</div>
+        <h2 style="margin-bottom: 1.5rem;">NutriSmart : L'Intelligence au Service de votre Bien-être.</h2>
+        <p class="section-sub" style="max-width: 100%; margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.8;">
+          Fondée par une équipe de nutritionnistes et d'experts en technologie, NutriSmart est née d'une vision simple :
+          rendre la nutrition saine accessible, personnalisée et sans stress pour tous.
+        </p>
+        <p class="section-sub" style="max-width: 100%; margin-bottom: 2.5rem; font-size: 1.05rem; opacity: 0.8;">
+          Nous combinons la science de la nutrition avec les dernières avancées en intelligence artificielle pour créer
+          des programmes qui ne sont pas seulement des listes de repas, mais de véritables compagnons de vie. Notre
+          mission est de vous aider à comprendre vos besoins uniques et à transformer durablement vos habitudes
+          alimentaires, un repas à la fois.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+          <div>
+            <h4 style="color: var(--primary); margin-bottom: 0.5rem; font-weight: 700;">Innovation IA</h4>
+            <p style="font-size: 0.9rem; color: var(--gray);">Des algorithmes qui apprennent de vos préférences pour une
+              précision inégalée.</p>
+          </div>
+          <div>
+            <h4 style="color: var(--orange); margin-bottom: 0.5rem; font-weight: 700;">Expertise Santé</h4>
+            <p style="font-size: 0.9rem; color: var(--gray);">Toutes nos données sont validées par des professionnels de
+              la santé certifiés.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- MODULES -->
   <section class="modules-section" id="modules">
     <div style="
@@ -1272,7 +1260,7 @@
           </div>
         </a>
         <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=150&q=80" style="
+          <img src="../../image/base.jpg" style="
                 width: 55px;
                 height: 55px;
                 border-radius: 12px;
@@ -1324,7 +1312,7 @@
           </div>
         </a>
         <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80" style="
+          <img src="../../image/ground.jpg" style="
                 width: 55px;
                 height: 55px;
                 border-radius: 12px;
@@ -1463,17 +1451,19 @@
       <div class="dots-pattern dots-tl" style="width: 220px; height: 220px; top: -50px; left: -50px;"></div>
       <div class="dots-pattern dots-br" style="width: 220px; height: 220px; bottom: -60px; right: 0px;"></div>
 
-      <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80" style="
+      <img src="../../image/sportt.jpg" style="
             width: 100%;
+            height: 500px;
+            object-fit: cover;
             border-radius: 1.8rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
           " alt="Trainer" />
-      <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=400&q=80" style="
+      <img src="../../image/sport.jpg" style="
             position: absolute;
             bottom: -2rem;
             right: -2rem;
-            width: 180px;
-            height: 180px;
+            width: 220px;
+            height: 220px;
             object-fit: cover;
             border-radius: 1.2rem;
             border: 6px solid var(--cream);
@@ -1514,7 +1504,7 @@
               box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
               border: 1px solid var(--sand);
             ">
-          <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=150&q=80" style="
+          <img src="../../image/sportt.jpg" style="
                 width: 70px;
                 height: 70px;
                 border-radius: 50%;
@@ -1547,7 +1537,7 @@
               box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
               border: 1px solid var(--sand);
             ">
-          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=150&q=80" style="
+          <img src="../../image/sleep.jpg" style="
                 width: 70px;
                 height: 70px;
                 border-radius: 50%;
@@ -1579,16 +1569,38 @@
       Rejoignez NutriSmart et commencez votre parcours nutritionnel dès
       aujourd'hui.<br />100% gratuit, aucune carte bancaire requise.
     </p>
-    <div style="
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        ">
-      <a href="register.html" class="btn-gradient" style="font-size: 1rem; padding: 1rem 2.5rem" data-i18n="btn_create">
-        Créer mon compte gratuit</a>
-      <a href="#" class="btn-outline" style="font-size: 1rem; padding: 1rem 2.5rem" data-i18n="btn_more">En savoir
-        plus</a>
+    </div>
+  </section>
+
+  <!-- GALLERY SECTION -->
+  <section class="section" id="gallery" style="background: var(--white); padding-top: 2rem;">
+    <div class="section-tag">Galerie Inspirante</div>
+    <h2 style="margin-bottom: 3rem;">Inspiration NutriSmart</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+      <div
+        style="position: relative; overflow: hidden; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.4s ease;">
+        <img src="../../image/poster.jpg"
+          style="width: 100%; height: 450px; object-fit: cover; display: block; transition: transform 0.6s ease;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" alt="Santé 1">
+      </div>
+      <div
+        style="position: relative; overflow: hidden; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.4s ease;">
+        <img src="../../image/poster2.jpg"
+          style="width: 100%; height: 450px; object-fit: cover; display: block; transition: transform 0.6s ease;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" alt="Santé 2">
+      </div>
+      <div
+        style="position: relative; overflow: hidden; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.4s ease;">
+        <img src="../../image/poster3.jpg"
+          style="width: 100%; height: 450px; object-fit: cover; display: block; transition: transform 0.6s ease;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" alt="Santé 3">
+      </div>
+      <div
+        style="position: relative; overflow: hidden; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.4s ease;">
+        <img src="../../image/poster4.jpg"
+          style="width: 100%; height: 450px; object-fit: cover; display: block; transition: transform 0.6s ease;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" alt="Santé 4">
+      </div>
     </div>
   </section>
 
@@ -1814,39 +1826,47 @@
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0 1.5rem; cursor: pointer;">
+        <div
+          style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0 1.5rem; cursor: pointer;">
           <input type="checkbox" id="modal_remember" name="remember" style="width: auto; margin: 0; cursor: pointer;">
           <label for="modal_remember"
             style="margin: 0; font-size: 0.9rem; color: #666; cursor: pointer; font-weight: 400;">Se souvenir de
             moi</label>
         </div>
 
-        <button type="submit" class="btn-primary" style="width:100%;">Se connecter</button>
+        <div style="display: flex; justify-content: center; margin: 1rem 0 1.5rem;">
+          <button type="submit" class="btn-submit">Se connecter</button>
+        </div>
       </form>
 
       <!-- Face ID Modal Divider -->
-      <div style="margin-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1.2rem; text-align: center;">
-        <h3 style="font-size: 1rem; color: #1a2f21; margin-bottom: 0.8rem;">
-          <svg style="width:16px; vertical-align:middle; margin-right:5px; color:var(--primary);" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2">
+      <div style="margin-top: 2rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 2rem; text-align: center;">
+        <h3
+          style="font-size: 1.1rem; color: #1a2f21; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <svg style="width:20px; color:#4a7c59;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5">
             <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
             <circle cx="12" cy="12" r="3" />
           </svg>
           S'authentifier par IA
         </h3>
-        <div id="modal-face-container" style="display: flex; flex-direction: column; align-items: center;">
-          <video id="modalLoginVideo" width="280" height="210" autoplay muted
-            style="border-radius: 8px; background: #000; margin-bottom: 0.5rem; border: 2px solid var(--primary); object-fit: cover;"></video>
-          <div id="modalLoginStatus"
-            style="font-weight: 600; margin-bottom: 0.8rem; color: #64748b; font-size: 0.85rem;">Prêt pour la
-            reconnaissance</div>
-          <button type="button" id="btnModalFace" class="btn" style="width: 100%; font-weight:600; padding:0.8rem;"
+
+        <div id="modal-face-container" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+          <div class="face-id-video-container" style="margin-bottom: 0.5rem;">
+            <video id="modalLoginVideo" class="face-id-video" autoplay muted></video>
+            <div class="scanning-line"></div>
+          </div>
+          <div id="modalLoginStatus" class="face-id-status" style="margin-bottom: 0.5rem;">Prêt pour la reconnaissance
+          </div>
+          <button type="button" id="btnModalFace" class="btn-face-id"
             onclick="loginWithFace('modalLoginVideo', 'modalLoginStatus', 'btnModalFace')">Connexion Face ID</button>
         </div>
       </div>
 
-      <div style="margin-top:1.5rem; font-size:0.9rem; color: #666;">
-        Nouveau ? <a href="register.html" style="color:var(--primary); font-weight:700;">Créer un compte</a>
+      <div
+        style="margin-top: 2.5rem; font-size: 0.95rem; color: #666; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1.5rem;">
+        Nouveau sur NutriSmart ? <a href="register.html"
+          style="color:#4a7c59; font-weight:700; text-decoration: none;">Créer un compte</a>
       </div>
     </div>
   </div>
@@ -2014,18 +2034,13 @@
             document.getElementById('public-nav-auth').style.display = 'flex';
           }
 
-          // Apply consistent dynamic color based on name
-          const getAvatarColor = (name) => {
-            const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            return colors[Math.abs(hash) % colors.length];
-          };
-
-          const userCircle = document.getElementById('user-initial');
-          if (userCircle) {
-            userCircle.style.background = getAvatarColor(data.name);
-            userCircle.textContent = data.name.charAt(0).toUpperCase();
+          // Use centralized avatar style
+          const circleEl = document.getElementById('user-initial');
+          if (circleEl) {
+            circleEl.textContent = data.name.charAt(0).toUpperCase();
+            const style = getAvatarStyle(data.name);
+            circleEl.style.background = style.bg;
+            circleEl.style.color = style.text;
           }
 
           document.getElementById('dropdown-name').textContent = data.name;

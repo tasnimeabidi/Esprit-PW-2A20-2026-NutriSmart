@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
     rel="stylesheet">
+  <script src="../frontoffice/js/avatar-utils.js"></script>
   <style>
     *,
     *::before,
@@ -1059,9 +1060,10 @@
                   }
                   list.forEach(function (u) {
                     var pw = u.password_hash || u.mot_de_passe || '';
+                    var style = getAvatarStyle(u.nom || '');
                     var tr = document.createElement('tr');
                     tr.innerHTML =
-                      '<td><div class="user-cell"><div class="u-avatar" style="background:#3dba52">' + (u.nom || '?').charAt(0).toUpperCase() + '</div>' +
+                      '<td><div class="user-cell"><div class="u-avatar" style="background:' + style.bg + '; color:' + style.text + '">' + (u.nom || '?').charAt(0).toUpperCase() + '</div>' +
                       '<div><div class="u-name">' + u.nom + '</div><div class="u-email">' + u.email + '</div></div></div></td>' +
                       '<td><span class="status-pill s-active">' + u.role + '</span></td>' +
                       '<td style="font-family:var(--mono);font-size:0.62rem;color:var(--primary);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + pw + '">' + (pw ? pw : '••••••••') + '</td>' +
@@ -1325,13 +1327,7 @@
         }, 600);
       });
     });
-    // Global helper for avatar colors
-    const getAvatarColor = (name) => {
-      const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-      return colors[Math.abs(hash) % colors.length];
-    };
+    // Centralized helper for avatar colors is loaded from avatar-utils.js
 
     // Load real admin info from session
     const sessionUrl = 'session_check.php';
@@ -1348,7 +1344,9 @@
           if (nameEl) nameEl.textContent = data.name;
           if (circleEl) {
             circleEl.textContent = data.name.charAt(0).toUpperCase();
-            circleEl.style.background = getAvatarColor(data.name);
+            const style = getAvatarStyle(data.name);
+            circleEl.style.background = style.bg;
+            circleEl.style.color = style.text;
           }
         } else {
           console.warn('[Dashboard] Session not found - user not logged in or session expired');

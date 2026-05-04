@@ -91,6 +91,11 @@ class User {
         return $stmt->execute([$id]);
     }
 
+    public function updateGenre($id, $genre) {
+        $stmt = $this->pdo->prepare("UPDATE utilisateur SET genre = ? WHERE id_utilisateur = ?");
+        return $stmt->execute([$genre, $id]);
+    }
+
     public function updateUserByAdmin($id, $nom, $email, $role, $age, $password = null) {
         try {
             $this->pdo->beginTransaction();
@@ -177,14 +182,17 @@ class User {
 
     // --- NEW: OAUTH2 SOCIAL LOGIN METHODS ---
 
-    public function findOrCreateSocialUser($nom, $email, $provider, $oauth_id) {
+    public function findOrCreateSocialUser($nom, $email, $provider, $oauth_id, $intent = 'login') {
         // 1. Try to find the user by oauth_id and provider
         $stmt = $this->pdo->prepare("SELECT * FROM utilisateur WHERE oauth_provider = ? AND oauth_id = ?");
         $stmt->execute([$provider, $oauth_id]);
         $user = $stmt->fetch();
 
         if ($user) {
-            return $user; // Found via social ID
+            if ($intent === 'register') {
+                return ['error' => 'Ce compte Google est déjà inscrit. Veuillez vous connecter.'];
+            }
+            return $this->getById($user['id_utilisateur']); // Load profile data as well
         }
 
         // 2. Try to find the user by email (in case they previously registered with email, but are now using Google/Facebook)
@@ -194,20 +202,26 @@ class User {
             $userByEmail = $stmtEmail->fetch();
 
             if ($userByEmail) {
+                if ($intent === 'register') {
+                    return ['error' => 'Un compte avec cette adresse e-mail existe déjà. Veuillez vous connecter.'];
+                }
                 // Link this existing account to the social provider and ensure it's verified
                 $linkStmt = $this->pdo->prepare("UPDATE utilisateur SET oauth_provider = ?, oauth_id = ?, is_verified = 1 WHERE id_utilisateur = ?");
                 $linkStmt->execute([$provider, $oauth_id, $userByEmail['id_utilisateur']]);
                 
-                // Fetch the updated user
-                $stmtEmail->execute([$email]);
-                return $stmtEmail->fetch();
+                // Fetch the updated user using getById to include profile data
+                return $this->getById($userByEmail['id_utilisateur']);
             }
         }
 
         // 3. User doesn't exist at all, we create a new one.
+        if ($intent === 'login') {
+            return ['error' => 'Aucun compte trouvé avec ce compte Google. Veuillez vous inscrire.'];
+        }
+
         // We set a random highly secure password since they login via OAuth and shouldn't use it directly.
         $randomPassword = bin2hex(random_bytes(20));
-        $role = 'User';
+        $role = 'utilisateur';
 
         $insertStmt = $this->pdo->prepare("INSERT INTO utilisateur (nom, email, mot_de_passe, role, oauth_provider, oauth_id, is_verified) VALUES (?, ?, ?, ?, ?, ?, 1)");
         $success = $insertStmt->execute([
@@ -255,6 +269,27 @@ class User {
         $stmt = $this->pdo->prepare("SELECT * FROM utilisateur WHERE verification_token = ?");
         $stmt->execute([$token]);
         return $stmt->fetch();
+    }
+
+    // --- NEW: AI RECOMMENDATIONS ---
+
+    public function getAiRecommendations($id_utilisateur) {
+        $stmt = $this->pdo->prepare("SELECT ai_recommendations, ai_last_generated FROM profil_nutritionnel WHERE id_utilisateur = ?");
+        $stmt->execute([$id_utilisateur]);
+        return $stmt->fetch();
+    }
+
+    public function saveAiRecommendations($id_utilisateur, $json_data) {
+        // Ensure profile exists first
+        $check = $this->pdo->prepare("SELECT id_utilisateur FROM profil_nutritionnel WHERE id_utilisateur = ?");
+        $check->execute([$id_utilisateur]);
+        if (!$check->fetch()) {
+            $stmt = $this->pdo->prepare("INSERT INTO profil_nutritionnel (id_utilisateur, age, poids, taille) VALUES (?, 0, 0, 0)");
+            $stmt->execute([$id_utilisateur]);
+        }
+        
+        $stmt = $this->pdo->prepare("UPDATE profil_nutritionnel SET ai_recommendations = ?, ai_last_generated = NOW() WHERE id_utilisateur = ?");
+        return $stmt->execute([$json_data, $id_utilisateur]);
     }
 }
 ?>

@@ -25,12 +25,24 @@ async function loadFaceApiModels(statusElement) {
 }
 
 /**
+ * Active ou désactive la ligne de scan visuelle
+ */
+function toggleScanLine(videoElement, show) {
+    if (!videoElement || !videoElement.parentElement) return;
+    const scanLine = videoElement.parentElement.querySelector('.scanning-line');
+    if (scanLine) {
+        scanLine.style.display = show ? 'block' : 'none';
+    }
+}
+
+/**
  * Ouvre la webcam et l'attache à un élément <video>
  */
 async function startWebcam(videoElement) {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         videoElement.srcObject = stream;
+        toggleScanLine(videoElement, true);
         return stream;
     } catch (err) {
         console.error("Caméra bloquée ou introuvable :", err);
@@ -78,6 +90,7 @@ async function enrollFace(videoElementId, statusElementId, btnElementId) {
             await new Promise(r => setTimeout(r, 100)); // wait 100ms
         }
 
+        toggleScanLine(video, false);
         stopWebcam(stream);
         video.srcObject = null;
 
@@ -143,6 +156,7 @@ async function loginWithFace(videoElementId, statusElementId, btnElementId) {
             await new Promise(r => setTimeout(r, 100));
         }
 
+        toggleScanLine(video, false);
         stopWebcam(stream);
         video.srcObject = null;
 

@@ -8,7 +8,7 @@
 define('OAUTH_CONFIG', [
     'google' => [
         'client_id'     => '783998000082-6njhv9j0m41nheki10e7293n0rovm7l2.apps.googleusercontent.com',
-        'client_secret' => 'VOTRE_SECRET_GOOGLE_ICI_POUR_GITHUB',
+        'client_secret' => 'YOUR_GOOGLE_CLIENT_SECRET',
         
         // URL d'autorisation
         'auth_url'      => 'https://accounts.google.com/o/oauth2/v2/auth',

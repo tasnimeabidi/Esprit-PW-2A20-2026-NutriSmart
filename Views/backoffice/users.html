@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
     rel="stylesheet">
+  <script src="../frontoffice/js/avatar-utils.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <style>
@@ -862,13 +863,7 @@
   <script>
     let allUsers = [];
 
-    // Global helper for avatar colors
-    const getAvatarColor = (name) => {
-      const colors = ['#4a7c59', '#f2994a', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50'];
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-      return colors[Math.abs(hash) % colors.length];
-    };
+    // Helper for avatar colors is centralized in avatar-utils.js
 
     document.addEventListener('DOMContentLoaded', () => {
       const tbody = document.getElementById('usersTableBody');
@@ -890,53 +885,29 @@
           const tr = document.createElement('tr');
           if (isBlocked) tr.classList.add('tr-blocked');
 
-          const tdUser = document.createElement('td');
-          const userCell = document.createElement('div');
-          userCell.className = 'user-cell';
-          const avatar = document.createElement('div');
-          avatar.className = 'u-avatar';
-          avatar.style.background = getAvatarColor(u.nom || '');
-          avatar.textContent = (u.nom || '?').charAt(0).toUpperCase();
-          const userInfo = document.createElement('div');
-          const uNameWrap = document.createElement('div');
-          uNameWrap.style.display = 'flex';
-          uNameWrap.style.alignItems = 'center';
-          uNameWrap.style.gap = '0.5rem';
+          var style = getAvatarStyle(u.nom || '');
+          tr.innerHTML = `
+              <td>
+                  <div class="user-cell">
+                      <div class="u-avatar" style="background:${style.bg}; color:${style.text}">
+                          ${(u.nom || '?').charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                          <div style="display:flex; align-items:center; gap:0.5rem">
+                              <div class="u-name">${u.nom}</div>
+                              ${isBlocked ? '<span class="status-badge status-blocked">Suspendu</span>' : ''}
+                          </div>
+                          <div class="u-email">${u.email}</div>
+                      </div>
+                  </div>
+              </td>
+              <td style="font-family:var(--mono);font-size:.75rem;color:var(--muted)">${u.id}</td>
+              <td style="color:var(--white);font-weight:500">${u.role}</td>
+              <td style="color:var(--muted)">${(u.age || '-') + ' ans'}</td>
+              <td></td>
+          `;
 
-          const uName = document.createElement('div');
-          uName.className = 'u-name';
-          uName.textContent = u.nom;
-          uNameWrap.appendChild(uName);
-
-          if (isBlocked) {
-            const badge = document.createElement('span');
-            badge.className = 'status-badge status-blocked';
-            badge.textContent = 'Suspendu';
-            uNameWrap.appendChild(badge);
-          }
-
-          const uEmail = document.createElement('div');
-          uEmail.className = 'u-email';
-          uEmail.textContent = u.email;
-          userInfo.appendChild(uNameWrap);
-          userInfo.appendChild(uEmail);
-          userCell.appendChild(avatar);
-          userCell.appendChild(userInfo);
-          tdUser.appendChild(userCell);
-
-          const tdId = document.createElement('td');
-          tdId.style.cssText = 'font-family:var(--mono);font-size:.75rem;color:var(--muted)';
-          tdId.textContent = u.id;
-
-          const tdRole = document.createElement('td');
-          tdRole.style.cssText = 'color:var(--white);font-weight:500';
-          tdRole.textContent = u.role;
-
-          const tdAge = document.createElement('td');
-          tdAge.style.color = 'var(--muted)';
-          tdAge.textContent = (u.age || '-') + ' ans';
-
-          const tdAct = document.createElement('td');
+          const tdAct = tr.querySelector('td:last-child');
 
           const blockBtn = document.createElement('button');
           blockBtn.className = 'action-btn ' + (isBlocked ? '' : 'btn-warn');
@@ -944,7 +915,6 @@
           blockBtn.textContent = isBlocked ? '🔓' : '🔒';
           blockBtn.onclick = () => toggleBlock(u.id);
 
-          // Hide block button for Admins
           if (u.role && u.role.toLowerCase().trim() === 'admin') {
             blockBtn.style.visibility = 'hidden';
             blockBtn.style.pointerEvents = 'none';
@@ -966,11 +936,6 @@
           tdAct.appendChild(editBtn);
           tdAct.appendChild(delBtn);
 
-          tr.appendChild(tdUser);
-          tr.appendChild(tdId);
-          tr.appendChild(tdRole);
-          tr.appendChild(tdAge);
-          tr.appendChild(tdAct);
           tbody.appendChild(tr);
         });
       }
@@ -1077,9 +1042,13 @@
         .then(data => {
           if (data.loggedIn) {
             document.getElementById('admin-display-name').textContent = data.name;
-            const adminCircle = document.getElementById('admin-avatar-initial');
-            adminCircle.textContent = data.name.charAt(0).toUpperCase();
-            adminCircle.style.background = getAvatarColor(data.name);
+            const circleEl = document.getElementById('admin-avatar-initial');
+            if (circleEl) {
+              circleEl.textContent = data.name.charAt(0).toUpperCase();
+              const style = getAvatarStyle(data.name);
+              circleEl.style.background = style.bg;
+              circleEl.style.color = style.text;
+            }
           }
         });
 

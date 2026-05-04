@@ -30,6 +30,9 @@ switch ($action) {
         
         $config = OAUTH_CONFIG[$provider];
         
+        $intent = $_GET['intent'] ?? 'login';
+        $_SESSION['oauth_intent'] = $intent;
+        
         // Génération d'un jeton anti-faille CSRF (sécurité)
         $state = bin2hex(random_bytes(16));
         $_SESSION['oauth2state'] = $state;
@@ -79,6 +82,9 @@ switch ($action) {
         unset($_SESSION['oauth2state']);
         
         if (empty($code)) die("Code d'autorisation manquant.");
+
+        $intent = $_SESSION['oauth_intent'] ?? 'login';
+        unset($_SESSION['oauth_intent']);
 
         $config = OAUTH_CONFIG[$provider];
         
@@ -137,7 +143,17 @@ switch ($action) {
 
         // Authentification dans le système NutriSmart
         $userModel = new User();
-        $user = $userModel->findOrCreateSocialUser($name, $email, $provider, $oauth_id);
+        $user = $userModel->findOrCreateSocialUser($name, $email, $provider, $oauth_id, $intent);
+
+        if (isset($user['error'])) {
+            // Redirect with error based on intent
+            if ($intent === 'register') {
+                header("Location: register.html?error=" . urlencode($user['error']));
+            } else {
+                header("Location: login.html?error=" . urlencode($user['error']));
+            }
+            exit;
+        }
 
         if ($user) {
             // Rejet si le compte est banni

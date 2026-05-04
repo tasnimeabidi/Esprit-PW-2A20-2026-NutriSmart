@@ -5,107 +5,177 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inscription — NutriSmart</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/shared-styles.css" />
   <style>
-    .auth-hero {
-      position: relative;
-      min-height: 90vh;
+    :root {
+      --accent: #4a7c59;
+      --accent-light: #ecfdf5;
+      --text-dark: #2d3436;
+      --bg-white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-white);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .split-container {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1600&q=80") center/cover fixed;
-      padding: 4rem 2rem;
-    }
-
-    .auth-hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(34, 60, 42, 0.65);
-      backdrop-filter: blur(1.5px);
-      -webkit-backdrop-filter: blur(1.5px);
-      z-index: 0;
-    }
-
-    .auth-card {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-    }
-
-    .auth-card h2 {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 900;
-      color: var(--forest);
-      margin-bottom: 0.5rem;
-    }
-
-    .auth-card p {
-      color: var(--gray);
-      margin-bottom: 2.5rem;
-      font-size: 1.05rem;
-    }
-
-    .auth-footer {
-      margin-top: 2rem;
-      font-size: 0.95rem;
-      color: var(--gray);
-    }
-
-    .auth-footer a {
-      color: var(--primary);
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    /* Password toggle */
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear {
-      display: none;
-    }
-
-    .pw-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .pw-wrapper input {
-      padding-right: 2.8rem !important;
+      min-height: 100vh;
       width: 100%;
     }
 
-    .toggle-pw {
-      position: absolute;
-      right: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.15rem;
-      line-height: 1;
-      color: #888;
-      padding: 0;
-      display: grid;
-      place-items: center;
-      transition: color .2s;
+    /* Left Side - Image */
+    .split-image {
+      flex: 1.25;
+      background: url('https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      position: relative;
     }
 
-    .toggle-pw:hover {
-      color: var(--primary);
+    .split-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--bg-white));
+    }
+
+    /* Right Side - Form */
+    .split-form {
+      flex: 0.9;
+      display: grid;
+      place-items: center;
+      padding: 4rem;
+      background: var(--bg-white);
+    }
+
+    .form-content {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .form-header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -1px;
+      font-weight: bold;
+    }
+
+    .form-header p {
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .form-header a {
+      color: var(--accent);
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    /* Pill Inputs Style */
+    .input-box {
+      margin-bottom: 1rem;
+      background: var(--accent-light);
+      padding: 0.7rem 1.6rem;
+      border-radius: 60px;
+      border: 2.5px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-box:focus-within {
+      border-color: var(--accent);
+      background: white;
+      box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+    }
+
+    .input-box label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-bottom: 0.3rem;
+      text-transform: capitalize;
+    }
+
+    .input-box input,
+    .input-box select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0;
+      outline: none;
+    }
+
+    .input-box input::placeholder {
+      color: var(--accent);
+      opacity: 0.3;
+    }
+
+    .or-divider {
+      text-align: center;
+      margin: 1.8rem 0;
+      position: relative;
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+      content: "";
+      flex: 1;
+      height: 2.5px;
+      background: var(--accent);
+      opacity: 0.2;
+    }
+
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .social-icon {
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.15);
+    }
+
+    /* Button now handled globally by shared-styles.css */
+
+    @media (max-width: 991px) {
+      .split-image {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
-  <!-- NAV -->
-  <nav id="navbar">
+  <nav>
     <a href="nutrismart-website.html" class="nav-logo">
-      <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-        style="overflow: visible">
+      <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <mask id="biteMask">
           <rect x="-20" y="-20" width="140" height="140" fill="white" />
           <circle cx="92" cy="35" r="18" fill="black" />
@@ -122,107 +192,93 @@
       </div>
     </a>
     <ul class="nav-links">
-      <li><a href="nutrismart-website.html" class="active" data-i18n="nav_home">Accueil</a></li>
-      <li><a href="profile.html" data-i18n="nav_profile">Profil</a></li>
-
-      <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
+      <li><a href="nutrismart-website.html">Accueil</a></li>
+      <li><a href="profile.html">Profil</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-auth">
-      <a href="register.html" class="nav-cta" data-i18n="nav_cta">Commencer gratuitement</a>
+
     </div>
   </nav>
 
-  <main class="auth-hero">
-    <div class="form-card auth-card">
-      <h2 data-i18n="reg_title">Inscription</h2>
-      <p data-i18n="reg_sub">Commencez votre transformation nutritionnelle dès aujourd'hui.</p>
+  <div class="split-container">
+    <div class="split-image"></div>
 
-      <div class="social-auth-wrap">
-        <a href="auth_api.php?action=oauth_redirect&provider=google" class="btn-social">
-          <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-            <path fill="#1976D2" d="M43.611,20.083L43.611,20.083L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-          </svg>
-          <span data-i18n="reg_google">S'inscrire avec Google</span>
-        </a>
-        <a href="auth_api.php?action=oauth_redirect&provider=facebook" class="btn-social btn-facebook">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-          </svg>
-          <span data-i18n="reg_fb">S'inscrire avec Facebook</span>
-        </a>
-      </div>
-
-      <div class="auth-divider" data-i18n="reg_or">ou</div>
-
-      <!-- ========================================== -->
-      <!-- CRUD : CREATE (Création d'un utilisateur)  -->
-      <!-- Les données de ce formulaire vont aller   -->
-      <!-- vers process_register.php pour s'ajouter  -->
-      <!-- dans la base de données.                   -->
-      <!-- ========================================== -->
-      <div id="register-error-container"
-        style="display: none; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #c0392b; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: left; align-items: center; gap: 0.8rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        <span id="register-error-text" data-i18n="reg_err">Erreur lors de l'inscription.</span>
-      </div>
-
-      <div id="register-success-container"
-        style="display: none; background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #27ae60; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: left; align-items: center; gap: 0.8rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-        <span id="register-success-text" data-i18n="reg_success">Inscription réussie ! Vérifiez vos e-mails.</span>
-      </div>
-
-      <form method="POST" action="api.php?action=register" id="registerForm" autocomplete="off">
-        <div class="form-group">
-          <label data-i18n="lbl_name">Nom complet</label>
-          <input type="text" id="reg_nom" name="nom" />
+    <div class="split-form">
+      <div class="form-content">
+        <div class="form-header">
+          <h1>Bienvenue !</h1>
+          <p>Déjà un compte ? <a href="login.html">Se connecter</a></p>
         </div>
-        <div class="form-group">
-          <label data-i18n="lbl_email">Adresse e-mail</label>
-          <input type="text" id="reg_email" name="email" />
-        </div>
-        <div class="form-group">
-          <label data-i18n="lbl_pw">Mot de passe personnalisé</label>
-          <div class="pw-wrapper">
-            <input type="password" id="reg_password" name="password" />
-            <button type="button" class="toggle-pw" onclick="togglePW('reg_password')" title="Afficher/Masquer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+        <form method="POST" action="api.php?action=register" id="registerForm" autocomplete="off">
+          <div class="input-box">
+            <label>Nom Complet</label>
+            <input type="text" id="reg_nom" name="nom" placeholder="Jean Mcfury">
+          </div>
+
+          <div class="input-box">
+            <label>Adresse Email</label>
+            <input type="text" id="reg_email" name="email" placeholder="jean.mcfurry@exemple.com">
+          </div>
+
+          <div class="input-box" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="flex: 1;">
+              <label>Mot de passe</label>
+              <input type="password" id="reg_password" name="password" placeholder="••••••••••••••••••••">
+            </div>
+            <button type="button" onclick="togglePW('reg_password')"
+              style="background: none; border: none; color: var(--accent); cursor: pointer; padding: 0;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
             </button>
           </div>
-        </div>
-        <div class="form-group">
-          <label data-i18n="lbl_role">Role</label>
-          <select name="role">
-            <option value="Admin" data-i18n="role_admin">Admin</option>
-            <option value="User" selected data-i18n="role_user">Utilisateur</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem" data-i18n="btn_create_acc">
-          Créer mon compte &rarr;
-        </button>
-      </form>
 
-      <div class="auth-footer">
-        <span data-i18n="reg_already">Déjà membre ?</span> <a href="login.html" data-i18n="reg_login">Se connecter ici</a>
+          <div class="input-box">
+            <label>Rôle</label>
+            <select name="role">
+              <option value="User" selected>Utilisateur</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="or-divider">OU</div>
+
+          <div class="social-row">
+            <a href="auth_api.php?action=oauth_redirect&provider=google&intent=register" class="social-icon">
+              <svg viewBox="0 0 48 48" width="45">
+                <path fill="#FFC107"
+                  d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+                <path fill="#FF3D00"
+                  d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z">
+                </path>
+                <path fill="#4CAF50"
+                  d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z">
+                </path>
+                <path fill="#1976D2"
+                  d="M43.611,20.083L43.611,20.083L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+              </svg>
+            </a>
+            <a href="auth_api.php?action=oauth_redirect&provider=facebook&intent=register" class="social-icon">
+              <svg viewBox="0 0 24 24" width="45" fill="#1877F2">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            </a>
+          </div>
+
+          <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+            <button type="submit" class="btn-submit">S'inscrire</button>
+          </div>
+        </form>
       </div>
     </div>
-  </main>
+  </div>
 
   <!-- FOOTER -->
   <footer id="contact">
@@ -244,7 +300,7 @@
           </svg>
           <span>NutriSmart</span>
         </div>
-        <p class="footer-desc" data-i18n="foot_desc">
+        <p class="footer-desc">
           Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
         </p>
         <div class="footer-contact-list">
@@ -262,53 +318,38 @@
             </svg>
             +216 12 345 678
           </a>
-          <div class="footer-contact-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            Tunis, Tunisie
-          </div>
         </div>
       </div>
 
       <!-- Plateforme -->
       <div class="footer-col">
-        <h5 data-i18n="foot_plat">Plateforme</h5>
+        <h5>Plateforme</h5>
         <ul>
-          <li><a href="#features" data-i18n="feat_tag">Fonctionnalités</a></li>
-          <li><a href="#how-it-works" data-i18n="how_tag">Comment ça marche</a></li>
-          <li><a href="#modules" data-i18n="mod_tag">Modules</a></li>
-          <li><a href="#programme" data-i18n="prog_tag">Programmes Repas</a></li>
-          <li><a href="#sport" data-i18n="sport_title">Programmes Sport</a></li>
+          <li><a href="nutrismart-website.html#features">Fonctionnalités</a></li>
+          <li><a href="nutrismart-website.html#how-it-works">Comment ça marche</a></li>
+          <li><a href="nutrismart-website.html#modules">Modules</a></li>
         </ul>
       </div>
 
       <!-- Ressources -->
       <div class="footer-col">
-        <h5 data-i18n="foot_res">Ressources</h5>
+        <h5>Ressources</h5>
         <ul>
           <li>
-            <p data-i18n="r1">Base alimentaire</p>
+            <p>Base alimentaire</p>
           </li>
           <li>
-            <p data-i18n="r2">Carnet de recettes</p>
+            <p>Carnet de recettes</p>
           </li>
           <li>
-            <p data-i18n="r3">Blog Nutrition</p>
-          </li>
-          <li>
-            <p data-i18n="r4">Suivi de progrès</p>
-          </li>
-          <li>
-            <p data-i18n="r5">FAQ</p>
+            <p>Blog Nutrition</p>
           </li>
         </ul>
       </div>
 
       <!-- Social & Legal -->
       <div class="footer-col">
-        <h5 data-i18n="foot_follow">Suivez-nous</h5>
+        <h5>Suivez-nous</h5>
         <div class="footer-social-wrap">
           <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -318,47 +359,20 @@
           <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
             </svg></a>
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg></a>
-          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-              <rect x="2" y="9" width="4" height="12" />
-              <circle cx="4" cy="4" r="2" />
-            </svg></a>
         </div>
-        <h5 data-i18n="foot_legal">Légal</h5>
+        <h5>Légal</h5>
         <ul>
-          <li><a href="#" data-i18n="l1">Politique de confidentialité</a></li>
-          <li><a href="#" data-i18n="l2">Conditions d'utilisation</a></li>
-          <li><a href="#" data-i18n="l3">Mentions légales</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Conditions d'utilisation</a></li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span data-i18n="rights">© 2026 NutriSmart — Tous droits réservés</span>
+      <span>© 2026 NutriSmart — Tous droits réservés</span>
       <div class="footer-bottom-links">
-        <a href="#" data-i18n="l1">Confidentialité</a>
-        <a href="#" data-i18n="l2">CGU</a>
-        <a href="contact.html" data-i18n="nav_contact">Contact</a>
-      </div>
-
-      <!-- Language Selector -->
-      <div class="lang-selector-wrap">
-        <button class="lang-btn" id="langBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          <span>Français</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="lang-popover" id="langPopover">
-          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        </div>
+        <a href="nutrismart-website.html">Accueil</a>
+        <a href="contact.html">Contact</a>
       </div>
     </div>
   </footer>
@@ -366,8 +380,8 @@
   <script src="js/validation.js"></script>
   <script src="js/translations.js"></script>
   <script>
-    var eyeOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    var eyeOff = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    var eyeOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var eyeOff = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
     function togglePW(id) {
       const input = document.getElementById(id);
       const btn = input.nextElementSibling;
@@ -379,78 +393,6 @@
         btn.innerHTML = eyeOpen;
       }
     }
-
-    // --- Language Selector Logic ---
-    const langBtn = document.getElementById('langBtn');
-    const langPopover = document.getElementById('langPopover');
-
-    if (langBtn && langPopover) {
-      langBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        langBtn.classList.toggle('active');
-        langPopover.classList.toggle('show');
-      });
-
-      window.addEventListener('click', () => {
-        langBtn.classList.remove('active');
-        langPopover.classList.remove('show');
-      });
-    }
-  </script>
-  <script>
-    // Monkey patch setLang for placeholders
-    const originalSetLang = window.setLang;
-    if (originalSetLang) {
-      window.setLang = (lang) => {
-        originalSetLang(lang);
-        // Add dynamic placeholder translation if needed in register
-      }
-    }
-
-
-    // --- URL Params Handling (Messages & Auto-Redirect) ---
-    document.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const successContainer = document.getElementById('register-success-container');
-      const successText = document.getElementById('register-success-text');
-      const errorContainer = document.getElementById('register-error-container');
-      const errorText = document.getElementById('register-error-text');
-      const form = document.getElementById('registerForm');
-
-      if (params.has('success')) {
-        successText.textContent = params.get('success');
-        successContainer.style.display = 'flex';
-        if (form) form.style.display = 'none'; // Cacher le formulaire pour que le message soit central
-      }
-      if (params.has('error')) {
-        errorText.textContent = params.get('error');
-        errorContainer.style.display = 'flex';
-      }
-      if (params.has('verified')) {
-        const msg = params.get('message') || 'Compte vérifié !';
-        successText.textContent = msg;
-        successContainer.style.display = 'flex';
-        if (form) form.style.display = 'none'; // Cacher le formulaire si on vient de vérifier
-
-        // Redirection automatique après 3 secondes vers le bon endroit
-        setTimeout(() => {
-          fetch('api.php?action=session')
-            .then(r => r.json())
-            .then(data => {
-              if (data.loggedIn) {
-                // Si admin (détecté par session_check ou rôle)
-                if (data.role && data.role.toLowerCase().trim() === 'admin') {
-                  window.location.href = '../backoffice/nutrismart-dashboard.html';
-                } else {
-                  window.location.href = 'nutrismart-home.html';
-                }
-              } else {
-                window.location.href = 'login.html';
-              }
-            });
-        }, 3000);
-      }
-    });
   </script>
 </body>
 

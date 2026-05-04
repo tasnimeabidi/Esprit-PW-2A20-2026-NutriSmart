@@ -385,11 +385,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (errorMsg) {
-    const errorContainer = document.getElementById('login-error-container');
-    const errorText = document.getElementById('login-error-text');
-    if (errorContainer && errorText) {
-      errorText.textContent = errorMsg;
-      errorContainer.style.display = 'flex';
+    // Check login page
+    const loginErrorContainer = document.getElementById('login-error-container');
+    const loginErrorText = document.getElementById('login-error-text');
+    if (loginErrorContainer && loginErrorText) {
+      loginErrorText.textContent = errorMsg;
+      loginErrorContainer.style.display = 'flex';
+    }
+    // Check register page
+    const registerErrorContainer = document.getElementById('register-error-container');
+    const registerErrorText = document.getElementById('register-error-text');
+    if (registerErrorContainer && registerErrorText) {
+      registerErrorText.textContent = errorMsg;
+      registerErrorContainer.style.display = 'flex';
     }
   }
 });
