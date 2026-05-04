@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Scanner votre repas</title>
+    <!--
+      =============================================================================
+      PAGE « SCANNER REPAS » — COMMENT ÇA FONCTIONNE (vue d’ensemble)
+      =============================================================================
+      1) PRÉSENTATION (HTML + CSS)
+         - Structure + styles (css/scanner-repas.css) + zone de résultats remplie dynamiquement.
+
+      2) ENTRÉES UTILISATEUR (sans plugin)
+         - Deux <input type="file" accept="image/*" hidden> :
+           a) « Prendre une photo » → input avec attribut capture="environment" : sur téléphone,
+              le navigateur propose souvent l’APN arrière ; sur PC, choix de fichier ou webcam selon navigateur.
+           b) « Importer une image » → même type file, sans capture : galerie / explorateur.
+
+      3) APPEL API (JavaScript en bas de page)
+         - Quand l’utilisateur a choisi un fichier, on construit un FormData avec la clé « image ».
+         - fetch(POST) vers ../../api/scanner-repas-demo.php (URL résolue via nutrismart-api-config.php).
+         - La réponse JSON est parsée : aperçu photo + 3 blocs (OCR, calories, sport) + JSON brut (plié).
+
+      4) ÉTAPE PRODUCTION (à documenter pour la prof)
+         - Remplacer scanner-repas-demo.php par un contrôleur qui envoie l’image à un OCR,
+           puis enrichit avec votre API repas / calories (BDD ou service externe).
+      =============================================================================
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/scanner-repas.css?v=7" />
+  </head>
+  <body class="sr-page">
+    <!--
+      Une seule colonne centrée : .sr-panel = carte visuelle principale.
+    -->
+    <main class="sr-panel" aria-labelledby="sr-title">
+      <a class="sr-back" href="metier-avance.html">← Tableau de bord métier</a>
+
+      <!-- Icône caméra (fichier image, sans cadre vert) -->
+      <div class="sr-icon-wrap">
+        <img
+          class="sr-hero-camera"
+          src="img/scanner-camera-hero.png"
+          width="112"
+          height="112"
+          alt=""
+          decoding="async"
+          aria-hidden="true"
+        />
+      </div>
+
+      <h1 id="sr-title" class="sr-title">Scanner votre repas</h1>
+
+      <!--
+        Pastilles = promesses « métier avancé » (comme sur la maquette).
+        Ce ne sont que des labels UI ; la vraie logique est côté API / serveur.
+      -->
+      <div class="sr-chips" role="list" aria-label="Fonctionnalités du scanner">
+        <span class="sr-chip" role="listitem">
+          <span class="sr-chip-icon sr-i-bolt" aria-hidden="true">⚡</span>
+          Scanner OCR
+        </span>
+        <span class="sr-chip" role="listitem">
+          <span class="sr-chip-icon sr-i-fire" aria-hidden="true">🔥</span>
+          Calcul calories
+        </span>
+        <span class="sr-chip" role="listitem">
+          <span class="sr-chip-icon sr-i-pulse" aria-hidden="true">〰</span>
+          Équivalent sport
+        </span>
+      </div>
+
+      <!--
+        BOUTONS :
+        - type="button" évite la soumission accidentelle d’un éventuel <form> parent.
+        - Le JS déclenche un .click() sur l’input file caché correspondant.
+      -->
+      <div class="sr-actions">
+        <button type="button" class="sr-btn sr-btn-primary" id="sr-btn-photo" aria-controls="sr-input-photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="3.5" y="10" width="17" height="10.5" rx="2.6" fill="#0a0a0a" />
+            <polygon points="9,5.5 15,5.5 16.6,10 7.4,10" fill="#0a0a0a" />
+            <rect x="4.1" y="7.6" width="3.8" height="3.3" rx="0.95" fill="#0a0a0a" />
+            <circle cx="12" cy="15.5" r="3.9" fill="#ffffff" />
+            <circle cx="12" cy="15.5" r="2.25" fill="#0a0a0a" />
+            <circle cx="17.5" cy="12.5" r="1.12" fill="#ffffff" />
+          </svg>
+          Prendre une photo
+        </button>
+        <!-- capture="environment" : indice au navigateur mobile d’utiliser la caméra arrière si possible -->
+        <input
+          type="file"
+          id="sr-input-photo"
+          hidden
+          accept="image/*"
+          capture="environment"
+          aria-label="Fichier image depuis la caméra"
+        />
+
+        <button type="button" class="sr-btn sr-btn-secondary" id="sr-btn-import" aria-controls="sr-input-import">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 3v12" />
+            <path d="M8 11l4 4 4-4" />
+            <path d="M5 15v4h14v-4" />
+          </svg>
+          Importer une image
+        </button>
+        <input type="file" id="sr-input-import" hidden accept="image/*" aria-label="Fichier image depuis l’appareil" />
+      </div>
+
+      <!-- Lien secondaire : autre parcours utilisateur (démo = ancre ou page CRUD) -->
+      <p class="sr-manual">
+        <a href="plan-repas-crud.html" id="sr-link-manual">⌨ Saisir manuellement (Démo)</a>
+      </p>
+
+      <!-- Zone résultat : remplie dynamiquement après POST scanner-repas-demo.php -->
+      <section class="sr-result" id="sr-result" aria-live="polite">
+        <h2 class="sr-result-title">Résultat de l’analyse</h2>
+        <div class="sr-preview-wrap" id="sr-preview-wrap" hidden>
+          <img id="sr-preview-img" alt="Aperçu du plat scanné" width="800" height="450" />
+        </div>
+        <div class="sr-result-grid">
+          <article class="sr-result-card">
+            <span class="sr-rc-icon sr-i-bolt" aria-hidden="true">⚡</span>
+            <div class="sr-rc-body">
+              <h3>Scanner OCR</h3>
+              <p id="sr-out-ocr">—</p>
+            </div>
+          </article>
+          <article class="sr-result-card">
+            <span class="sr-rc-icon sr-i-fire" aria-hidden="true">🔥</span>
+            <div class="sr-rc-body">
+              <h3>Calcul calories</h3>
+              <p><span class="sr-cal-big" id="sr-out-cal">—</span> kcal <span id="sr-out-cal-hint"></span></p>
+            </div>
+          </article>
+          <article class="sr-result-card">
+            <span class="sr-rc-icon sr-i-pulse" aria-hidden="true">〰</span>
+            <div class="sr-rc-body">
+              <h3>Équivalent sport</h3>
+              <p id="sr-out-sport">—</p>
+            </div>
+          </article>
+        </div>
+        <p id="sr-out-message" class="sr-status" style="margin-top: 0.75rem; text-align: left"></p>
+        <details class="sr-raw">
+          <summary>JSON brut (debug)</summary>
+          <pre id="sr-result-json"></pre>
+        </details>
+      </section>
+      <p class="sr-status" id="sr-status" role="status"></p>
+    </main>
+
+    <!--
+      nutrismart-api-config.php est servi en PHP : il définit window.NUTRISMART_API_BASE
+      (ex. /projetNutriSmart/api) pour que fetch() trouve toujours le bon chemin.
+    -->
+    <script src="nutrismart-api-config.php"></script>
+    <script>
+      /**
+       * Flux dynamique : fichier → POST multipart → JSON → mise à jour du DOM (cartes + aperçu).
+       */
+      (function () {
+        "use strict";
+
+        function apiBase() {
+          var b = typeof window !== "undefined" ? window.NUTRISMART_API_BASE : "";
+          return String(b || "").trim().replace(/\/+$/, "");
+        }
+
+        function apiUrl(path) {
+          var base = apiBase();
+          if (!base) return "";
+          return base + "/" + String(path || "").replace(/^\/+/, "");
+        }
+
+        /**
+         * Si nutrismart-api-config.php n’a pas tourné (fichier ouvert en file://),
+         * on déduit quand même l’URL /projet/.../api/ depuis l’URL de la page.
+         */
+        function resolveScannerApiUrl() {
+          var u = apiUrl("scanner-repas-demo.php");
+          if (u) {
+            if (u.indexOf("http") === 0) return u;
+            try {
+              return new URL(u, window.location.href).href;
+            } catch (_e1) {
+              return u;
+            }
+          }
+          try {
+            return new URL("../../api/scanner-repas-demo.php", window.location.href).href;
+          } catch (e) {
+            return "";
+          }
+        }
+
+        function $(id) {
+          return document.getElementById(id);
+        }
+
+        function setStatus(msg, isErr) {
+          var el = $("sr-status");
+          if (!el) return;
+          el.textContent = msg || "";
+          el.className = "sr-status" + (isErr ? " sr-err" : "");
+        }
+
+        function setLoading(isLoading) {
+          ["sr-btn-photo", "sr-btn-import"].forEach(function (id) {
+            var b = $(id);
+            if (b) b.disabled = !!isLoading;
+          });
+        }
+
+        /** Affiche l’image locale (aperçu) avant/après analyse — FileReader asynchrone. */
+        function afficherApercu(file) {
+          var wrap = $("sr-preview-wrap");
+          var img = $("sr-preview-img");
+          if (!wrap || !img || !file.type || file.type.indexOf("image/") !== 0) {
+            if (wrap) wrap.hidden = true;
+            return;
+          }
+          var r = new FileReader();
+          r.onload = function () {
+            img.src = String(r.result || "");
+            wrap.hidden = false;
+          };
+          r.onerror = function () {
+            wrap.hidden = true;
+          };
+          r.readAsDataURL(file);
+        }
+
+        /**
+         * Remplit les cartes à partir du JSON renvoyé par scanner-repas-demo.php.
+         * @param {Record<string, unknown>} data
+         */
+        function afficherResultatApi(data) {
+          var ocr = (data && data.ocrTexteExemple) != null ? String(data.ocrTexteExemple) : "—";
+          var cal = data && data.caloriesEstimees != null ? String(data.caloriesEstimees) : "—";
+          var sport = (data && data.equivalentSport) != null ? String(data.equivalentSport) : "—";
+          $("sr-out-ocr").textContent = ocr;
+          $("sr-out-cal").textContent = cal;
+          var hint = $("sr-out-cal-hint");
+          if (hint) {
+            hint.textContent = data && data.mode ? " (" + String(data.mode) + ")" : "";
+          }
+          $("sr-out-sport").textContent = sport;
+          var msg = $("sr-out-message");
+          if (msg) msg.textContent = (data && data.message) ? String(data.message) : "";
+          $("sr-result-json").textContent = JSON.stringify(data, null, 2);
+          var sec = $("sr-result");
+          sec.classList.add("is-visible");
+          try {
+            sec.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          } catch (e2) {}
+        }
+
+        function masquerResultat() {
+          var sec = $("sr-result");
+          if (!sec) return;
+          sec.classList.remove("is-visible");
+        }
+
+        /**
+         * @param {File} file
+         */
+        function envoyerImageAuServeur(file) {
+          if (window.location.protocol === "file:") {
+            setStatus("Ouvrez la page via http://localhost/.../scanner-repas.html (PHP requis).", true);
+            return;
+          }
+          var url = resolveScannerApiUrl();
+          if (!url) {
+            setStatus("Impossible de résoudre l’URL de l’API. Ouvrez la page via http://localhost/…/scanner-repas.html", true);
+            return;
+          }
+          var fd = new FormData();
+          fd.append("image", file, file.name);
+
+          setLoading(true);
+          setStatus("Analyse en cours (envoi au serveur)…", false);
+          masquerResultat();
+
+          var ac = new AbortController();
+          var tid = window.setTimeout(function () {
+            try {
+              ac.abort();
+            } catch (_a) {}
+          }, 28000);
+
+          fetch(url, {
+            method: "POST",
+            body: fd,
+            signal: ac.signal,
+          })
+            .then(function (res) {
+              return res.text().then(function (txt) {
+                var json;
+                try {
+                  json = txt ? JSON.parse(txt) : {};
+                } catch (_p) {
+                  throw new Error("Réponse non JSON du serveur.");
+                }
+                if (!res.ok) throw new Error((json && json.error) || "HTTP " + res.status);
+                return json;
+              });
+            })
+            .then(function (data) {
+              afficherApercu(file);
+              afficherResultatApi(data);
+              setStatus("Analyse terminée.", false);
+            })
+            .catch(function (err) {
+              masquerResultat();
+              setStatus(err.message || String(err), true);
+            })
+            .finally(function () {
+              window.clearTimeout(tid);
+              setLoading(false);
+            });
+        }
+
+        function onFileChosen(ev) {
+          var input = ev.target;
+          var files = input.files;
+          if (!files || !files.length) return;
+          envoyerImageAuServeur(files[0]);
+          input.value = "";
+        }
+
+        $("sr-input-photo").addEventListener("change", onFileChosen);
+        $("sr-input-import").addEventListener("change", onFileChosen);
+
+        $("sr-btn-photo").addEventListener("click", function () {
+          $("sr-input-photo").click();
+        });
+        $("sr-btn-import").addEventListener("click", function () {
+          $("sr-input-import").click();
+        });
+      })();
+    </script>
+  </body>
+</html>

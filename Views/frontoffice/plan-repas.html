@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NutriSmart — Plan repas</title>
-    <link rel="stylesheet" href="css/mp-dashboard.css?v=20260425" />
+    <link rel="stylesheet" href="css/mp-dashboard.css?v=20260427" />
     <link rel="stylesheet" href="css/shared-styles.css?v=20260416" />
     <link rel="stylesheet" href="css/plan-repas-crud.css?v=20260426" />
     <link rel="stylesheet" href="css/crud-panel-plan-repas.css?v=20260421" />
@@ -65,6 +65,68 @@
       .days-grid-add-btn:hover {
         background: #fff;
         box-shadow: 0 4px 16px rgba(26, 60, 34, 0.12);
+      }
+      .pr-open-full-crud-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0 0 1.25rem;
+        padding: 0 0.25rem;
+      }
+      .pr-open-full-crud-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1.2;
+        padding: 0.5rem 0.9rem;
+        min-height: 2.5rem;
+        border-radius: 6px;
+        border: 1px solid rgba(30, 86, 49, 0.45);
+        background: #fff;
+        color: #1a3d18;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(16, 24, 20, 0.06);
+        transition:
+          background 0.16s,
+          border-color 0.16s,
+          color 0.16s,
+          box-shadow 0.16s;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .pr-open-full-crud-ic {
+        display: flex;
+        align-items: center;
+        color: #1e5631;
+        flex-shrink: 0;
+      }
+      .pr-open-full-crud-ic--chev {
+        opacity: 0.75;
+        margin-left: 0.05rem;
+      }
+      .pr-open-full-crud-txt {
+        text-align: left;
+        max-width: 18rem;
+      }
+      .pr-open-full-crud-btn:hover {
+        background: #f3f7f3;
+        border-color: #1e5631;
+        box-shadow: 0 2px 6px rgba(16, 40, 28, 0.08);
+      }
+      .pr-open-full-crud-btn:active {
+        transform: translateY(0.5px);
+        box-shadow: 0 1px 2px rgba(16, 40, 28, 0.06);
+      }
+      .pr-open-full-crud-btn:focus-visible {
+        outline: 2px solid #2d5a27;
+        outline-offset: 2px;
       }
       /* Modale plan repas : un peu plus large + cadre arrondi marqué */
       #plan-repas-crud-dialog.pr-plan-crud-dialog {
@@ -176,11 +238,53 @@
           </div>
         </section>
 
-        <!-- Section informative : objectif et cible calorique -->
-        <p class="pr-crud-hint" style="margin: 0 0 1rem; padding: 0 0.25rem; font-size: 0.92rem; color: var(--muted, #5c6b60); max-width: 52rem">
-          <strong>CRUD :</strong> cliquez sur une <strong>carte jour</strong> (Lundi, Mardi…) pour ouvrir la fenêtre <code>plan_repas</code>.
-          La grille reste une maquette : en base, un repas est lié à un <code>plan_repas</code>, pas à un jour affiché ici.
-        </p>
+        <div class="pr-open-full-crud-wrap">
+          <a
+            class="pr-open-full-crud-btn"
+            href="meal-workout-calculator.html"
+            aria-label="Ouvrir le calculateur repas et activité sportive"
+          >
+            <span class="pr-open-full-crud-ic" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                focusable="false"
+              >
+                <path
+                  d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </span>
+            <span class="pr-open-full-crud-txt">Calculateur repas &amp; activité</span>
+            <span class="pr-open-full-crud-ic pr-open-full-crud-ic--chev" aria-hidden="true">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+          </a>
+        </div>
         <section class="goal-bar" aria-label="Objectif nutritionnel">
           <div class="icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -723,15 +827,17 @@
                 <form id="form-planRepas" class="bo-crud-form" novalidate>
                   <!-- id_utilisateur requis en base : envoyé sans saisie (défaut 1 — à remplacer par l’utilisateur connecté si besoin) -->
                   <input type="hidden" id="pr-id-utilisateur" name="idUtilisateur" value="1" />
+                  <input type="hidden" id="pr-id" name="id" value="" />
                   <div class="flex w-full flex-col gap-2.5">
                     <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                      <span class="text-[13px] font-semibold text-gray-800">date_debut</span>
+                      <span class="text-[13px] font-semibold text-gray-800">Date de début</span>
                       <div class="flex min-w-0 items-center gap-2">
                         <input
                           type="date"
                           id="pr-date-debut"
                           name="dateDebut"
-                          title="jj/mm/aaaa"
+                          min="2026-04-01"
+                          title="Période du plan — date de début"
                           class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
                         />
                         <span class="pr-field-tools shrink-0">
@@ -766,13 +872,14 @@
                       <span class="ns-saisie-success-msg" aria-live="polite"></span>
                     </label>
                     <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                      <span class="text-[13px] font-semibold text-gray-800">date_fin</span>
+                      <span class="text-[13px] font-semibold text-gray-800">Date de fin</span>
                       <div class="flex min-w-0 items-center gap-2">
                         <input
                           type="date"
                           id="pr-date-fin"
                           name="dateFin"
-                          title="jj/mm/aaaa"
+                          min="2026-04-01"
+                          title="Période du plan — date de fin"
                           class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
                         />
                         <span class="pr-field-tools shrink-0">
@@ -808,18 +915,20 @@
                     </label>
                     <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                       <span class="text-[13px] font-semibold text-gray-800">objectif</span>
-                      <span class="text-[11px] font-normal text-gray-500">Lettres uniquement (espaces autorisés).</span>
                       <div class="flex min-w-0 items-center gap-2">
-                        <input
-                          type="text"
+                        <select
                           id="pr-objectif"
                           name="objectif"
-                          placeholder="ex. Perte de poids"
-                          maxlength="255"
-                          data-ns-texte-lettres="1"
-                          autocomplete="off"
-                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
-                        />
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option value="Perte de poids">Perte de poids</option>
+                          <option value="Prise de masse musculaire">Prise de masse musculaire</option>
+                          <option value="Maintien et tonification">Maintien et tonification</option>
+                          <option value="Santé métabolique">Santé métabolique</option>
+                          <option value="Performance sportive">Performance sportive</option>
+                          <option value="Rééquilibrage alimentaire">Rééquilibrage alimentaire</option>
+                        </select>
                         <span class="pr-field-tools shrink-0">
                           <button
                             type="button"
@@ -837,8 +946,8 @@
                             type="button"
                             class="pr-field-btn pr-field-btn--clear"
                             data-pr-target="pr-objectif"
-                            title="Vider ce champ"
-                            aria-label="Vider ce champ"
+                            title="Réinitialiser ce champ"
+                            aria-label="Réinitialiser ce champ"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                               <polyline points="3 6 5 6 21 6" />
@@ -1037,7 +1146,7 @@
     </script>
     <script src="js/nutrismart-crud-store.js"></script>
     <script src="js/nutrismart-saisie-crud.js?v=20260421"></script>
-    <script src="js/nutrismart-crud-admin.js?v=20260420c"></script>
+    <script src="js/nutrismart-crud-admin.js?v=20260420-2"></script>
     <script src="js/crud-panel-planRepas.js?v=20260421"></script>
     <script src="js/nutrismart-crud-field-toolbar.js?v=20260421"></script>
     <script src="js/plan-repas-modal-validation.js?v=20260420f"></script>

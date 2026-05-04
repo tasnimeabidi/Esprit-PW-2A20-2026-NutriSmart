@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="backoffice-shell.css?v=20260415" />
     <link rel="stylesheet" href="../frontoffice/css/plan-repas-crud.css?v=20260421" />
     <link rel="stylesheet" href="../frontoffice/css/crud-panel-plan-repas.css?v=20260421" />
-    <link rel="stylesheet" href="../frontoffice/css/crud-panel-repas.css?v=20260421" />
+    <link rel="stylesheet" href="../frontoffice/css/crud-panel-repas.css?v=20260421-2" />
     <link rel="stylesheet" href="../frontoffice/css/crud-panel-programme-sportif.css?v=20260421" />
     <link rel="stylesheet" href="../frontoffice/css/nutrismart-saisie-ui.css?v=20260421" />
   </head>
@@ -117,12 +117,16 @@
     <main class="bo-shell-main">
       <div class="conteneur-principal conteneur-principal--backoffice">
         <div class="main dash-workspace bo-users-page bo-crud-page">
-          <div class="page-header">
+          <div class="page-header" style="justify-content: flex-end">
             <div>
-              <div class="page-title">Modèle CRUD — MCD nutrition &amp; sport</div>
-              <div class="page-sub">
-                Tables PlanRepas, Repas, ProgrammeSportif — séance intégrée (date, durée, statut) sur programme_sportif
-              </div>
+              <a
+                href="../frontoffice/nutrismart-website.html"
+                class="btn-sm btn-ghost"
+                aria-label="Retour vers la page d'accueil frontoffice"
+                title="Retour vers l'accueil frontoffice"
+                style="display: inline-flex; align-items: center; justify-content: center; width: 40px; min-width: 40px; padding: 0; text-decoration: none; font-size: 20px; line-height: 1"
+                >←</a
+              >
             </div>
           </div>
 
@@ -143,26 +147,27 @@
             <h2 class="bo-crud-heading">plan_repas</h2>
             <p class="bo-crud-hint" id="hint-planRepas"></p>
             <form id="form-planRepas" class="bo-crud-form" novalidate>
+              <input type="hidden" id="pr-id" name="id" value="" />
               <div class="bo-crud-form-grid">
                 <label> id_utilisateur (FK)
                   <input type="text" id="pr-id-utilisateur" name="idUtilisateur" placeholder="ex. 1" />
                 </label>
-                <label> date_debut
-                  <input type="date" id="pr-date-debut" name="dateDebut" />
+                <label> Date de début
+                  <input type="date" id="pr-date-debut" name="dateDebut" min="2026-04-01" />
                 </label>
-                <label> date_fin
-                  <input type="date" id="pr-date-fin" name="dateFin" />
+                <label> Date de fin
+                  <input type="date" id="pr-date-fin" name="dateFin" min="2026-04-01" />
                 </label>
                 <label> objectif
-                  <input
-                    type="text"
-                    id="pr-objectif"
-                    name="objectif"
-                    placeholder="Perte de poids…"
-                    maxlength="255"
-                    data-ns-texte-lettres="1"
-                    autocomplete="off"
-                  />
+                  <select id="pr-objectif" name="objectif">
+                    <option value="">— Choisir —</option>
+                    <option value="Perte de poids">Perte de poids</option>
+                    <option value="Prise de masse musculaire">Prise de masse musculaire</option>
+                    <option value="Maintien et tonification">Maintien et tonification</option>
+                    <option value="Santé métabolique">Santé métabolique</option>
+                    <option value="Performance sportive">Performance sportive</option>
+                    <option value="Rééquilibrage alimentaire">Rééquilibrage alimentaire</option>
+                  </select>
                 </label>
                 <label> statut
                   <select id="pr-statut" name="statut">
@@ -185,8 +190,8 @@
                   <tr>
                     <th>id</th>
                     <th>id_utilisateur</th>
-                    <th>date_debut</th>
-                    <th>date_fin</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
                     <th>objectif</th>
                     <th>statut</th>
                     <th>Actions</th>
@@ -203,7 +208,7 @@
             <p class="bo-crud-hint" id="hint-repas"></p>
             <form id="form-repas" class="bo-crud-form" novalidate>
               <div class="bo-crud-form-grid">
-                <label> id_plan (FK)
+                <label> plan
                   <select id="repas-id-plan" name="idPlan"></select>
                 </label>
                 <label> Recette
@@ -246,8 +251,8 @@
                 <thead>
                   <tr>
                     <th>id</th>
-                    <th>id_plan</th>
-                    <th>Recette</th>
+                    <th>plan</th>
+                    <th>recette</th>
                     <th>type</th>
                     <th>calories</th>
                     <th>Actions</th>
@@ -261,11 +266,10 @@
           <!-- ProgrammeSportif -->
           <section class="content-card bo-crud-panel" data-panel="programmeSportif" id="panel-programme" hidden>
             <h2 class="bo-crud-heading">programme_sportif</h2>
-            <p class="bo-crud-meta">Relation MCD : PlanRepas (1) — (N) ProgrammeSportif (plusieurs lignes possibles pour un même plan).</p>
             <p class="bo-crud-hint" id="hint-programmeSportif"></p>
             <form id="form-programmeSportif" class="bo-crud-form" novalidate>
               <div class="bo-crud-form-grid">
-                <label> id_plan (FK)
+                <label> plan
                   <select id="prog-id-plan" name="idPlan"></select>
                 </label>
                 <label> type_sport
@@ -326,11 +330,11 @@
               </div>
             </form>
             <div class="table-scroll">
-              <table class="users-list-table bo-crud-table" aria-label="Liste ProgrammeSportif">
+              <table class="users-list-table bo-crud-table" aria-label="Liste Programme sportif">
                 <thead>
                   <tr>
                     <th>id</th>
-                    <th>id_plan</th>
+                    <th>plan</th>
                     <th>type_sport</th>
                     <th>niveau</th>
                     <th>intensite</th>
@@ -353,9 +357,9 @@
       if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
       if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
     </script>
-    <script src="../frontoffice/js/nutrismart-crud-store.js"></script>
+    <script src="../frontoffice/js/nutrismart-crud-store.js?v=20260427"></script>
     <script src="../frontoffice/js/nutrismart-saisie-crud.js?v=20260421"></script>
-    <script src="../frontoffice/js/nutrismart-crud-admin.js?v=20260421"></script>
+    <script src="../frontoffice/js/nutrismart-crud-admin.js?v=20260427-2"></script>
     <script src="../frontoffice/js/crud-panel-planRepas.js?v=20260421"></script>
     <script src="../frontoffice/js/crud-panel-repas.js?v=20260421"></script>
     <script src="../frontoffice/js/crud-panel-programmeSportif.js?v=20260421"></script>

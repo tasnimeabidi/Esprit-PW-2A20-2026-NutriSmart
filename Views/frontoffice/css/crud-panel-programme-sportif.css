@@ -10,5 +10,34 @@
 }
 
 #panel-programme .bo-crud-form-grid {
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+#panel-programme .bo-crud-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.85rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+#panel-programme .bo-crud-form-grid input,
+#panel-programme .bo-crud-form-grid select {
+  min-height: 46px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #111827;
+  background: #fff;
+}
+
+#panel-programme .bo-crud-form-grid input:focus,
+#panel-programme .bo-crud-form-grid select:focus {
+  border-color: #1e5631;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(30, 86, 49, 0.15);
 }

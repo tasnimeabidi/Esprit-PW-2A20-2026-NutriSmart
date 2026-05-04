@@ -1,0 +1,340 @@
+/**
+ * Page « Scanner votre repas » — palette alignée sur le frontoffice NutriSmart (beige / vert).
+ * Tout le positionnement est ici ; le HTML ne fait que structurer le sens (titres, boutons, zones).
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --sr-bg: #f2efe6;
+  --sr-panel: #ebe6dc;
+  --sr-surface: #ffffff;
+  --sr-text: #2a2824;
+  --sr-muted: #6b6458;
+  --sr-green-950: #1a3d28;
+  --sr-green-800: #2d5a3d;
+  --sr-green-600: #3d7a52;
+  --sr-orange: #e67e22;
+  --sr-radius-lg: 22px;
+  --sr-radius-md: 14px;
+  --sr-radius-pill: 999px;
+  --sr-font: "Inter", system-ui, sans-serif;
+  --sr-shadow: 0 12px 40px rgba(42, 40, 36, 0.08);
+}
+
+.sr-page {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  font-family: var(--sr-font);
+  color: var(--sr-text);
+  background: var(--sr-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+
+/* Bloc principal : pleine largeur viewport (plus de colonne 420px). */
+.sr-panel {
+  width: 100%;
+  max-width: none;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  background: var(--sr-panel);
+  border-radius: var(--sr-radius-lg);
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(0.85rem, 4vw, 1.5rem) clamp(1rem, 3vw, 1.75rem);
+  box-shadow: var(--sr-shadow);
+  text-align: center;
+}
+
+/* Icône caméra hero (PNG, sans cadre coloré) */
+.sr-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.sr-hero-camera {
+  width: clamp(88px, 26vw, 120px);
+  height: auto;
+  max-height: 132px;
+  display: block;
+  object-fit: contain;
+}
+
+.sr-title {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.35rem, 4vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* Pastilles « métier avancé » : OCR, calories, équivalent sport */
+.sr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+}
+
+.sr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--sr-surface);
+  border-radius: var(--sr-radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--sr-text);
+  border: 1px solid rgba(42, 40, 36, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.sr-chip-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.sr-chip-icon.sr-i-fire {
+  color: var(--sr-orange);
+}
+.sr-chip-icon.sr-i-bolt {
+  color: var(--sr-orange);
+}
+.sr-chip-icon.sr-i-pulse {
+  color: var(--sr-green-600);
+}
+
+.sr-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+@media (min-width: 420px) {
+  .sr-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Bouton principal : ouvre la caméra (mobile) ou fichier avec capture */
+.sr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--sr-radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.sr-btn:active {
+  transform: scale(0.98);
+}
+
+.sr-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sr-btn-primary {
+  background: linear-gradient(180deg, var(--sr-green-600), var(--sr-green-800));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(45, 90, 61, 0.35);
+}
+
+.sr-btn-primary:hover {
+  box-shadow: 0 6px 22px rgba(45, 90, 61, 0.42);
+}
+
+.sr-btn-secondary {
+  background: var(--sr-surface);
+  color: var(--sr-green-800);
+  border: 1px solid rgba(45, 90, 61, 0.22);
+}
+
+.sr-btn-secondary:hover {
+  background: #f8faf7;
+}
+
+.sr-btn svg {
+  flex-shrink: 0;
+}
+
+/* Lien saisie manuelle — style discret */
+.sr-manual {
+  margin-top: 1.35rem;
+  font-size: 0.82rem;
+}
+
+.sr-manual a {
+  color: var(--sr-muted);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(107, 100, 88, 0.45);
+}
+
+.sr-manual a:hover {
+  color: var(--sr-green-800);
+  border-bottom-color: var(--sr-green-600);
+}
+
+/* Zone de retour API (démo) — cachée tant qu’aucune image n’est traitée */
+.sr-result {
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+  background: var(--sr-surface);
+  border-radius: var(--sr-radius-md);
+  text-align: left;
+  font-size: 0.85rem;
+  border: 1px solid rgba(45, 90, 61, 0.12);
+  display: none;
+}
+
+.sr-result.is-visible {
+  display: block;
+}
+
+.sr-result-title {
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sr-green-950);
+  text-align: center;
+}
+
+.sr-preview-wrap {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(45, 90, 61, 0.15);
+  max-height: 160px;
+  background: #f0ede5;
+}
+
+.sr-preview-wrap[hidden] {
+  display: none !important;
+}
+
+.sr-preview-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: cover;
+}
+
+/* Grille : une carte par promesse (OCR, calories, sport) — remplie depuis le JSON API */
+.sr-result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.sr-result-card {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.85rem;
+  background: #f8faf6;
+  border-radius: 12px;
+  border: 1px solid rgba(45, 90, 61, 0.1);
+  text-align: left;
+}
+
+.sr-rc-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.sr-result-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--sr-green-800);
+}
+
+.sr-result-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--sr-text);
+}
+
+.sr-rc-icon {
+  flex-shrink: 0;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.sr-result-card .sr-cal-big {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--sr-green-800);
+}
+
+.sr-raw {
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  color: var(--sr-muted);
+}
+
+.sr-raw summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sr-result pre {
+  margin: 0.5rem 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.72rem;
+  color: var(--sr-muted);
+}
+
+.sr-status {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--sr-muted);
+}
+
+.sr-status.sr-err {
+  color: #a63d3d;
+}
+
+.sr-back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--sr-green-800);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sr-back:hover {
+  text-decoration: underline;
+}

@@ -52,26 +52,26 @@
   border-radius: 8px;
 }
 
-:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page)
-  #panel-plan-repas
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
   .ns-saisie-field-msg:not(.is-visible) {
   display: none !important;
 }
 
-:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page)
-  #panel-plan-repas
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
   .ns-saisie-success-msg:not(.is-visible) {
   display: none !important;
 }
 
-:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page)
-  #panel-plan-repas
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
   .ns-saisie-field-msg.is-visible {
   display: block !important;
 }
 
-:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page)
-  #panel-plan-repas
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
   .ns-saisie-success-msg.is-visible {
   display: flex !important;
   align-items: center;

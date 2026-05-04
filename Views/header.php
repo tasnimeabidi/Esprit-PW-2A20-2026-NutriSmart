@@ -16,6 +16,7 @@
         <li><a href="../Views/searchAlbums.php">Recherche par Plan</a></li>
         <li><a href="../Views/addAlbum.php">Ajouter un Repas</a></li>
         <li><a href="../Views/Shop.php">Programmes Sportifs</a></li>
+        <li><a href="../Views/metierAvancePlanRepas.php">Métier avancé plan repas</a></li>
     </ul>
 </nav>
  

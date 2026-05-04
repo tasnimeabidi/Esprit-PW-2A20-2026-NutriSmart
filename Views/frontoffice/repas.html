@@ -533,7 +533,7 @@
                 <form id="form-repas" class="bo-crud-form" novalidate>
                   <div class="flex w-full flex-col gap-2.5">
                     <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                      <span class="text-[13px] font-semibold text-gray-800">id_plan (FK)</span>
+                      <span class="text-[13px] font-semibold text-gray-800">plan</span>
                       <div class="flex min-w-0 items-center gap-2">
                         <select
                           id="repas-id-plan"
@@ -578,6 +578,12 @@
                           class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
                         >
                           <option value="">— Aucune recette —</option>
+                          <option value="1">Salade quinoa &amp; poulet</option>
+                          <option value="2">Omelette aux légumes</option>
+                          <option value="3">Porridge fruits rouges</option>
+                          <option value="4">Saumon grillé &amp; riz complet</option>
+                          <option value="5">Wrap thon avocat</option>
+                          <option value="6">Yaourt grec &amp; granola</option>
                         </select>
                         <span class="pr-field-tools shrink-0">
                           <button
@@ -713,21 +719,7 @@
                     </button>
                   </div>
                 </form>
-                <div class="table-scroll">
-                  <table class="users-list-table bo-crud-table" aria-label="Liste Repas">
-                    <thead>
-                      <tr>
-                        <th>id</th>
-                        <th>id_plan</th>
-                        <th>Recette</th>
-                        <th>type</th>
-                        <th>calories</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbody-repas"></tbody>
-                  </table>
-                </div>
+                <div id="tbody-repas" hidden></div>
               </section>
             </div>
             </div>
@@ -848,10 +840,10 @@
         actionsClass: "bo-crud-actions",
       };
     </script>
-    <script src="js/nutrismart-crud-store.js"></script>
+    <script src="js/nutrismart-crud-store.js?v=20260420-3"></script>
     <script src="js/nutrismart-saisie-crud.js?v=20260421"></script>
     <script src="js/nutrismart-crud-field-toolbar.js?v=20260421"></script>
-    <script src="js/nutrismart-crud-admin.js?v=20260426"></script>
+    <script src="js/nutrismart-crud-admin.js?v=20260420-2"></script>
     <script src="js/crud-panel-repas.js?v=20260421"></script>
     <script src="js/nutrismart-repas-page.js?v=20260421"></script>
     <script src="js/script.js" defer></script>

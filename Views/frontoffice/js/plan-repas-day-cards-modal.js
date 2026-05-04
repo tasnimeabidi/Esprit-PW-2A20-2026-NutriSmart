@@ -12,6 +12,10 @@
     var dlg = getDialog();
     if (!dlg || typeof dlg.showModal !== "function") return;
     if (!dlg.open) dlg.showModal();
+    var form = dlg.querySelector("#form-planRepas");
+    if (form && window.NutriSmartSaisieCrudUi && typeof window.NutriSmartSaisieCrudUi.clearFieldErrors === "function") {
+      window.NutriSmartSaisieCrudUi.clearFieldErrors(form);
+    }
     var scroll = dlg.querySelector(".pr-crud-scroll");
     if (scroll) scroll.scrollTop = 0;
   }

@@ -1,14 +1,16 @@
 /**
  * Boutons stylo / corbeille à côté des champs (formulaires CRUD bo-crud-form).
  */
-.bo-crud-form .pr-field-tools {
-  display: flex;
+.bo-crud-form .pr-field-tools,
+.fo-crud-form .pr-field-tools {
+  display: none !important;
   flex-shrink: 0;
   align-items: center;
   gap: 0.35rem;
 }
 
-.bo-crud-form .pr-field-btn {
+.bo-crud-form .pr-field-btn,
+.fo-crud-form .pr-field-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -23,34 +25,41 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.bo-crud-form .pr-field-btn:hover {
+.bo-crud-form .pr-field-btn:hover,
+.fo-crud-form .pr-field-btn:hover {
   background: #f9fafb;
 }
 
-.bo-crud-form .pr-field-btn:focus-visible {
+.bo-crud-form .pr-field-btn:focus-visible,
+.fo-crud-form .pr-field-btn:focus-visible {
   outline: 2px solid #1e5631;
   outline-offset: 2px;
 }
 
-.bo-crud-form .pr-field-btn--edit {
+.bo-crud-form .pr-field-btn--edit,
+.fo-crud-form .pr-field-btn--edit {
   color: #1e5631;
   border-color: rgba(30, 86, 49, 0.35);
 }
 
-.bo-crud-form .pr-field-btn--edit:hover {
+.bo-crud-form .pr-field-btn--edit:hover,
+.fo-crud-form .pr-field-btn--edit:hover {
   background: #eef5ef;
 }
 
-.bo-crud-form .pr-field-btn--clear {
+.bo-crud-form .pr-field-btn--clear,
+.fo-crud-form .pr-field-btn--clear {
   color: #b91c1c;
   border-color: rgba(185, 28, 28, 0.35);
 }
 
-.bo-crud-form .pr-field-btn--clear:hover {
+.bo-crud-form .pr-field-btn--clear:hover,
+.fo-crud-form .pr-field-btn--clear:hover {
   background: #fef2f2;
 }
 
-.bo-crud-form .pr-field-btn svg {
+.bo-crud-form .pr-field-btn svg,
+.fo-crud-form .pr-field-btn svg {
   width: 1.05rem;
   height: 1.05rem;
 }

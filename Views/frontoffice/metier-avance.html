@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Métier avancé</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/mp-dashboard.css?v=20260425" />
+    <link rel="stylesheet" href="css/metier-avance.css?v=20260426-2" />
+  </head>
+  <body class="ma-page">
+    <div class="ma-shell">
+      <aside class="ma-sidebar" aria-label="Navigation métier">
+        <div class="ma-sidebar-brand">
+          <span aria-hidden="true">◆</span>
+          <span>Métier avancé</span>
+        </div>
+        <nav class="ma-nav">
+          <a href="metier-avance.html" class="is-active">Vue d’ensemble</a>
+          <a href="scanner-repas.html">Scanner repas (photo)</a>
+          <a href="plan-repas-crud.html">CRUD plan / repas / sport</a>
+          <a href="suivi-statistiques.html">Suivi statistique</a>
+          <a href="nutrismart-website.html">Accueil site</a>
+          <a
+            href="https://www.magicpatterns.com/c/1khohq9yy47ge6p4zwm1ss/preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Maquette Magic Patterns ↗</a
+          >
+        </nav>
+      </aside>
+
+      <div class="ma-main">
+        <div class="ma-topbar">
+          <div>
+            <p class="ma-breadcrumb">NutriSmart · Pilotage nutrition &amp; sport</p>
+            <h1 class="ma-title">Tableau de bord métier</h1>
+          </div>
+          <div class="ma-actions">
+            <label class="sr-only" for="ma-plan-select">Plan repas</label>
+            <select id="ma-plan-select" class="ma-select" aria-label="Choisir un plan repas">
+              <option value="">— Choisir un plan —</option>
+            </select>
+            <label class="sr-only" for="ma-programme-select">Programme sportif</label>
+            <select id="ma-programme-select" class="ma-select" aria-label="Choisir un programme sportif">
+              <option value="">— Choisir une séance —</option>
+            </select>
+            <button type="button" class="ma-btn ma-btn-primary" id="ma-refresh">Actualiser</button>
+            <a
+              class="ma-btn ma-btn-magic"
+              href="https://www.magicpatterns.com/c/1khohq9yy47ge6p4zwm1ss/preview"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="text-decoration: none; display: inline-flex; align-items: center"
+              >Ouvrir la maquette Magic Patterns</a
+            >
+            <a class="ma-btn ma-btn-ghost" href="plan-repas-crud.html" style="text-decoration: none; display: inline-flex; align-items: center"
+              >Retour CRUD</a
+            >
+          </div>
+        </div>
+
+        <section class="ma-kpis" aria-label="Indicateurs clés">
+          <article class="ma-card">
+            <p class="ma-kpi-label">Score global</p>
+            <p class="ma-kpi-value" id="ma-kpi-score">—</p>
+            <p class="ma-kpi-hint">Synthèse charge + nutrition</p>
+          </article>
+          <article class="ma-card">
+            <p class="ma-kpi-label">Risque</p>
+            <p class="ma-kpi-value" id="ma-kpi-risque">—</p>
+            <p class="ma-kpi-hint">Charge vs niveau</p>
+          </article>
+          <article class="ma-card">
+            <p class="ma-kpi-label">Charge</p>
+            <p class="ma-kpi-value" id="ma-kpi-charge">—</p>
+            <p class="ma-kpi-hint">Ratio vs seuil</p>
+          </article>
+          <article class="ma-card">
+            <p class="ma-kpi-label">Calories repas</p>
+            <p class="ma-kpi-value" id="ma-kpi-cal">—</p>
+            <p class="ma-kpi-hint">Somme enregistrée</p>
+          </article>
+        </section>
+
+        <div class="ma-grid-2">
+          <section class="ma-card" aria-labelledby="ma-chart-title">
+            <h2 class="ma-card-title" id="ma-chart-title">Tendance charge &amp; nutrition</h2>
+            <div class="ma-chart-placeholder">
+              Zone graphique (ex. courbe hebdo) — à brancher sur vos données ou un outil de charts.
+            </div>
+            <p class="ma-status" id="ma-api-status"></p>
+          </section>
+          <section class="ma-card" aria-labelledby="ma-reco-title">
+            <h2 class="ma-card-title" id="ma-reco-title">Recommandations</h2>
+            <ul class="ma-list" id="ma-reco-list">
+              <li>Sélectionnez un plan et cliquez sur « Actualiser » pour charger l’analyse métier.</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="ma-card" aria-labelledby="ma-table-title">
+          <h2 class="ma-card-title" id="ma-table-title">Ajustements proposés</h2>
+          <div class="ma-table-wrap">
+            <table class="ma-table">
+              <thead>
+                <tr>
+                  <th>Axe</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="ma-adjust-body">
+                <tr>
+                  <td colspan="2">En attente d’analyse…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <p class="ma-footer-note">
+          Maquette inspirée du flux type
+          <a href="https://www.magicpatterns.com/c/1khohq9yy47ge6p4zwm1ss/preview" rel="noopener noreferrer" target="_blank"
+            >Magic Patterns</a
+          >
+          — palette remplacée par beige / vert NutriSmart, hors écran CRUD.
+        </p>
+      </div>
+    </div>
+
+    <style>
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script src="nutrismart-api-config.php"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        function apiBase() {
+          var b = typeof window !== "undefined" ? window.NUTRISMART_API_BASE : "";
+          return String(b || "").trim().replace(/\/+$/, "");
+        }
+
+        function apiUrl(path) {
+          var base = apiBase();
+          if (!base) return "";
+          return base + "/" + String(path || "").replace(/^\/+/, "");
+        }
+
+        function $(id) {
+          return document.getElementById(id);
+        }
+
+        function setStatus(msg, isErr) {
+          var el = $("ma-api-status");
+          if (!el) return;
+          el.textContent = msg || "";
+          el.className = "ma-status" + (isErr ? " ma-err" : "");
+        }
+
+        function fillPlanSelect(plans) {
+          var sel = $("ma-plan-select");
+          if (!sel) return;
+          var keep = sel.value;
+          sel.innerHTML = '<option value="">— Choisir un plan —</option>';
+          (plans || []).forEach(function (p) {
+            var id = p && p.id != null ? String(p.id) : "";
+            if (!id) return;
+            var o = document.createElement("option");
+            o.value = id;
+            var obj = p.objectif != null ? String(p.objectif).trim() : "";
+            o.textContent = obj ? "Plan #" + id + " — " + obj : "Plan #" + id;
+            sel.appendChild(o);
+          });
+          if (keep && Array.prototype.some.call(sel.options, function (opt) { return opt.value === keep; })) {
+            sel.value = keep;
+          }
+        }
+
+        function fillProgrammeSelect(programmes) {
+          var sel = $("ma-programme-select");
+          if (!sel) return;
+          var keep = sel.value;
+          sel.innerHTML = '<option value="">— Choisir une séance —</option>';
+          (programmes || []).forEach(function (p) {
+            var id = p && p.id != null ? String(p.id) : "";
+            if (!id) return;
+            var typeSport = p && p.typeSport != null ? String(p.typeSport).trim() : "";
+            var dateSeance = p && p.dateSeance != null ? String(p.dateSeance).trim() : "";
+            var idPlan = p && p.idPlan != null ? String(p.idPlan).trim() : "";
+            var label = "Séance #" + id;
+            if (typeSport) label += " — " + typeSport;
+            if (dateSeance) label += " (" + dateSeance + ")";
+            if (idPlan) label += " · Plan #" + idPlan;
+            var o = document.createElement("option");
+            o.value = id;
+            o.textContent = label;
+            sel.appendChild(o);
+          });
+          if (keep && Array.prototype.some.call(sel.options, function (opt) { return opt.value === keep; })) {
+            sel.value = keep;
+          }
+        }
+
+        function fillPlansFromCrudStore() {
+          var raw = null;
+          try {
+            raw = localStorage.getItem("nutrismart.crud.cache.v1");
+          } catch (e) {}
+          var plans = [];
+          if (raw) {
+            try {
+              var parsed = JSON.parse(raw);
+              plans = (parsed && parsed.planRepas) || [];
+            } catch (e2) {}
+          }
+          fillPlanSelect(plans);
+          return plans.length > 0;
+        }
+
+        function fillProgrammesFromCrudStore() {
+          var raw = null;
+          try {
+            raw = localStorage.getItem("nutrismart.crud.cache.v1");
+          } catch (e) {}
+          var programmes = [];
+          if (raw) {
+            try {
+              var parsed = JSON.parse(raw);
+              programmes = (parsed && parsed.programmeSportif) || [];
+            } catch (e2) {}
+          }
+          fillProgrammeSelect(programmes);
+          return programmes.length > 0;
+        }
+
+        function fillPlansFromApi() {
+          var url = apiUrl("plan-repas.php");
+          if (!url) return Promise.resolve();
+          return fetch(url, { method: "GET" }).then(function (res) {
+            return res.json().then(function (json) {
+              if (!res.ok) throw new Error((json && json.error) || "HTTP " + res.status);
+              return Array.isArray(json) ? json : [];
+            });
+          });
+        }
+
+        function fillProgrammesFromApi() {
+          var url = apiUrl("programme-sportif.php");
+          if (!url) return Promise.resolve();
+          return fetch(url, { method: "GET" }).then(function (res) {
+            return res.json().then(function (json) {
+              if (!res.ok) throw new Error((json && json.error) || "HTTP " + res.status);
+              return Array.isArray(json) ? json : [];
+            });
+          });
+        }
+
+        function renderAnalysis(data) {
+          var a = (data && data.analyse) || {};
+          var ind = a.indicateurs || {};
+          $("ma-kpi-score").textContent = a.scoreGlobal != null ? String(a.scoreGlobal) : "—";
+          $("ma-kpi-risque").textContent = a.risque ? String(a.risque) : "—";
+          var ratio = ind.ratioCharge != null ? " (×" + ind.ratioCharge + ")" : "";
+          $("ma-kpi-charge").textContent =
+            ind.chargeTotale != null ? String(ind.chargeTotale) + ratio : "—";
+          $("ma-kpi-cal").textContent = ind.totalCaloriesRepas != null ? String(ind.totalCaloriesRepas) : "—";
+
+          var ul = $("ma-reco-list");
+          ul.innerHTML = "";
+          var recos = (data && data.recommandations) || [];
+          if (!recos.length) {
+            ul.innerHTML = "<li>Aucune recommandation pour ce plan.</li>";
+          } else {
+            recos.forEach(function (r) {
+              var li = document.createElement("li");
+              var pr = (r && r.priorite) || "moyenne";
+              var pill =
+                pr === "haute"
+                  ? '<span class="ma-pill ma-pill-high">Haute</span>'
+                  : pr === "moyenne"
+                    ? '<span class="ma-pill ma-pill-med">Moyenne</span>'
+                    : "";
+              li.innerHTML = pill + (r && r.message ? String(r.message) : "");
+              ul.appendChild(li);
+            });
+          }
+
+          var tb = $("ma-adjust-body");
+          tb.innerHTML = "";
+          var adj = (data && data.ajustementsProposes) || [];
+          if (!adj.length) {
+            var tr0 = document.createElement("tr");
+            tr0.innerHTML = "<td colspan=\"2\">Aucun ajustement proposé.</td>";
+            tb.appendChild(tr0);
+          } else {
+            adj.forEach(function (row) {
+              var tr = document.createElement("tr");
+              tr.innerHTML =
+                "<td>" +
+                (row && row.axe ? String(row.axe) : "") +
+                "</td><td>" +
+                (row && row.action ? String(row.action) : "") +
+                "</td>";
+              tb.appendChild(tr);
+            });
+          }
+        }
+
+        function loadAnalysis() {
+          var planId = ($("ma-plan-select") && $("ma-plan-select").value) || "";
+          var programmeId = ($("ma-programme-select") && $("ma-programme-select").value) || "";
+          var url = "";
+          if (programmeId) {
+            url = apiUrl("orchestration-metier-programme-sportif.php?idProgramme=" + encodeURIComponent(programmeId));
+          } else if (planId) {
+            url = apiUrl("orchestration-metier.php?idPlan=" + encodeURIComponent(planId));
+          }
+          if (!programmeId && !planId) {
+            setStatus("Choisissez un plan ou une séance sportive.", true);
+            return;
+          }
+          if (!url) {
+            setStatus("API indisponible (ouvrez la page via http://localhost/… avec nutrismart-api-config).", true);
+            return;
+          }
+          setStatus("Chargement…", false);
+          fetch(url, { method: "GET" })
+            .then(function (res) {
+              return res
+                .json()
+                .catch(function () {
+                  return {};
+                })
+                .then(function (json) {
+                  if (!res.ok) throw new Error((json && json.error) || "HTTP " + res.status);
+                  return json;
+                });
+            })
+            .then(function (data) {
+              renderAnalysis(data);
+              setStatus("Données métier à jour.", false);
+            })
+            .catch(function (err) {
+              setStatus(String((err && err.message) || "Erreur"), true);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          var hasPlans = fillPlansFromCrudStore();
+          var hasProgrammes = fillProgrammesFromCrudStore();
+          if (!hasPlans) {
+            fillPlansFromApi()
+              .then(function (rows) {
+                fillPlanSelect(rows || []);
+              })
+              .catch(function () {});
+          }
+          if (!hasProgrammes) {
+            fillProgrammesFromApi()
+              .then(function (rows) {
+                fillProgrammeSelect(rows || []);
+              })
+              .catch(function () {});
+          }
+          var q = new URLSearchParams(window.location.search).get("idPlan");
+          var qProg = new URLSearchParams(window.location.search).get("idProgramme");
+          if (q && $("ma-plan-select")) $("ma-plan-select").value = q;
+          if (qProg && $("ma-programme-select")) $("ma-programme-select").value = qProg;
+          var btn = $("ma-refresh");
+          if (btn) btn.addEventListener("click", loadAnalysis);
+          if (q || qProg) loadAnalysis();
+        });
+      })();
+    </script>
+  </body>
+</html>

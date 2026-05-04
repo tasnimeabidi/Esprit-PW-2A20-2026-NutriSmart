@@ -8,7 +8,7 @@
   document.addEventListener("click", function (e) {
     var btn = e.target.closest(".pr-field-btn[data-pr-target]");
     if (!btn) return;
-    var form = btn.closest("form.bo-crud-form");
+    var form = btn.closest("form.bo-crud-form, form.fo-crud-form");
     if (!form || !form.contains(btn)) return;
     var fid = btn.getAttribute("data-pr-target");
     if (!fid) return;

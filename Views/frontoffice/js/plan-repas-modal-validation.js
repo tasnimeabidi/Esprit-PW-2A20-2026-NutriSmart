@@ -51,6 +51,7 @@
     }
     if (msgs.ok) {
       msgs.ok.classList.toggle("is-visible", !!valid);
+      if (!valid) msgs.ok.classList.remove("is-active");
     }
   }
 
@@ -60,20 +61,20 @@
     return { ok: true };
   }
 
+  /** Plan repas : dates à partir du 1er avril 2026 (saisie yyyy-mm-dd). */
+  var MIN_PLAN_REPAS_ISO = "2026-04-01";
+
   function validateDate(v) {
     if (!v) return { ok: false, msg: "Choisissez une date." };
+    var t = String(v).trim();
+    if (t < MIN_PLAN_REPAS_ISO) {
+      return { ok: false, msg: "La date doit être à partir d'avril 2026." };
+    }
     return { ok: true };
   }
 
   function validateObjectif(v) {
-    var t = String(v || "").trim();
-    if (t.length < 1) return { ok: false, msg: "Saisissez un objectif." };
-    /* Lettres uniquement (espaces autorisés entre les mots). */
-    if (!/^[a-zA-ZàâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ\s]+$/.test(t)) {
-      return { ok: false, msg: "L’objectif ne doit contenir que des lettres (espaces autorisés)." };
-    }
-    var lettersOnly = t.replace(/\s/g, "");
-    if (lettersOnly.length < 3) return { ok: false, msg: "Au moins 3 lettres." };
+    if (v === "" || v == null) return { ok: false, msg: "Choisissez un objectif dans la liste." };
     return { ok: true };
   }
 
@@ -82,12 +83,16 @@
     return { ok: true };
   }
 
+  /** Comparaison sur chaînes yyyy-mm-dd (valeur native des <input type="date">), sans new Date() ni décalage fuseau. */
   function compareDates(debut, fin) {
     if (!debut || !fin) return { ok: true };
-    var a = new Date(debut);
-    var b = new Date(fin);
-    if (isNaN(a.getTime()) || isNaN(b.getTime())) return { ok: true };
-    if (b < a) return { ok: false, msg: "La date de fin doit être après la date de début." };
+    var a = String(debut).trim();
+    var b = String(fin).trim();
+    var iso = /^\d{4}-\d{2}-\d{2}$/;
+    if (!iso.test(a) || !iso.test(b)) return { ok: true };
+    if (b < a) {
+      return { ok: false, msg: "La date de fin ne peut pas précéder la date de début." };
+    }
     return { ok: true };
   }
 
@@ -154,11 +159,6 @@
         runField(input, true);
       });
       input.addEventListener("input", function () {
-        if (input.id === "pr-objectif") {
-          var raw = input.value;
-          var cleaned = raw.replace(/[^a-zA-ZàâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ\s]/g, "");
-          if (cleaned !== raw) input.value = cleaned;
-        }
         runField(input, touched);
       });
       input.addEventListener("change", function () {

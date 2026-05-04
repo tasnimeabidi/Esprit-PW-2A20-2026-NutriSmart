@@ -66,11 +66,29 @@ final class PlanRepas
         return $this->getParIdApi($id);
     }
 
+    /**
+     * Suppression du plan (MCD) : relation 1—N « contient » entre plan_repas et repas.
+     * La clé de jointure est id_plan côté repas → id côté plan_repas (pas le texte objectif).
+     * On supprime d’abord toutes les lignes repas liées, puis les programmes sportifs du même
+     * plan, puis le plan, pour vider entièrement les tables enfants (équivalent ON DELETE CASCADE).
+     */
     public function supprimer(int $id): bool
     {
-        $st = $this->pdo->prepare('DELETE FROM plan_repas WHERE id=?');
-        $st->execute([$id]);
-        return $st->rowCount() > 0;
+        $this->pdo->beginTransaction();
+        try {
+            $stRepas = $this->pdo->prepare('DELETE FROM repas WHERE id_plan = ?');
+            $stRepas->execute([$id]);
+            $stProg = $this->pdo->prepare('DELETE FROM programme_sportif WHERE id_plan = ?');
+            $stProg->execute([$id]);
+            $stPlan = $this->pdo->prepare('DELETE FROM plan_repas WHERE id = ?');
+            $stPlan->execute([$id]);
+            $ok = $stPlan->rowCount() > 0;
+            $this->pdo->commit();
+            return $ok;
+        } catch (\Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
     }
 
     /** @return array<string, mixed>|null */

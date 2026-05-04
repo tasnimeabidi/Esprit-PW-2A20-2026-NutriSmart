@@ -2,7 +2,8 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1e5631" />
     <title>NutriSmart — Repas &amp; activité (scanner)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,10 +29,14 @@
         --muted: #6b7280;
         --border: #e8ece9;
         --orange: #f2994a;
-        --shadow-card: 0 4px 24px rgba(45, 90, 39, 0.1);
-        --card: rgba(255, 255, 255, 0.96);
+        --shadow-card: 0 8px 32px rgba(45, 90, 39, 0.08), 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+        --card: rgba(255, 255, 255, 0.98);
         --line: rgba(45, 90, 39, 0.18);
         --accent-warm: #d4a012;
+        --page-pad: max(12px, env(safe-area-inset-left, 0px));
+        --page-pad-r: max(12px, env(safe-area-inset-right, 0px));
+        --page-pad-b: max(16px, env(safe-area-inset-bottom, 0px));
+        --radius-xl: 22px;
         /* CTA / accents : vert NutriSmart (pas lime Tailwind) */
         --grad-cta-start: #1e5631;
         --grad-cta-end: #2d5a27;
@@ -48,6 +53,8 @@
         margin: 0;
         min-height: 100%;
         height: 100%;
+        width: 100%;
+        overflow-x: hidden;
         background: var(--bg);
         color: var(--txt);
         font-family: Inter, system-ui, sans-serif;
@@ -79,9 +86,10 @@
         background: var(--bg);
         background-color: var(--bg);
         background-image:
-          radial-gradient(ellipse 75% 55% at 50% 0%, rgba(232, 245, 233, 0.85), transparent 58%),
-          radial-gradient(ellipse 60% 45% at 100% 100%, rgba(200, 230, 201, 0.45), transparent 55%),
-          radial-gradient(circle at 0% 80%, rgba(45, 90, 39, 0.06), transparent 45%);
+          radial-gradient(ellipse 90% 70% at 50% -10%, rgba(232, 245, 233, 0.95), transparent 50%),
+          radial-gradient(ellipse 70% 50% at 100% 100%, rgba(200, 230, 201, 0.5), transparent 52%),
+          radial-gradient(circle at 0% 85%, rgba(30, 86, 49, 0.07), transparent 42%),
+          linear-gradient(180deg, #f4f0ea 0%, var(--bg) 38%, #f2f6f1 100%);
       }
 
       @keyframes appGradientShift {
@@ -111,17 +119,30 @@
       }
 
       header.top {
-        display: flex;
+        display: grid;
+        grid-template-columns: 44px 1fr 44px;
         align-items: center;
-        justify-content: space-between;
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(45, 90, 39, 0.12);
-        background: rgba(247, 243, 236, 0.96);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        padding: 10px var(--page-pad) 10px var(--page-pad-r);
+        padding-top: max(10px, env(safe-area-inset-top, 0px));
+        border-bottom: 1px solid rgba(45, 90, 39, 0.1);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 243, 236, 0.88));
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         position: relative;
         z-index: 50;
         flex-shrink: 0;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+
+      .top-title {
+        margin: 0;
+        text-align: center;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+        font-size: clamp(13px, 2.8vw, 15px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--forest-dark);
+        line-height: 1.2;
       }
 
       .top-btn {
@@ -144,7 +165,8 @@
       }
 
       .hdr-slot {
-        width: 40px;
+        min-width: 44px;
+        width: 44px;
         height: 40px;
         position: relative;
       }
@@ -164,12 +186,14 @@
       .steps {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 16px 22px;
+        justify-content: stretch;
+        gap: 4px;
+        width: 100%;
+        padding: 12px var(--page-pad) 12px var(--page-pad-r);
         border-bottom: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
       }
 
       .steps[hidden] {
@@ -208,12 +232,12 @@
       }
 
       .step-line {
-        flex: 1;
-        height: 2px;
+        flex: 1 1 0;
+        height: 3px;
         background: var(--border);
-        border-radius: 2px;
-        max-width: 48px;
-        min-width: 12px;
+        border-radius: 3px;
+        min-width: 8px;
+        max-width: none;
         overflow: hidden;
       }
 
@@ -243,18 +267,40 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
         justify-content: center;
-        padding: 24px 20px 32px;
+        padding: 0;
         box-sizing: border-box;
+        width: 100%;
+        min-height: 0;
+        background: var(--white);
       }
 
-      /* Autres étapes : marges page dans le flux scroll */
+      /* Étapes hors scanner : aucune marge extérieure — la carte .glass touche les bords */
       main > .screen:not(.screen--scanner) {
-        padding: 18px 16px 32px;
+        padding: 0;
         box-sizing: border-box;
-        flex: 1 0 auto;
+        flex: 1 1 auto;
         min-height: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      main > .screen:not(.screen--scanner) > .glass {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
+        border-bottom: 0;
+        box-shadow: none;
+        padding: max(12px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px))
+          max(16px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
       }
 
       .screen[hidden] {
@@ -262,12 +308,15 @@
       }
 
       .glass {
-        border: 1px solid var(--border);
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(45, 90, 39, 0.1);
         background: var(--card);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 1rem;
-        padding: 22px 18px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: var(--radius-xl);
+        padding: clamp(18px, 3.5vw, 26px) clamp(16px, 4vw, 28px);
         box-shadow: var(--shadow-card);
         color: var(--text);
       }
@@ -276,78 +325,73 @@
         background: transparent;
         border: none;
         box-shadow: none;
-        padding: 8px 0 0;
+        padding: max(10px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-left, 0px))
+          max(20px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-right, 0px));
         backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         width: 100%;
-        max-width: 28rem;
-        margin: 0 auto;
+        max-width: none;
+        margin: 0;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
       }
 
       .center {
         text-align: center;
       }
 
-      .camera-badge-wrap {
-        position: relative;
-        width: 104px;
-        height: 104px;
-        margin: 0 auto 26px;
+      .scanner-hero-icon-wrap {
+        margin: 0 auto 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
-      .camera-badge-wrap::before {
-        content: "";
-        position: absolute;
-        inset: -18px;
-        border-radius: 32px;
-        background: radial-gradient(circle, rgba(45, 90, 39, 0.2) 0%, transparent 70%);
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .camera-badge {
-        position: relative;
-        z-index: 1;
-        width: 96px;
-        height: 96px;
-        border-radius: 20px;
-        margin: 4px;
-        background: linear-gradient(135deg, var(--grad-cta-start), var(--grad-cta-end));
-        color: var(--white);
-        display: grid;
-        place-items: center;
-        box-shadow: 0 0 0 1px rgba(45, 90, 39, 0.2), 0 8px 28px rgba(45, 90, 39, 0.2);
-      }
-
-      .camera-badge svg {
-        width: 46px;
-        height: 46px;
+      .scanner-hero-icon {
+        width: clamp(96px, 28vw, 136px);
+        height: auto;
+        max-height: 150px;
         display: block;
+        object-fit: contain;
       }
 
       h1 {
-        margin: 0 0 10px;
+        margin: 0 0 8px;
         font-family: "Plus Jakarta Sans", Inter, sans-serif;
-        font-size: clamp(28px, 8vw, 38px);
+        font-size: clamp(26px, 5vw + 0.6rem, 44px);
         font-weight: 800;
-        line-height: 1.1;
-        letter-spacing: -0.03em;
+        line-height: 1.08;
+        letter-spacing: -0.035em;
         color: var(--text);
       }
 
-      .text-gradient,
-      .title-em {
-        background-image: linear-gradient(to right, var(--grad-cta-start), var(--grad-cta-end));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
+      .subtitle {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: clamp(14px, 3.2vw, 16px);
+        font-weight: 500;
+        line-height: 1.4;
       }
 
-      .subtitle {
-        margin: 0 0 16px;
-        color: var(--muted);
-        font-size: 15px;
-        font-weight: 500;
+      .scanner-title-only {
+        margin: 0 0 14px;
+      }
+
+      .ing-vision-banner {
+        margin: 0 0 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(180, 83, 9, 0.28);
+        background: linear-gradient(135deg, rgba(254, 249, 231, 0.95), rgba(254, 243, 199, 0.75));
+        color: #92400e;
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 600;
+        box-shadow: 0 2px 12px rgba(180, 83, 9, 0.08);
       }
 
       .chips {
@@ -357,7 +401,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        margin: 0 auto 26px;
+        margin: 0 auto 18px;
         max-width: 100%;
       }
 
@@ -377,15 +421,15 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 6px 12px;
+        padding: 8px 14px;
         border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--white);
+        border: 1px solid rgba(45, 90, 39, 0.14);
+        background: linear-gradient(180deg, #ffffff, #f8faf8);
         color: var(--text);
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
-        box-shadow: 0 2px 8px rgba(45, 90, 39, 0.06);
+        box-shadow: 0 2px 10px rgba(45, 90, 39, 0.07);
       }
 
       .chip-ekg {
@@ -507,9 +551,16 @@
 
       .btn-row {
         display: grid;
-        gap: 12px;
+        gap: 10px;
         margin-top: 4px;
         max-width: 100%;
+      }
+
+      @media (min-width: 420px) {
+        .btn-row {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
       }
 
       .manual-link {
@@ -936,13 +987,16 @@
         margin: 0;
         padding: 0;
         min-height: 0;
+        width: 100%;
       }
 
       .bilan-card {
         background: transparent;
         border: 0;
         box-shadow: none;
-        padding: 8px 4px 16px;
+        padding: 8px 0 16px;
+        width: 100%;
+        max-width: 100%;
       }
 
       .donut-row {
@@ -1614,7 +1668,8 @@
             <button type="button" class="top-btn" id="hdr-back-app" hidden title="Étape précédente">‹</button>
             <a class="top-btn" id="hdr-plan" href="plan-repas.html" title="Plan repas">‹</a>
           </div>
-          <div style="width: 40px" aria-hidden="true"></div>
+          <p class="top-title">NutriSmart · Repas &amp; activité</p>
+          <div class="hdr-slot" aria-hidden="true"></div>
         </header>
 
         <div class="steps" id="step-bar" hidden>
@@ -1643,16 +1698,18 @@
           <!-- SCANNER -->
           <section class="screen screen--scanner" id="scr-scanner">
             <div class="glass scanner-hero center">
-              <div class="camera-badge-wrap">
-                <div class="camera-badge" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fill="#0f1f0c" d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                    <circle cx="12" cy="13" r="3" fill="#f0fdf4" />
-                  </svg>
-                </div>
+              <div class="scanner-hero-icon-wrap">
+                <img
+                  class="scanner-hero-icon"
+                  src="img/scanner-camera-hero.png"
+                  width="128"
+                  height="128"
+                  alt=""
+                  decoding="async"
+                  aria-hidden="true"
+                />
               </div>
-              <h1>Scanner votre repas <span class="title-em">de manière pro</span></h1>
-              <p class="subtitle">Prenez en photo votre plat, on s’occupe du reste.</p>
+              <h1 class="scanner-title-only">Scanner votre repas</h1>
               <div class="chips" role="list">
                 <span class="chip" role="listitem"
                   ><span class="chip-ic chip-ic--lime" aria-hidden="true">⚡</span> Scanner OCR</span
@@ -1676,9 +1733,13 @@
               <div class="btn-row">
                 <button type="button" class="btn btn-primary animate-scan-pulse" id="btn-camera">
                   <span class="btn-ic" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                      <circle cx="12" cy="13" r="3" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="3.5" y="10" width="17" height="10.5" rx="2.6" fill="#0a0a0a" />
+                      <polygon points="9,5.5 15,5.5 16.6,10 7.4,10" fill="#0a0a0a" />
+                      <rect x="4.1" y="7.6" width="3.8" height="3.3" rx="0.95" fill="#0a0a0a" />
+                      <circle cx="12" cy="15.5" r="3.9" fill="#ffffff" />
+                      <circle cx="12" cy="15.5" r="2.25" fill="#0a0a0a" />
+                      <circle cx="17.5" cy="12.5" r="1.12" fill="#ffffff" />
                     </svg>
                   </span>
                   Prendre une photo
@@ -1724,6 +1785,7 @@
                   <div class="ing-editor-total-kcal" id="ing-editor-total-kcal">0</div>
                 </div>
               </div>
+              <p class="ing-vision-banner" id="ing-vision-banner" hidden role="alert"></p>
               <div id="ing-list-wrap">
                 <div class="ing-list" id="ing-list"></div>
               </div>
@@ -1753,6 +1815,9 @@
                   <button type="button" class="ing-add-btn" id="btn-ing-add-submit">Ajouter</button>
                 </div>
               </div>
+              <p class="muted" id="ing-scan-hint" hidden>
+                Aucun ingrédient détecté automatiquement : une ligne générique a été ajoutée (ce n’est pas une analyse de la photo). Remplacez le nom, ajoutez vos aliments ou configurez Groq sur le serveur pour une liste basée sur l’image.
+              </p>
               <p class="muted" id="ing-empty" hidden>Aucun ingrédient reconnu. Revenez en arrière ou utilisez la démo.</p>
               <button type="button" class="btn btn-primary btn-valider-repas" id="btn-confirm-ing">Valider le repas →</button>
             </div>
@@ -1855,6 +1920,7 @@
       </div>
     </div>
 
+    <script src="nutrismart-api-config.php"></script>
     <script>
       (function () {
         var STEPS = ["SCANNER", "OCR_PROCESSING", "INGREDIENTS_EDITOR", "CALORIE_BREAKDOWN", "SPORT_RESULTS"];
@@ -1862,6 +1928,49 @@
         var ingredients = [];
         var ocrAbort = false;
         var cameraStream = null;
+        /** True si le dernier scan a reçu mode=démo (pas de vision serveur) : affiche l’aide configuration. */
+        var visionDemoBlocked = false;
+        /** Réponse GET scanner-repas-demo.php (diagnostics, sans clé). */
+        var scannerDiagFromServer = null;
+        /** Photo analysée comme sans repas/nourriture (Groq) : liste vide, pas de ligne « Repas (à compléter) ». */
+        var scanNonAlimentaire = false;
+
+        /** Réponse Groq : pas de nourriture / pas d’ingrédients (API ou libellé OCR). */
+        function groqIndiqueSansNourriture(data) {
+          if (!data || data.mode !== "groq") return false;
+          if (data.nonAlimentaire === true) return true;
+          if (data.nonAlimentaire === false) return false;
+          var o = data.ocrTexteExemple != null ? String(data.ocrTexteExemple) : "";
+          return /non\s*alimentaire|sans\s+nourriture|sans\s+repas|pas\s+(?:de\s+)?(?:repas|nourriture)|aucun\s+(?:repas|aliment)|image\s+sans\s+nourriture|pas\s+un\s+repas|ne\s+montre\s+pas|objet\s+non\s+comestible/i.test(
+            o
+          );
+        }
+
+        /** Coupe une promesse après ms (évite écran bloqué si Tesseract / réseau ne répond pas). */
+        function withTimeout(promise, ms, errMsg) {
+          return new Promise(function (resolve, reject) {
+            var finished = false;
+            var tid = window.setTimeout(function () {
+              if (finished) return;
+              finished = true;
+              reject(new Error(errMsg || "Délai dépassé"));
+            }, ms);
+            promise.then(
+              function (v) {
+                if (finished) return;
+                finished = true;
+                window.clearTimeout(tid);
+                resolve(v);
+              },
+              function (e) {
+                if (finished) return;
+                finished = true;
+                window.clearTimeout(tid);
+                reject(e);
+              }
+            );
+          });
+        }
 
         function stopCameraStream() {
           if (cameraStream) {
@@ -1931,7 +2040,7 @@
           { name: "Poivron", kcal: 20, aliases: ["poivron", "poivrons"] },
           { name: "Champignon", kcal: 22, aliases: ["champignon", "champignons", "champignons de paris"] },
           { name: "Ail", kcal: 149, aliases: ["ail", "gousse d'ail"] },
-          { name: "Oeuf", kcal: 155, aliases: ["oeuf", "oeufs", "œuf", "œufs"] },
+          { name: "Oeuf", kcal: 155, aliases: ["oeuf", "oeufs", "œuf", "œufs", "omelette", "omelet"] },
           { name: "Fromage", kcal: 402, aliases: ["fromage", "gruyère", "emmental", "comté", "cheddar"] },
           { name: "Mozzarella", kcal: 280, aliases: ["mozzarella", "mozza"] },
           { name: "Lait", kcal: 42, aliases: ["lait", "lait demi-écrémé", "lait entier"] },
@@ -1948,6 +2057,8 @@
           { name: "Banane", kcal: 89, aliases: ["banane", "bananes"] },
           { name: "Fraise", kcal: 32, aliases: ["fraise", "fraises"] },
           { name: "Avocat", kcal: 160, aliases: ["avocat", "avocats"] },
+          { name: "Herbes fraîches", kcal: 30, aliases: ["persil", "ciboulette", "herbes fraîches", "cerfeuil", "aneth"] },
+          { name: "Jus d'orange", kcal: 45, aliases: ["jus d'orange", "jus d orange", "orange pressée"] },
           { name: "Citron", kcal: 29, aliases: ["citron", "jus de citron"] },
         ];
 
@@ -1994,6 +2105,8 @@
           Banane: { c: 22, p: 1, f: 0.2 },
           Fraise: { c: 5, p: 0.5, f: 0.2 },
           Avocat: { c: 1.5, p: 1.5, f: 14.5 },
+          "Herbes fraîches": { c: 3, p: 2, f: 0.4 },
+          "Jus d'orange": { c: 10, p: 0.5, f: 0 },
           Citron: { c: 3, p: 0.5, f: 0.1 },
         };
 
@@ -2048,6 +2161,67 @@
             }
           }
           return null;
+        }
+
+        function normalizeFoodToken(s) {
+          return String(s || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z\s'-]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+        }
+
+        function levenshtein(a, b) {
+          a = String(a || "");
+          b = String(b || "");
+          var m = a.length;
+          var n = b.length;
+          if (!m) return n;
+          if (!n) return m;
+          var dp = [];
+          for (var i = 0; i <= m; i++) {
+            dp[i] = [i];
+          }
+          for (var j = 1; j <= n; j++) {
+            dp[0][j] = j;
+          }
+          for (var ii = 1; ii <= m; ii++) {
+            for (var jj = 1; jj <= n; jj++) {
+              var cost = a.charAt(ii - 1) === b.charAt(jj - 1) ? 0 : 1;
+              dp[ii][jj] = Math.min(dp[ii - 1][jj] + 1, dp[ii][jj - 1] + 1, dp[ii - 1][jj - 1] + cost);
+            }
+          }
+          return dp[m][n];
+        }
+
+        function findFoodFuzzy(searchStr) {
+          var normSearch = normalizeFoodToken(searchStr);
+          if (!normSearch) return null;
+          var words = normSearch.split(" ").filter(Boolean);
+          var best = null;
+          var bestScore = Infinity;
+          for (var i = 0; i < foodDatabase.length; i++) {
+            var food = foodDatabase[i];
+            for (var a = 0; a < food.aliases.length; a++) {
+              var aliasNorm = normalizeFoodToken(food.aliases[a]);
+              if (!aliasNorm) continue;
+              if (normSearch.indexOf(aliasNorm) !== -1 || aliasNorm.indexOf(normSearch) !== -1) {
+                return food;
+              }
+              for (var w = 0; w < words.length; w++) {
+                var word = words[w];
+                if (word.length < 4) continue;
+                var d = levenshtein(word, aliasNorm);
+                if (d < bestScore) {
+                  bestScore = d;
+                  best = food;
+                }
+              }
+            }
+          }
+          return bestScore <= 2 ? best : null;
         }
 
         function parseIngredientsFromText(text) {
@@ -2107,6 +2281,50 @@
           var out = [];
           for (var k in merged) {
             if (Object.prototype.hasOwnProperty.call(merged, k)) out.push(merged[k]);
+          }
+          if (!out.length) {
+            var fallbackFood = findFoodFuzzy(text);
+            if (fallbackFood) {
+              out.push({
+                id: generateId(),
+                name: fallbackFood.name,
+                quantity: 100,
+                kcalPer100g: fallbackFood.kcal,
+                totalKcal: fallbackFood.kcal,
+              });
+            }
+          }
+          return out;
+        }
+
+        /** Secours si la vision renvoie du texte descriptif mais ingredients vide : découpe et apparie la base locale. */
+        function rowsFromFrenchMealDescription(text) {
+          var t = String(text || "").trim();
+          if (!t || /sans analyse vision|impossible de deviner|non alimentaire/i.test(t)) return [];
+          var parts = t.split(/\s*(?:,|;|•|\n|(?:\s+-\s+)|(?:\s+et\s+))\s*/i);
+          var out = [];
+          var seen = {};
+          for (var i = 0; i < parts.length; i++) {
+            var seg = parts[i]
+              .replace(/^\s*\d+(?:[.,]\d+)?\s*(?:g|ml|cl|kcal)?\s*/i, "")
+              .replace(/^environ\s+/i, "")
+              .replace(/\([^)]*\)/g, " ")
+              .trim();
+            if (seg.length < 3 || seg.length > 72) continue;
+            if (/^\d+$/.test(seg)) continue;
+            var low = seg.toLowerCase();
+            var db = findFoodInDatabase(low) || findFoodFuzzy(seg);
+            if (!db) continue;
+            if (seen[db.name]) continue;
+            seen[db.name] = true;
+            out.push({
+              id: generateId(),
+              name: db.name,
+              quantity: 100,
+              kcalPer100g: db.kcal,
+              totalKcal: db.kcal,
+            });
+            if (out.length >= 20) break;
           }
           return out;
         }
@@ -2228,6 +2446,26 @@
         var trashSvg =
           '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>';
 
+        function phraseDiagnosticScanner(d) {
+          if (!d || typeof d !== "object" || d.cleJugeeValidePourScan === true) return "";
+          if (d.fichierGroqLocalPhpErreurChargement === true) {
+            return " Diagnostic serveur : groq.local.php existe mais PHP ne peut pas le charger (erreur de syntaxe ou return invalide).";
+          }
+          if (d.fichierGroqLocalPhpExiste !== true) {
+            return " Diagnostic serveur : fichier config/groq.local.php introuvable pour ce site (vérifiez le dossier htdocs servi par Apache).";
+          }
+          if (d.cleNonVideDansFichierLocal === true && d.cleJugeeValidePourScan === false) {
+            return " Diagnostic : dans config/groq.local.php vous avez encore le texte d’exemple (ex. gsk_REMPLACER…) ou une clé invalide. Ouvrez ce fichier sur le disque, supprimez tout le placeholder et collez UNE SEULE ligne : votre vraie clé gsk_… depuis https://console.groq.com/keys , enregistrez, puis rechargez cette page et refaites Importer une image.";
+          }
+          if (d.cleNonVideDansEnvironnement === true && d.cleJugeeValidePourScan === false) {
+            return " Diagnostic serveur : GROQ_API_KEY est définie mais la valeur est refusée comme clé valide.";
+          }
+          if (d.cleNonVideDansFichierLocal !== true && d.cleNonVideDansEnvironnement !== true) {
+            return " Diagnostic serveur : pas de clé GROQ_API_KEY et apiKey vide dans groq.local.php.";
+          }
+          return "";
+        }
+
         function updateEditorChrome() {
           var t = totalCalories();
           var elTotal = document.getElementById("ing-editor-total-kcal");
@@ -2247,16 +2485,55 @@
         function renderEditor() {
           var container = document.getElementById("ing-list");
           var empty = document.getElementById("ing-empty");
+          var scanHint = document.getElementById("ing-scan-hint");
           var totalWrap = document.getElementById("ing-editor-total-wrap");
+          var vban = document.getElementById("ing-vision-banner");
+          if (vban) {
+            if (visionDemoBlocked && !ingredients.length) {
+              vban.hidden = false;
+              var verifyUrl = "";
+              try {
+                var b = typeof window.NUTRISMART_API_BASE === "string" ? window.NUTRISMART_API_BASE.trim() : "";
+                if (b) {
+                  verifyUrl =
+                    (window.location.origin || "") +
+                    (b.charAt(0) === "/" ? "" : "/") +
+                    b.replace(/\/+$/, "") +
+                    "/scanner-repas-demo.php";
+                }
+              } catch (_v0) {}
+              vban.textContent =
+                "Le serveur n’analyse pas la photo sans clé Groq valide. Copiez config/groq.local.example.php vers config/groq.local.php, mettez votre clé gsk_… dans apiKey, enregistrez, puis refaites « Importer une image »." +
+                (verifyUrl
+                  ? " Test : ouvrez " + verifyUrl + " — la réponse JSON doit contenir « visionConfigure »: true."
+                  : "") +
+                phraseDiagnosticScanner(scannerDiagFromServer);
+            } else {
+              vban.hidden = true;
+              vban.textContent = "";
+            }
+          }
           container.innerHTML = "";
+          if (scanHint) scanHint.hidden = true;
           if (!ingredients.length) {
             empty.hidden = false;
+            if (empty) {
+              empty.textContent = scanNonAlimentaire
+                ? "Aucun ingrédient détecté : la photo ne montre pas de repas ou d’aliments identifiables. Reprenez une photo du plat ou ajoutez les ingrédients à la main."
+                : "Aucun ingrédient reconnu. Revenez en arrière ou utilisez la démo.";
+            }
             if (totalWrap) totalWrap.hidden = true;
             var btnEmpty = document.getElementById("btn-confirm-ing");
             if (btnEmpty) btnEmpty.disabled = true;
             return;
           }
           empty.hidden = true;
+          if (scanHint) {
+            var hasPh = ingredients.some(function (x) {
+              return x && x._scanPlaceholder;
+            });
+            scanHint.hidden = !hasPh;
+          }
           if (totalWrap) totalWrap.hidden = false;
           var totalAll = totalCalories();
           if (document.getElementById("ing-editor-total-kcal")) {
@@ -2482,13 +2759,107 @@
         }
 
         function goMock() {
+          visionDemoBlocked = false;
+          scannerDiagFromServer = null;
+          scanNonAlimentaire = false;
           ingredients = getMockIngredients();
           setStep("INGREDIENTS_EDITOR");
           renderEditor();
         }
 
-        function runOcr(file) {
-          ocrAbort = false;
+        /**
+         * Si OCR + API n’ont rien donné : une ligne générique (sans supposer viande/poulet) pour garder l’écran utilisable.
+         */
+        function placeholderIngredientAfterEmptyScan() {
+          var grams = 150;
+          var k100 = 200;
+          ingredients = [
+            {
+              id: generateId(),
+              _scanPlaceholder: true,
+              name: "Repas (à compléter)",
+              quantity: grams,
+              kcalPer100g: k100,
+              totalKcal: Math.round((grams / 100) * k100),
+            },
+          ];
+        }
+
+        /** Après scan sans aucun ingrédient : portion par défaut + écran ingrédients utilisable. */
+        function finishScanEmptyEditor() {
+          if (ocrAbort) return;
+          placeholderIngredientAfterEmptyScan();
+          setStep("INGREDIENTS_EDITOR");
+          renderEditor();
+        }
+
+        /** URL absolue vers api/scanner-repas-demo.php (obligatoire pour fetch). */
+        function resolveNutriSmartScannerApiUrl() {
+          var origin = "";
+          try {
+            origin = window.location.origin || "";
+          } catch (_e0) {}
+          var b =
+            typeof window !== "undefined" && window.NUTRISMART_API_BASE
+              ? String(window.NUTRISMART_API_BASE).trim().replace(/\/+$/, "")
+              : "";
+          if (b) {
+            try {
+              if (b.indexOf("http") === 0) {
+                return new URL("scanner-repas-demo.php", b.endsWith("/") ? b : b + "/").href;
+              }
+              var rootPath = b.charAt(0) === "/" ? b : "/" + b;
+              return new URL("scanner-repas-demo.php", origin + rootPath + "/").href;
+            } catch (_e1) {
+              return "";
+            }
+          }
+          try {
+            return new URL("../../api/scanner-repas-demo.php", window.location.href).href;
+          } catch (_e2) {
+            return "";
+          }
+        }
+
+        /** Transforme le tableau JSON « ingredients » du serveur en lignes éditeur (kcal, g). opts.preserveVisionNames : garde les libellés renvoyés par la vision (Groq). */
+        function mapApiIngredientsRows(data, opts) {
+          opts = opts || {};
+          var preserveVisionNames = !!(opts && opts.preserveVisionNames);
+          var raw = data && data.ingredients;
+          if (!raw || !raw.length) return [];
+          var out = [];
+          for (var i = 0; i < raw.length; i++) {
+            var row = raw[i];
+            if (!row || typeof row !== "object") continue;
+            var name = String(row.nom || row.name || "").trim();
+            if (!name) continue;
+            var q = Math.round(
+              parseFloat(
+                row.quantiteGrammes != null ? row.quantiteGrammes : row.quantite != null ? row.quantite : row.quantity != null ? row.quantity : 100
+              ) || 100
+            );
+            var k100 = Math.round(parseFloat(row.kcalPour100g != null ? row.kcalPour100g : row.kcalPer100g != null ? row.kcalPer100g : 0) || 0);
+            if (k100 < 1) k100 = 150;
+            var db = findFoodInDatabase(name.toLowerCase()) || (!preserveVisionNames && findFoodFuzzy(name));
+            if (db) {
+              if (!preserveVisionNames) name = db.name;
+              /* Garde les kcal renvoyées par le modèle si elles sont crédibles (> 150), pour ne pas écraser viande/riz etc. */
+              if (k100 < 80 || k100 > 900) k100 = db.kcal;
+            }
+            q = Math.max(1, q);
+            out.push({
+              id: generateId(),
+              name: name,
+              quantity: q,
+              kcalPer100g: k100,
+              totalKcal: Math.round((q / 100) * k100),
+            });
+          }
+          return out;
+        }
+
+        /** OCR local (Tesseract) — secours si l’API NutriSmart échoue ou est injoignable. */
+        function runLegacyLocalOcr(file) {
           setStep("OCR_PROCESSING");
           document.getElementById("ocr-pct").style.width = "0%";
           document.getElementById("ocr-msg").textContent = "Préparation du scanner…";
@@ -2510,50 +2881,59 @@
           function finishWithText(text) {
             if (ocrAbort) return;
             ingredients = parseIngredientsFromText(text || "");
-            if (!ingredients.length) goMock();
-            else {
-              setStep("INGREDIENTS_EDITOR");
-              renderEditor();
+            if (!ingredients.length) {
+              placeholderIngredientAfterEmptyScan();
+            }
+            setStep("INGREDIENTS_EDITOR");
+            renderEditor();
+            if (!ingredients.length) {
+              var searchEl = document.getElementById("ing-add-search");
+              if (searchEl) searchEl.value = String(text || "").split("\n")[0].trim();
             }
           }
 
           if (typeof Tesseract === "undefined") {
-            document.getElementById("ocr-msg").textContent = "OCR indisponible — démo.";
+            document.getElementById("ocr-msg").textContent = "OCR indisponible — saisie manuelle.";
             setTimeout(function () {
-              if (!ocrAbort) goMock();
-            }, 700);
+              if (!ocrAbort) finishScanEmptyEditor();
+            }, 400);
             return;
           }
 
           if (typeof Tesseract.recognize === "function") {
-            Tesseract.recognize(file, "fra", { logger: ocrLogger })
+            withTimeout(Tesseract.recognize(file, "fra", { logger: ocrLogger }), 90000, "OCR trop long (90 s).")
               .then(function (res) {
                 var text = (res && res.data && res.data.text) || "";
                 finishWithText(text);
               })
               .catch(function () {
-                if (!ocrAbort) goMock();
+                if (!ocrAbort) {
+                  document.getElementById("ocr-msg").textContent =
+                    "OCR interrompu ou trop long — complétez les ingrédients à la main.";
+                  finishScanEmptyEditor();
+                }
               });
             return;
           }
 
           if (typeof Tesseract.createWorker !== "function") {
-            document.getElementById("ocr-msg").textContent = "OCR non supporté — démo.";
+            document.getElementById("ocr-msg").textContent = "OCR non supporté — saisie manuelle.";
             setTimeout(function () {
-              if (!ocrAbort) goMock();
-            }, 700);
+              if (!ocrAbort) finishScanEmptyEditor();
+            }, 400);
             return;
           }
 
           var wref = null;
-          Tesseract.createWorker("fra", 1, { logger: ocrLogger })
+          withTimeout(Tesseract.createWorker("fra", 1, { logger: ocrLogger }), 120000, "Initialisation OCR trop longue.")
             .then(function (worker) {
               wref = worker;
-              return worker.recognize(file);
+              return withTimeout(worker.recognize(file), 90000, "Lecture image trop longue.");
             })
             .then(function (res) {
               var text = (res && res.data && res.data.text) || "";
-              return wref.terminate().then(function () {
+              var term = wref ? wref.terminate().catch(function () {}) : Promise.resolve();
+              return term.then(function () {
                 return text;
               });
             })
@@ -2563,9 +2943,192 @@
             .catch(function () {
               var term = wref ? wref.terminate().catch(function () {}) : Promise.resolve();
               term.finally(function () {
-                if (!ocrAbort) goMock();
+                if (!ocrAbort) {
+                  document.getElementById("ocr-msg").textContent =
+                    "OCR indisponible — complétez les ingrédients à la main.";
+                  finishScanEmptyEditor();
+                }
               });
             });
+        }
+
+        /** D’abord POST vers api/scanner-repas-demo.php (démo ou Groq) ; secours Tesseract. */
+        function runOcr(file) {
+          ocrAbort = false;
+          visionDemoBlocked = false;
+          scannerDiagFromServer = null;
+          scanNonAlimentaire = false;
+          setStep("OCR_PROCESSING");
+          var elPct = document.getElementById("ocr-pct");
+          var elMsg = document.getElementById("ocr-msg");
+          elPct.style.width = "10%";
+          elMsg.textContent = "Envoi au serveur NutriSmart…";
+
+          if (window.location.protocol === "file:") {
+            elMsg.textContent =
+              "Ouvrez cette page via http://localhost/.../meal-workout-calculator.html (Apache + PHP). Analyse locale uniquement.";
+            runLegacyLocalOcr(file);
+            return;
+          }
+
+          var url = resolveNutriSmartScannerApiUrl();
+          if (!url) {
+            elMsg.textContent = "API non résolue — analyse locale (OCR)…";
+            runLegacyLocalOcr(file);
+            return;
+          }
+
+          var fd = new FormData();
+          fd.append("image", file, file.name || "repas.jpg");
+
+          var ac = new AbortController();
+          var abortTid = window.setTimeout(function () {
+            try {
+              ac.abort();
+            } catch (_ab) {}
+          }, 115000);
+
+          withTimeout(
+            fetch(url, { method: "POST", body: fd, signal: ac.signal }).then(function (res) {
+              return res.text().then(function (txt) {
+                var json;
+                try {
+                  json = txt ? JSON.parse(txt) : {};
+                } catch (parseErr) {
+                  throw new Error("Réponse non JSON (vérifiez PHP / l’URL de l’API).");
+                }
+                if (!res.ok) throw new Error((json && json.error) || "HTTP " + res.status);
+                return json;
+              });
+            }),
+            120000,
+            "Le serveur ne répond pas (vérifiez XAMPP / l’URL)."
+          )
+            .finally(function () {
+              window.clearTimeout(abortTid);
+            })
+            .then(function (data) {
+              if (ocrAbort) return;
+              elPct.style.width = "100%";
+              if (data && data.mode === "groq" && groqIndiqueSansNourriture(data)) {
+                visionDemoBlocked = false;
+                scannerDiagFromServer = null;
+                scanNonAlimentaire = true;
+                ingredients = [];
+                elMsg.textContent = "Aucun repas ou aliment détecté sur cette photo.";
+                setStep("INGREDIENTS_EDITOR");
+                renderEditor();
+                return;
+              }
+              var rows = mapApiIngredientsRows(data, { preserveVisionNames: !!(data && data.mode === "groq") });
+              if (data && data.mode === "groq" && !rows.length && data.ocrTexteExemple) {
+                rows = rowsFromFrenchMealDescription(String(data.ocrTexteExemple));
+              }
+              if (data && data.mode !== "demo" && !rows.length && data.ocrTexteExemple) {
+                var t = String(data.ocrTexteExemple).replace(/[,;•]/g, "\n");
+                var rowsTxt = parseIngredientsFromText(t);
+                if (rowsTxt.length) rows = rowsTxt;
+              }
+              if (rows.length) {
+                visionDemoBlocked = false;
+                scannerDiagFromServer = null;
+                scanNonAlimentaire = false;
+                ingredients = rows;
+                if (data && data.mode === "groq") elMsg.textContent = "Analyse Groq reçue.";
+                else if (data && data.mode === "demo") elMsg.textContent = "Données serveur reçues.";
+                else elMsg.textContent = "Analyse terminée.";
+                setStep("INGREDIENTS_EDITOR");
+                renderEditor();
+                return;
+              }
+              if (data && data.mode === "demo") {
+                visionDemoBlocked = true;
+                elMsg.textContent = "Pas d’analyse image sur le serveur (clé Groq manquante ou invalide).";
+                ingredients = [];
+                var getDiagUrl = resolveNutriSmartScannerApiUrl();
+                if (getDiagUrl) {
+                  fetch(getDiagUrl, { method: "GET", cache: "no-store" })
+                    .then(function (r) {
+                      return r.json();
+                    })
+                    .catch(function () {
+                      return {};
+                    })
+                    .then(function (diag) {
+                      scannerDiagFromServer = diag && typeof diag === "object" ? diag : null;
+                      setStep("INGREDIENTS_EDITOR");
+                      renderEditor();
+                    });
+                } else {
+                  scannerDiagFromServer = null;
+                  setStep("INGREDIENTS_EDITOR");
+                  renderEditor();
+                }
+                return;
+              }
+              if (data && data.mode === "groq") {
+                elMsg.textContent = "Aucun ingrédient structuré — OCR local sur la photo…";
+              } else {
+                elMsg.textContent = "Suite analyse locale…";
+              }
+              setStep("OCR_PROCESSING");
+              runLegacyLocalOcr(file);
+            })
+            .catch(function (err) {
+              if (ocrAbort) return;
+              elMsg.textContent =
+                "Serveur ou réponse invalide — OCR local… (" + (err && err.message ? err.message : "réseau") + ")";
+              setStep("OCR_PROCESSING");
+              runLegacyLocalOcr(file);
+            });
+        }
+
+        function normalizeImageFileForOcr(file) {
+          if (!file || !file.type || file.type.indexOf("image/") !== 0) return Promise.resolve(file);
+          return new Promise(function (resolve) {
+            var url = URL.createObjectURL(file);
+            var img = new Image();
+            img.onload = function () {
+              try {
+                var maxSide = 1800;
+                var w = img.naturalWidth || img.width || 0;
+                var h = img.naturalHeight || img.height || 0;
+                if (!w || !h) {
+                  URL.revokeObjectURL(url);
+                  resolve(file);
+                  return;
+                }
+                var ratio = Math.min(1, maxSide / Math.max(w, h));
+                var tw = Math.max(1, Math.round(w * ratio));
+                var th = Math.max(1, Math.round(h * ratio));
+                var canvas = document.createElement("canvas");
+                canvas.width = tw;
+                canvas.height = th;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, tw, th);
+                canvas.toBlob(
+                  function (blob) {
+                    URL.revokeObjectURL(url);
+                    if (!blob) {
+                      resolve(file);
+                      return;
+                    }
+                    resolve(new File([blob], "scan-ingredient.jpg", { type: "image/jpeg" }));
+                  },
+                  "image/jpeg",
+                  0.92
+                );
+              } catch (_e) {
+                URL.revokeObjectURL(url);
+                resolve(file);
+              }
+            };
+            img.onerror = function () {
+              URL.revokeObjectURL(url);
+              resolve(file);
+            };
+            img.src = url;
+          });
         }
 
         document.getElementById("hdr-back-app").addEventListener("click", handleBack);
@@ -2641,7 +3204,10 @@
           var f = ev.target.files && ev.target.files[0];
           ev.target.value = "";
           if (!f) return;
-          runOcr(f);
+          document.getElementById("ocr-msg").textContent = "Préparation de l'image…";
+          normalizeImageFileForOcr(f).then(function (preparedFile) {
+            runOcr(preparedFile || f);
+          });
         }
         document.getElementById("input-camera").addEventListener("change", onFile);
         document.getElementById("input-gallery").addEventListener("change", onFile);

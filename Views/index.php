@@ -25,6 +25,11 @@
             <p>Ajoutez un nouveau repas à un plan existant.</p>
             <a href="addAlbum.php">Ajouter</a>
         </div>
+        <div class="card">
+            <h2>Métier avancé — Plan repas</h2>
+            <p>Fonctionnalités pro (diététique du sport) et phases de travail, alignées sur NutriSmart.</p>
+            <a href="metierAvancePlanRepas.php">Découvrir</a>
+        </div>
     </div>
 </div>
  

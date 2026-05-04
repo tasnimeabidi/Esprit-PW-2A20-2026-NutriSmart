@@ -17,7 +17,22 @@ final class Repas
     public function listerPourApi(): array
     {
         $st = $this->pdo->query(
-            'SELECT id, id_plan AS idPlan, id_recette AS idRecette, type, calories FROM repas ORDER BY id'
+            'SELECT r.id,
+                    r.id_plan AS idPlan,
+                    r.id_recette AS idRecette,
+                    r.type,
+                    r.calories,
+                    p.id_utilisateur AS planIdUtilisateur,
+                    p.date_debut AS planDateDebut,
+                    p.date_fin AS planDateFin,
+                    p.objectif AS planObjectif,
+                    p.statut AS planStatut,
+                    rc.nom AS recetteNom,
+                    rc.calories_totales AS recetteCaloriesTotales
+             FROM repas r
+             INNER JOIN plan_repas p ON p.id = r.id_plan
+             LEFT JOIN recette rc ON rc.id = r.id_recette
+             ORDER BY r.id'
         );
         $rows = $st->fetchAll();
         foreach ($rows as &$row) {
@@ -25,6 +40,9 @@ final class Repas
             $row['idPlan'] = (string) $row['idPlan'];
             $row['idRecette'] = $row['idRecette'] !== null ? (string) $row['idRecette'] : '';
             $row['calories'] = $row['calories'] !== null ? (string) $row['calories'] : '';
+            $row['planIdUtilisateur'] = (string) $row['planIdUtilisateur'];
+            $row['recetteCaloriesTotales'] = $row['recetteCaloriesTotales'] !== null
+                ? (string) $row['recetteCaloriesTotales'] : '';
         }
         unset($row);
         /** @var list<array<string, mixed>> $rows */
@@ -111,7 +129,22 @@ final class Repas
     public function getParIdApi(int $id): ?array
     {
         $st = $this->pdo->prepare(
-            'SELECT id, id_plan AS idPlan, id_recette AS idRecette, type, calories FROM repas WHERE id=?'
+            'SELECT r.id,
+                    r.id_plan AS idPlan,
+                    r.id_recette AS idRecette,
+                    r.type,
+                    r.calories,
+                    p.id_utilisateur AS planIdUtilisateur,
+                    p.date_debut AS planDateDebut,
+                    p.date_fin AS planDateFin,
+                    p.objectif AS planObjectif,
+                    p.statut AS planStatut,
+                    rc.nom AS recetteNom,
+                    rc.calories_totales AS recetteCaloriesTotales
+             FROM repas r
+             INNER JOIN plan_repas p ON p.id = r.id_plan
+             LEFT JOIN recette rc ON rc.id = r.id_recette
+             WHERE r.id=?'
         );
         $st->execute([$id]);
         $row = $st->fetch();
@@ -122,6 +155,9 @@ final class Repas
         $row['idPlan'] = (string) $row['idPlan'];
         $row['idRecette'] = $row['idRecette'] !== null ? (string) $row['idRecette'] : '';
         $row['calories'] = $row['calories'] !== null ? (string) $row['calories'] : '';
+        $row['planIdUtilisateur'] = (string) $row['planIdUtilisateur'];
+        $row['recetteCaloriesTotales'] = $row['recetteCaloriesTotales'] !== null
+            ? (string) $row['recetteCaloriesTotales'] : '';
         return $row;
     }
 }

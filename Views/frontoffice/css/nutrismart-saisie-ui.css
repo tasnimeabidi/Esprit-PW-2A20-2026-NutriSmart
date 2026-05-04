@@ -40,7 +40,7 @@ select.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
 }
 
 .ns-saisie-success-msg {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.25rem;
   color: #28a745;
@@ -49,6 +49,10 @@ select.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
   line-height: 1.4;
   margin: 0.4rem 0 0;
   padding: 0;
+}
+
+.ns-saisie-success-msg.is-active {
+  display: flex;
 }
 
 .ns-saisie-success-msg::before {
@@ -134,4 +138,35 @@ select.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
 .ns-repas-calories-field.ns-saisie-input-valid:not(.ns-saisie-input-invalid) {
   border-color: #28a745;
   box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.35);
+}
+
+/* Formulaires auth / profil (.form-group + label au-dessus du champ) */
+.form-group .ns-saisie-field-msg {
+  display: block;
+  text-align: left;
+}
+
+.form-group .ns-saisie-success-msg.is-active {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.auth-card .form-group,
+.form-card .form-group {
+  text-align: left;
+}
+
+.auth-form-global-msg {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #991b1b;
+}
+
+.auth-form-global-msg[hidden] {
+  display: none !important;
 }

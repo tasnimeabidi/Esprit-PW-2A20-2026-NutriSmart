@@ -64,6 +64,7 @@
                 <h2 class="bo-crud-heading mb-4 text-[16px] font-semibold text-gray-800">plan_repas</h2>
                 <p class="bo-crud-hint" id="hint-planRepas"></p>
                 <form id="form-planRepas" class="bo-crud-form" novalidate>
+                  <input type="hidden" id="pr-id" name="id" value="" />
                   <div class="flex w-full flex-col gap-2.5">
                     <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                       <span class="text-[13px] font-semibold text-gray-800">id_utilisateur</span>
@@ -80,24 +81,26 @@
                       <span class="ns-saisie-success-msg" aria-live="polite"></span>
                     </label>
                     <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                      <span class="text-[13px] font-semibold text-gray-800">date_debut</span>
+                      <span class="text-[13px] font-semibold text-gray-800">Date de début</span>
                       <input
                         type="date"
                         id="pr-date-debut"
                         name="dateDebut"
-                        title="jj/mm/aaaa"
+                        min="2026-04-01"
+                        title="Période du plan — date de début"
                         class="box-border min-h-[46px] w-full rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
                       />
                       <span class="ns-saisie-field-msg" role="alert"></span>
                       <span class="ns-saisie-success-msg" aria-live="polite"></span>
                     </label>
                     <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                      <span class="text-[13px] font-semibold text-gray-800">date_fin</span>
+                      <span class="text-[13px] font-semibold text-gray-800">Date de fin</span>
                       <input
                         type="date"
                         id="pr-date-fin"
                         name="dateFin"
-                        title="jj/mm/aaaa"
+                        min="2026-04-01"
+                        title="Période du plan — date de fin"
                         class="box-border min-h-[46px] w-full rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
                       />
                       <span class="ns-saisie-field-msg" role="alert"></span>
@@ -105,16 +108,19 @@
                     </label>
                     <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                       <span class="text-[13px] font-semibold text-gray-800">objectif</span>
-                      <input
-                        type="text"
+                      <select
                         id="pr-objectif"
                         name="objectif"
-                        placeholder="Perte de poids…"
-                        maxlength="255"
-                        data-ns-texte-lettres="1"
-                        autocomplete="off"
-                        class="box-border min-h-[46px] w-full rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
-                      />
+                        class="box-border min-h-[46px] w-full cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      >
+                        <option value="">— Choisir —</option>
+                        <option value="Perte de poids">Perte de poids</option>
+                        <option value="Prise de masse musculaire">Prise de masse musculaire</option>
+                        <option value="Maintien et tonification">Maintien et tonification</option>
+                        <option value="Santé métabolique">Santé métabolique</option>
+                        <option value="Performance sportive">Performance sportive</option>
+                        <option value="Rééquilibrage alimentaire">Rééquilibrage alimentaire</option>
+                      </select>
                       <span class="ns-saisie-field-msg" role="alert"></span>
                       <span class="ns-saisie-success-msg" aria-live="polite"></span>
                     </label>
@@ -157,8 +163,8 @@
                       <tr>
                         <th>id</th>
                         <th>id_utilisateur</th>
-                        <th>date_debut</th>
-                        <th>date_fin</th>
+                        <th>Date début</th>
+                        <th>Date fin</th>
                         <th>objectif</th>
                         <th>statut</th>
                         <th>Actions</th>
@@ -180,12 +186,18 @@
                 <p class="bo-crud-hint" id="hint-repas"></p>
                 <form id="form-repas" class="bo-crud-form" novalidate>
                   <div class="bo-crud-form-grid">
-                <label> id_plan (FK)
+                <label> plan
                   <select id="repas-id-plan" name="idPlan"></select>
                 </label>
                 <label> Recette
                   <select id="repas-id-recette" name="idRecette">
                     <option value="">— Aucune recette —</option>
+                    <option value="1">Salade quinoa &amp; poulet</option>
+                    <option value="2">Omelette aux légumes</option>
+                    <option value="3">Porridge fruits rouges</option>
+                    <option value="4">Saumon grillé &amp; riz complet</option>
+                    <option value="5">Wrap thon avocat</option>
+                    <option value="6">Yaourt grec &amp; granola</option>
                   </select>
                 </label>
                 <label> type
@@ -229,91 +241,250 @@
                     </button>
                   </div>
                 </form>
-                <div class="mt-6 overflow-x-auto rounded-xl border border-gray-200">
-                  <table class="users-list-table bo-crud-table min-w-[640px]" aria-label="Liste Repas">
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>id_plan</th>
-                    <th>Recette</th>
-                    <th>type</th>
-                    <th>calories</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                    <tbody id="tbody-repas"></tbody>
-                  </table>
-                </div>
+                <div id="tbody-repas" hidden></div>
               </section>
 
               <!-- ProgrammeSportif -->
               <section
-                class="content-card bo-crud-panel mt-5 rounded-[12px] border border-[#d1d5db] bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+                class="content-card bo-crud-panel border-0 bg-transparent p-0 shadow-none"
                 data-panel="programmeSportif"
                 id="panel-programme"
                 hidden
               >
-                <h2 class="bo-crud-heading text-[18px] font-semibold text-gray-900">programme_sportif</h2>
-                <p class="bo-crud-meta">Relation MCD : PlanRepas (1) — (N) ProgrammeSportif (plusieurs lignes possibles pour un même plan).</p>
+                <h2 class="bo-crud-heading mb-4 text-[16px] font-semibold text-gray-800">Programme sportif</h2>
                 <p class="bo-crud-hint" id="hint-programmeSportif"></p>
                 <form id="form-programmeSportif" class="bo-crud-form" novalidate>
-                  <div class="bo-crud-form-grid">
-                <label> id_plan (FK)
-                  <select id="prog-id-plan" name="idPlan"></select>
-                </label>
-                <label> type_sport
-                  <select id="prog-type-sport" name="typeSport" required>
-                    <option value="">— Choisir —</option>
-                    <option>Pilates</option>
-                    <option>Yoga</option>
-                    <option>Cardio</option>
-                    <option>Musculation</option>
-                    <option>Cross-training</option>
-                    <option>HIIT</option>
-                    <option>Natation</option>
-                    <option>Cyclisme</option>
-                    <option>Stretching / mobilité</option>
-                    <option>Marche active</option>
-                  </select>
-                </label>
-                <label> niveau
-                  <select id="prog-niveau" name="niveau">
-                    <option value="">— Choisir —</option>
-                    <option>Débutant</option>
-                    <option>Intermédiaire</option>
-                    <option>Avancé</option>
-                    <option>Expert</option>
-                  </select>
-                </label>
-                <label> intensite
-                  <select id="prog-intensite" name="intensite">
-                    <option value="">— Choisir —</option>
-                    <option>Très légère</option>
-                    <option>Légère</option>
-                    <option>Modérée</option>
-                    <option>Soutenue</option>
-                    <option>Très soutenue</option>
-                    <option>Récupération</option>
-                  </select>
-                </label>
-                <label> date_seance
-                  <input type="date" id="prog-date-seance" name="dateSeance" />
-                </label>
-                <label> duree_min
-                  <input type="text" id="prog-duree-min" name="dureeMin" inputmode="numeric" placeholder="45" />
-                </label>
-                <label> statut (séance)
-                  <select id="prog-statut-seance" name="statutSeance">
-                    <option value="">— Choisir —</option>
-                    <option value="prevue">Prévue</option>
-                    <option value="en cours">En cours</option>
-                    <option value="realisee">Réalisée</option>
-                    <option value="annulee">Annulée</option>
-                    <option value="reportee">Reportée</option>
-                  </select>
-                </label>
+                  <div class="flex w-full flex-col gap-2.5">
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Plan repas</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="prog-id-plan"
+                          name="idPlan"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        ></select>
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-id-plan" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-id-plan" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Type d'activité</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="prog-type-sport"
+                          name="typeSport"
+                          required
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option>Pilates</option>
+                          <option>Yoga</option>
+                          <option>Cardio</option>
+                          <option>Musculation</option>
+                          <option>Cross-training</option>
+                          <option>HIIT</option>
+                          <option>Natation</option>
+                          <option>Cyclisme</option>
+                          <option>Stretching / mobilité</option>
+                          <option>Marche active</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-type-sport" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-type-sport" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Niveau</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="prog-niveau"
+                          name="niveau"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option>Débutant</option>
+                          <option>Intermédiaire</option>
+                          <option>Avancé</option>
+                          <option>Expert</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-niveau" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-niveau" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Intensité</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="prog-intensite"
+                          name="intensite"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option>Très légère</option>
+                          <option>Légère</option>
+                          <option>Modérée</option>
+                          <option>Soutenue</option>
+                          <option>Très soutenue</option>
+                          <option>Récupération</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-intensite" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-intensite" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Date de la séance</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="date"
+                          id="prog-date-seance"
+                          name="dateSeance"
+                          title="Date du jour de séance"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-date-seance" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-date-seance" title="Vider ce champ" aria-label="Vider ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Durée (minutes)</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="text"
+                          id="prog-duree-min"
+                          name="dureeMin"
+                          inputmode="numeric"
+                          placeholder="45"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-duree-min" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-duree-min" title="Vider ce champ" aria-label="Vider ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Statut de la séance</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="prog-statut-seance"
+                          name="statutSeance"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option value="prevue">Prévue</option>
+                          <option value="en cours">En cours</option>
+                          <option value="realisee">Réalisée</option>
+                          <option value="annulee">Annulée</option>
+                          <option value="reportee">Reportée</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-statut-seance" title="Modifier ce champ" aria-label="Modifier ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-statut-seance" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
                   </div>
-                  <div class="bo-crud-form-actions mt-2 flex flex-col gap-3">
+                  <div class="bo-crud-form-actions mt-4 flex flex-col gap-2.5">
                     <button
                       type="submit"
                       class="btn-sm btn-green h-[50px] w-full rounded-full border-0 bg-[#1e5631] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(30,86,49,0.35)] transition hover:bg-[#174728] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/50"
@@ -329,24 +500,7 @@
                     </button>
                   </div>
                 </form>
-                <div class="mt-6 overflow-x-auto rounded-xl border border-gray-200">
-                  <table class="users-list-table bo-crud-table min-w-[960px]" aria-label="Liste ProgrammeSportif">
-                    <thead>
-                      <tr>
-                        <th>id</th>
-                        <th>id_plan</th>
-                        <th>type_sport</th>
-                        <th>niveau</th>
-                        <th>intensite</th>
-                        <th>date_seance</th>
-                        <th>duree_min</th>
-                        <th>statut</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbody-programme"></tbody>
-                  </table>
-                </div>
+                <div id="tbody-programme" hidden></div>
               </section>
 
             </div>

@@ -17,15 +17,27 @@ final class ProgrammeSportif
     public function listerPourApi(): array
     {
         $st = $this->pdo->query(
-            'SELECT id, id_plan AS idPlan, type_sport AS typeSport, niveau, intensite, '
-            . 'DATE_FORMAT(date_seance, \'%Y-%m-%d\') AS dateSeance, duree_min AS dureeMin, statut '
-            . 'FROM programme_sportif ORDER BY id'
+            'SELECT ps.id,
+                    ps.id_plan AS idPlan,
+                    ps.type_sport AS typeSport,
+                    ps.niveau,
+                    ps.intensite,
+                    DATE_FORMAT(ps.date_seance, \'%Y-%m-%d\') AS dateSeance,
+                    ps.duree_min AS dureeMin,
+                    ps.statut,
+                    p.id_utilisateur AS planIdUtilisateur,
+                    p.objectif AS planObjectif,
+                    p.statut AS planStatut
+             FROM programme_sportif ps
+             INNER JOIN plan_repas p ON p.id = ps.id_plan
+             ORDER BY ps.id'
         );
         $rows = $st->fetchAll();
         foreach ($rows as &$row) {
             $row['id'] = (string) $row['id'];
             $row['idPlan'] = (string) $row['idPlan'];
             $row['dureeMin'] = (string) $row['dureeMin'];
+            $row['planIdUtilisateur'] = (string) $row['planIdUtilisateur'];
         }
         unset($row);
         /** @var list<array<string, mixed>> $rows */
@@ -87,13 +99,54 @@ final class ProgrammeSportif
         return $st->rowCount() > 0;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function listerParIdPlan(int $idPlan): array
+    {
+        $st = $this->pdo->prepare(
+            'SELECT ps.id,
+                    ps.id_plan AS idPlan,
+                    ps.type_sport AS typeSport,
+                    ps.niveau,
+                    ps.intensite,
+                    DATE_FORMAT(ps.date_seance, \'%Y-%m-%d\') AS dateSeance,
+                    ps.duree_min AS dureeMin,
+                    ps.statut
+             FROM programme_sportif ps
+             WHERE ps.id_plan=?
+             ORDER BY ps.date_seance, ps.id'
+        );
+        $st->execute([$idPlan]);
+        $rows = $st->fetchAll();
+        foreach ($rows as &$row) {
+            $row['id'] = (string) $row['id'];
+            $row['idPlan'] = (string) $row['idPlan'];
+            $row['dureeMin'] = (string) $row['dureeMin'];
+        }
+        unset($row);
+        /** @var list<array<string, mixed>> $rows */
+        return $rows;
+    }
+
     /** @return array<string, mixed>|null */
     public function getParIdApi(int $id): ?array
     {
         $st = $this->pdo->prepare(
-            'SELECT id, id_plan AS idPlan, type_sport AS typeSport, niveau, intensite, '
-            . 'DATE_FORMAT(date_seance, \'%Y-%m-%d\') AS dateSeance, duree_min AS dureeMin, statut '
-            . 'FROM programme_sportif WHERE id=?'
+            'SELECT ps.id,
+                    ps.id_plan AS idPlan,
+                    ps.type_sport AS typeSport,
+                    ps.niveau,
+                    ps.intensite,
+                    DATE_FORMAT(ps.date_seance, \'%Y-%m-%d\') AS dateSeance,
+                    ps.duree_min AS dureeMin,
+                    ps.statut,
+                    p.id_utilisateur AS planIdUtilisateur,
+                    p.objectif AS planObjectif,
+                    p.statut AS planStatut
+             FROM programme_sportif ps
+             INNER JOIN plan_repas p ON p.id = ps.id_plan
+             WHERE ps.id=?'
         );
         $st->execute([$id]);
         $row = $st->fetch();
@@ -103,6 +156,7 @@ final class ProgrammeSportif
         $row['id'] = (string) $row['id'];
         $row['idPlan'] = (string) $row['idPlan'];
         $row['dureeMin'] = (string) $row['dureeMin'];
+        $row['planIdUtilisateur'] = (string) $row['planIdUtilisateur'];
         return $row;
     }
 

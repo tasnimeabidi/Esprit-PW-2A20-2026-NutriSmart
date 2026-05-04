@@ -14,17 +14,18 @@
 }
 
 .bo-crud-page .bo-crud-msg {
+  display: none !important;
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.45;
-  margin: 0 0 1rem;
-  padding: 0.65rem 1rem;
-  border-radius: 12px;
+  margin: 0 0 0.65rem;
+  padding: 0;
+  border-radius: 0;
   width: 100%;
   box-sizing: border-box;
   color: #1e3d28;
-  background: var(--photo-bar-ok);
-  border: 1px solid #c5e0cf;
+  background: transparent;
+  border: none;
 }
 
 .bo-crud-page .bo-crud-msg:empty {
@@ -37,8 +38,36 @@
 
 .bo-crud-page .bo-crud-msg--err {
   color: #991b1b !important;
-  background: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Succès après enregistrement (formulaire masqué côté pages non-dialog) */
+.bo-crud-page .bo-crud-success-inline {
+  margin: 0 0 1.25rem;
+  padding: 1.1rem 1.15rem;
+  border-radius: 14px;
+  border: 1px solid #b8dcc4;
+  background: linear-gradient(180deg, #f0faf3 0%, #e8f6ec 100%);
+  box-shadow: 0 2px 14px rgba(45, 90, 39, 0.08);
+}
+
+.bo-crud-page .bo-crud-success-inline__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.bo-crud-page .bo-crud-success-inline__text {
+  margin: 0;
+  font-family: var(--bo-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e4620;
+  line-height: 1.45;
 }
 
 .bo-crud-page .bo-crud-tabs {
@@ -82,6 +111,26 @@
   border-radius: 16px;
   box-shadow: 0 4px 28px rgba(15, 23, 42, 0.06);
   padding: 1.35rem 1.45rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bo-crud-page .content-card.bo-crud-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #5b8c6a, #8fbc8f);
+}
+
+.bo-crud-page .content-card.bo-crud-panel[data-panel="repas"]::before {
+  background: linear-gradient(90deg, #4a7c59, #7fb685);
+}
+
+.bo-crud-page .content-card.bo-crud-panel[data-panel="programmeSportif"]::before {
+  background: linear-gradient(90deg, #2f6f49, #66a66f);
 }
 
 .bo-crud-page .bo-crud-heading {
@@ -89,7 +138,13 @@
   font-weight: 700;
   color: var(--crud-ink);
   letter-spacing: -0.02em;
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.45rem;
+  text-transform: capitalize;
+}
+
+.bo-crud-page .bo-crud-hint {
+  min-height: 1.1rem;
+  margin: 0 0 0.8rem;
 }
 
 .bo-crud-page .bo-crud-form-grid {
@@ -108,6 +163,10 @@
   gap: 0.45rem;
   display: flex;
   flex-direction: column;
+  padding: 0.78rem 0.82rem;
+  border: 1px solid #e3ece6;
+  border-radius: 12px;
+  background: #fbfdfb;
 }
 
 .bo-crud-page .bo-crud-form-grid input:not([type="hidden"]),
@@ -133,11 +192,11 @@
   box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.18);
 }
 
-/* Boutons : Enregistrer pleine largeur, Nouveau en dessous (maquette) */
+/* Boutons : Enregistrer et Nouveau côte à côte */
 .bo-crud-page .bo-crud-form-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
   gap: 0.65rem;
   margin-bottom: 1.35rem;
 }
@@ -148,7 +207,8 @@
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 700;
-  width: 100%;
+  width: auto;
+  flex: 1 1 0;
   box-sizing: border-box;
 }
 
@@ -290,6 +350,22 @@
   outline-offset: 2px;
 }
 
+.bo-crud-page .ns-crud-action--magic {
+  background: #fff;
+  border-color: #1e5631;
+  color: #1e5631;
+  box-shadow: 0 1px 2px rgba(30, 86, 49, 0.12);
+}
+
+.bo-crud-page .ns-crud-action--magic:hover {
+  background: #e8f3eb;
+}
+
+.bo-crud-page .ns-crud-action--magic:focus-visible {
+  outline: 2px solid #2d5a27;
+  outline-offset: 2px;
+}
+
 .bo-crud-page .ns-crud-action--delete {
   background: #fff;
   border-color: #e57373;
@@ -336,4 +412,49 @@
 .bo-crud-page .users-list-table.bo-crud-table thead th:last-child {
   min-width: 9.5rem;
   text-align: right;
+}
+
+/* Modale espace membre (*-rejoindre) : boutons / en-têtes tableau comme #plan-repas-crud-root */
+#fo-crud-prog.bo-crud-page .bo-crud-form-actions .btn-sm.btn-green {
+  background: #5b8c6a !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 12px rgba(76, 123, 91, 0.28) !important;
+}
+
+#fo-crud-prog.bo-crud-page .bo-crud-form-actions .btn-sm.btn-ghost {
+  background: #fff !important;
+  border: 1.5px solid rgba(91, 140, 106, 0.75) !important;
+  color: #111111 !important;
+  border-radius: 999px !important;
+}
+
+#fo-crud-prog.bo-crud-page .users-list-table.bo-crud-table th {
+  background: #e8f3eb !important;
+  color: #2a3d2f !important;
+}
+
+/* Programme sportif — titre, champs et modale #crud-prog-dialog (pages *-rejoindre) */
+:is(#panel-programme, #fo-panel-programme) > h2.bo-crud-heading,
+:is(#panel-programme, #fo-panel-programme) > .bo-crud-heading {
+  padding-bottom: 0.65rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(30, 86, 49, 0.14);
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+:is(#panel-programme, #fo-panel-programme) form#form-programmeSportif > div > label {
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+#crud-prog-dialog.pr-crud-dialog {
+  box-shadow: 0 22px 56px rgba(15, 23, 42, 0.1);
+  border-radius: 16px;
+}
+
+#crud-prog-dialog .fo-mem-crud-inner {
+  padding: 1.25rem 1.5rem 1.35rem;
 }
