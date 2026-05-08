@@ -1,355 +1,1037 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profil — NutriSmart</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/shared-styles.css" />
-    <style>
-      body {
-        background: linear-gradient(
-            rgba(247, 243, 236, 0.9),
-            rgba(247, 243, 236, 0.9)
-          ),
-          url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=80")
-            center/cover fixed;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — NutriSmart</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+  <script src="js/avatar-utils.js"></script>
+  <style>
+    /* Modern Split Layout for Profile */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fdfdfd;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .split-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Side Image / Info */
+    .profile-side-info {
+      flex: 1.1;
+      background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+
+    .profile-side-info::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(74, 124, 89, 0.4), rgba(34, 60, 42, 0.6));
+      z-index: 1;
+    }
+
+    .info-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .info-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .info-content p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 3rem;
+    }
+
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .benefit-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+    }
+
+    /* Form Section */
+    .profile-form-section {
+      flex: 1;
+      background: #fdfdfd;
+      display: grid;
+      place-items: center;
+      padding: 4rem;
+    }
+
+    .form-container-inner {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .profile-card {
+      background: rgb(255, 255, 255);
+      border-radius: 2rem;
+      padding: 3rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    /* Glass Badges Style */
+    .glass-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.8rem 1.6rem;
+      border-radius: 4rem;
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .glass-badge:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .glass-badge.green {
+      background: rgba(74, 124, 89, 0.3);
+      border-color: rgba(74, 124, 89, 0.4);
+    }
+
+    .input-box-modern {
+      margin-bottom: 1.2rem;
+    }
+
+    .input-box-modern label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a7c59;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-box-modern input,
+    .input-box-modern select {
+      width: 100%;
+      padding: 0.8rem 1.4rem;
+      border-radius: 3rem;
+      border: 1.5px solid #eee;
+      background: #f9f9f9;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2d3436;
+      transition: all 0.3s;
+    }
+
+    .input-box-modern input:focus,
+    .input-box-modern select:focus {
+      outline: none;
+      border-color: #4a7c59;
+      background: white;
+      box-shadow: 0 8px 20px rgba(74, 124, 89, 0.1);
+    }
+
+    .btn-save-modern {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 3rem;
+      background: #4a7c59;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .btn-save-modern:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(74, 124, 89, 0.2);
+    }
+
+    @media (max-width: 1100px) {
+      .split-wrapper {
+        flex-direction: column;
       }
 
-      .profile-hero {
-        min-height: 90vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6rem 2rem;
+      .profile-side-info {
+        padding: 4rem 2rem;
       }
+    }
 
-      .profile-container {
-        max-width: 900px;
-        width: 100%;
-        z-index: 1;
-      }
+    /* ── SIDEBAR MENU ── */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
 
-      .profile-header {
-        text-align: center;
-        margin-bottom: 3.5rem;
-        animation: fadeUp 0.8s ease both;
-      }
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-      .profile-header h1 {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
-        font-weight: 900;
-        color: var(--forest);
-        line-height: 1.1;
-      }
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
 
-      .profile-header p {
-        color: var(--gray);
-        font-size: 1.1rem;
-        margin-top: 0.8rem;
-      }
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
 
-      .form-card.profile-card {
-        max-width: 100%;
-        padding: 4rem;
-      }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
 
-      .btn-update-container {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 2rem;
-      }
-    </style>
-  </head>
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
 
-  <body>
-    <!-- NAV -->
-    <nav id="navbar">
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button onclick="document.getElementById('sidebarMenu').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); document.body.style.overflow='hidden';"
+        style="background:none; border:none; cursor:pointer; color:var(--forest); padding:0.5rem; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="12" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+
       <a href="nutrismart-website.html" class="nav-logo">
-        <!-- logo -->
-        <svg
-          width="34"
-          height="34"
-          viewBox="0 0 100 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style="overflow: visible"
-        >
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible">
           <mask id="biteMask">
             <rect x="-20" y="-20" width="140" height="140" fill="white" />
             <circle cx="92" cy="35" r="18" fill="black" />
             <circle cx="84" cy="62" r="14" fill="black" />
           </mask>
           <g mask="url(#biteMask)">
-            <path
-              d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
-              fill="#4a7c59"
-            />
-            <path
-              d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
-              fill="#8fbc8f"
-            />
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
           </g>
-          <path
-            d="M 22 78 L 12 92"
-            stroke="#4a7c59"
-            stroke-width="7"
-            stroke-linecap="round"
-          />
+          <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
         </svg>
         <div>
-          <span style="color: #4a7c59">Nutri</span
-          ><span style="color: #8fbc8f">Smart</span>
+          <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
         </div>
       </a>
-      <ul class="nav-links">
-        <li><a href="nutrismart-website.html">Accueil</a></li>
-        <li><a href="suivi-statistiques.php">Suivi et Statistiques</a></li>
-        <li><a href="profile.html" class="active">Profil</a></li>
-        <li><a href="recette.html">Recettes</a></li>
-        
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-      <div class="nav-auth">
-        <a href="register.html" class="nav-cta">Commencer gratuitement</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="nutrismart-website.html" data-i18n="nav_home">Accueil</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
+
+    </ul>
+
+    <div class="nav-auth" id="user-nav-auth" style="display: none;">
+      <div class="user-dropdown">
+        <div class="user-badge" id="dropdownToggle">
+          <div class="user-avatar" id="user-initial">?</div>
+          <span id="user-name-text">Chargement...</span>
+          <svg style="width:14px; height:14px; margin-left:4px; opacity:0.6;" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+        <div class="dropdown-content" id="userDropdown">
+          <div class="dropdown-header">
+            <span class="user-name" id="dropdown-name">Chargement...</span>
+            <span class="user-email" id="user-email-text">email@exemple.com</span>
+          </div>
+          <div class="dropdown-actions">
+            <a href="profile.html" class="dropdown-item">
+              <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Mon Profil
+            </a>
+            <a href="api.php?action=logout" class="dropdown-item logout">
+              <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Déconnexion
+            </a>
+          </div>
+        </div>
       </div>
-    </nav>
+    </div>
+    <div id="guest-nav-auth" class="nav-guest">
+      <a href="register.html"
+        style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none; color: var(--forest); font-weight: 700; font-size: 1.05rem;">
+        <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        S'inscrire
+      </a>
+    </div>
+  </nav>
+  <!-- SIDEBAR MENU -->
+  <div class="sidebar-overlay" id="sidebarOverlay"
+    onclick="document.getElementById('sidebarMenu').classList.remove('active'); this.classList.remove('active'); document.body.style.overflow='auto';"></div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h2 style="color: var(--orange); margin: 0; font-size: 1.5rem; font-family: 'Playfair Display', serif;">Menu</h2>
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); document.body.style.overflow='auto';"
+        style="background:none; border:none; cursor:pointer; color:#999;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
 
-    <main class="profile-hero">
-      <div class="profile-container">
-        <header class="profile-header">
-          <h1>Votre Profil Nutritionnel</h1>
-          <p>Optimisez vos résultats en personnalisant vos données de santé.</p>
-        </header>
+    <div class="sidebar-search">
+      <input type="text" id="siteSearch" placeholder="Rechercher sur le site"
+        onkeypress="if(event.key === 'Enter') performSiteSearch(this.value)">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
 
-        <div class="form-card profile-card">
-          <form action="user.html">
-            <div class="form-grid">
-              <div class="form-group">
-                <label>Âge</label>
-                <input
-                  type="number"
-                  value=""
-                  required
-                  min="1"
-                  max="120"
-                  placeholder="Tapez votre age"
-                />
+    <div class="sidebar-links">
+      <a href="nutrismart-website.html">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        ACCUEIL
+      </a>
+      <a href="#features">
+        FONCTIONNALITÉS
+      </a>
+      <a href="#comment">
+        COMMENT ÇA MARCHE
+      </a>
+      <a href="#quiz">
+        Quizz Alimentaire
+      </a>
+      <a href="profile.html">
+        PROFIL NUTRITIONNEL
+      </a>
+
+      <a href="aliments.html">
+        ALIMENTS
+      </a>
+      <a href="recette.html">
+        CARNET DE RECETTES
+      </a>
+      <a href="recette.html">
+        PLAN DE REPAS
+      </a>
+      <a href="recette.html">
+        BLOG
+      </a>
+      <a href="budget.html">
+        COURSES ET BUDGET
+      </a>
+
+    </div>
+  </div>
+
+
+
+  <!-- NAV -->
+
+
+  <div class="split-wrapper">
+    <!-- Left Side: Welcome & Benefits -->
+    <section class="profile-side-info">
+      <div class="info-content">
+        <div class="badges-row">
+          <div id="profile-welcome-badge" class="glass-badge green" data-i18n="prof_welcome">Bienvenue !</div>
+        </div>
+        <h1 data-i18n="prof_title">Complétez votre Profil</h1>
+        <p data-i18n="prof_sub">Quelques informations pour personnaliséer votre expérience NutriSmart.</p>
+
+
+
+        <ul class="benefits-list">
+          <li class="benefit-item">
+            <span class="benefit-icon">🥗</span>
+            <span data-i18n="benefit_1">Plan alimentaire personnalisé selon vos besoins</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">📈</span>
+            <span data-i18n="benefit_2">Suivi de progression en temps réel</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">🤖</span>
+            <span data-i18n="benefit_3">Assistant nutritionnel AI à votre écoute</span>
+          </li>
+        </ul>
+
+        <div style="margin-top: 4rem; display: flex; flex-wrap: wrap;">
+          <div class="glass-badge" id="profile-user-name" style="gap: 0.8rem; padding: 0.5rem 1.2rem;">
+            <div class="user-avatar" id="profile-user-initial"
+              style="width:30px; height:30px; font-size:12px; font-weight: 800;">?</div>
+            <span id="profile-user-name-span" style="font-weight: 700;">Chargement...</span>
+          </div>
+          <div class="glass-badge" id="profile-user-email">
+            <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <span id="profile-user-email-span">...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Side: Form -->
+    <section class="profile-form-section">
+      <div class="form-container-inner">
+        <div class="profile-card">
+          <form method="POST" action="api.php?action=update_profile" id="profileForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_age">Âge</label>
+                <input type="number" name="age" required min="1" max="120" placeholder="Ex: 25"
+                  data-i18n-placeholder="ph_age" />
               </div>
-              <div class="form-group">
-                <label>Genre</label>
-                <select>
-                  <option>Aucune</option>
-                  <option>Homme</option>
-                  <option>Femme</option>
+              <div class="input-box-modern">
+                <label data-i18n="lbl_gender">Genre</label>
+                <select name="genre">
+                  <option value="Aucun" data-i18n="g_none">Aucun</option>
+                  <option value="Homme" data-i18n="g_m">Homme</option>
+                  <option value="Femme" data-i18n="g_f">Femme</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label>Poids Actuel (kg)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value=""
-                  required
-                  placeholder="Tapez votre poids"
-                />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_weight">Poids (kg)</label>
+                <input type="number" name="poids" step="0.1" required placeholder="Ex: 70"
+                  data-i18n-placeholder="ph_weight" />
               </div>
-              <div class="form-group">
-                <label>Taille (cm)</label>
-                <input
-                  type="number"
-                  value=""
-                  required
-                  placeholder="Tapez votre taille"
-                />
+              <div class="input-box-modern">
+                <label data-i18n="lbl_height">Taille (cm)</label>
+                <input type="number" name="taille" required placeholder="Ex: 175" data-i18n-placeholder="ph_height" />
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 1.5rem">
-              <label>Objectif Principal</label>
-              <select>
-                <option value="aucune">Aucune</option>
-                <option>Maintien et Tonification</option>
-                <option>Perte de poids</option>
-                <option>Prise de masse musculaire</option>
-                <option>Santé métabolique</option>
+            <div class="input-box-modern">
+              <label data-i18n="lbl_goal">Objectif Principal</label>
+              <select name="objectif">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="Maintien et Tonification" data-i18n="goal_1">Maintien et Tonification</option>
+                <option value="Perte de poids" data-i18n="goal_2">Perte de poids</option>
+                <option value="Prise de masse musculaire" data-i18n="goal_3">Prise de masse musculaire</option>
+                <option value="Santé métabolique" data-i18n="goal_4">Santé métabolique</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label>Préférences alimentaires</label>
-              <select>
-                <option value="aucune">Aucune</option>
-                <option value="vegetarien">Végétarien</option>
-                <option value="vegan">Vegan</option>
-                <option value="sans-gluten">Sans gluten</option>
-                <option value="sans-lactose">Sans lactose</option>
-                <option value="low-carb">Low carb</option>
+            <div class="input-box-modern">
+              <label data-i18n="lbl_pref">Préférences alimentaires</label>
+              <select name="preference">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="vegetarien" data-i18n="pref_1">Végétarien</option>
+                <option value="vegan" data-i18n="pref_2">Vegan</option>
+                <option value="sans-gluten" data-i18n="pref_3">Sans gluten</option>
+                <option value="sans-lactose" data-i18n="pref_4">Sans lactose</option>
+                <option value="low-carb" data-i18n="pref_5">Low carb</option>
               </select>
             </div>
 
-            <div class="btn-update-container">
-              <button type="submit" class="btn-primary btn-small">
-                Enregistrer les préférences &rarr;
+
+            <button type="submit" class="btn-save-modern" data-i18n="btn_save_pref">
+              Enregistrer mon profil
+            </button>
+          </form>
+
+          <!-- Face ID Section Premium Design -->
+          <div id="face-id-section" class="face-id-card" style="display: none; margin-top: 3rem;">
+            <h3 class="face-id-title">
+              <svg style="width:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path
+                  d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span data-i18n="face_title">Biométrie Face ID</span>
+            </h3>
+
+            <!-- Setup View -->
+            <div id="face-setup-view">
+              <div class="face-id-video-container">
+                <video id="enrollVideo" class="face-id-video" autoplay muted playsinline></video>
+                <div id="scanLine" class="scanning-line"></div>
+              </div>
+              <div id="enrollStatus" class="face-id-status" data-i18n="face_ready">Prêt à configurer</div>
+              <button id="btnEnroll" type="button" class="btn-face-id"
+                onclick="enrollFace('enrollVideo', 'enrollStatus', 'btnEnroll')" data-i18n="btn_face_enable">
+                Activer Face ID
               </button>
             </div>
-          </form>
-        </div>
-      </div>
-    </main>
-    <!-- FOOTER -->
-    <footer id="contact">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <svg
-              width="34"
-              height="34"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <mask id="biteMaskFooter">
-                <rect x="-20" y="-20" width="140" height="140" fill="white" />
-                <circle cx="92" cy="35" r="18" fill="black" />
-                <circle cx="84" cy="62" r="14" fill="black" />
-              </mask>
-              <g mask="url(#biteMaskFooter)">
-                <path
-                  d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
-                  fill="#4a7c59"
-                />
-                <path
-                  d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
-                  fill="#8fbc8f"
-                />
-              </g>
-              <path
-                d="M 22 78 L 12 92"
-                stroke="#4a7c59"
-                stroke-width="7"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span style="margin-left: 10px">NutriSmart</span>
-          </div>
-          <p class="footer-desc">
-            Votre plateforme de nutrition intelligente et personnalisée. Mangez
-            mieux, vivez pleinement.
-          </p>
-          <div class="footer-contact-list">
-            <a
-              href="mailto:contact@nutrismart.demo"
-              class="footer-contact-item"
-            >
-              <div class="fc-icon">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+
+            <!-- Manage View (When already enabled) -->
+            <div id="face-manage-view" style="display: none;">
+              <div
+                style="background: rgba(74, 124, 89, 0.1); padding: 2rem; border-radius: 2rem; text-align: center; border: 1.5px dashed #4a7c59; margin-bottom: 1.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
+                <div style="font-weight: 800; color: #4a7c59; font-size: 1.1rem;" data-i18n="face_enabled">Face ID
+                  Activé</div>
+                <p style="font-size: 0.85rem; color: #4a7c59; opacity: 0.8; margin-top: 0.5rem;">Votre visage est
+                  enregistré en toute sécurité.</p>
               </div>
-              contact@nutrismart.demo
-            </a>
-            <a href="tel:+21612345678" class="footer-contact-item">
-              <div class="fc-icon">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
-                  />
-                </svg>
+              <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn-face-id" style="flex: 1; padding: 0.7rem; font-size: 0.9rem;"
+                  onclick="document.getElementById('face-manage-view').style.display='none'; document.getElementById('face-setup-view').style.display='block';"
+                  data-i18n="btn_edit">
+                  Refaire le scan
+                </button>
+                <button id="btnDeleteFace" type="button" class="btn-face-id"
+                  style="flex: 1; padding: 0.7rem; font-size: 0.9rem; border-color: #ef4444 !important; color: #ef4444 !important;"
+                  onclick="deleteFaceID('deleteStatus', 'btnDeleteFace')" data-i18n="btn_del">
+                  Supprimer
+                </button>
               </div>
-              +216 12 345 678
-            </a>
-            <div class="footer-contact-item">
-              <div class="fc-icon">
-                <svg viewBox="0 0 24 24">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-              Tunis, Tunisie
+              <div id="deleteStatus"
+                style="font-size: 0.85rem; margin-top: 1rem; text-align: center; font-weight: 600;"></div>
             </div>
           </div>
         </div>
-
-        <div class="footer-col">
-          <h5>Plateforme</h5>
-          <ul>
-            <li><a href="#features">Fonctionnalités</a></li>
-            <li><a href="#how-it-works">Comment ça marche</a></li>
-            <li><a href="#modules">Modules</a></li>
-            <li><a href="#programme">Programmes Repas</a></li>
-            <li><a href="#sport">Programmes Sport</a></li>
-          </ul>
+      </div>
+  </div>
+  </section>
+  </div>
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-inner">
+      <!-- Brand & Contact -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="biteMaskFooterFinal">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterFinal)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span>NutriSmart</span>
         </div>
-
-        <div class="footer-col">
-          <h5>Ressources</h5>
-          <ul>
-            <li><p>Base alimentaire</p></li>
-            <li><p>Carnet de recettes</p></li>
-            <li><p>Blog Nutrition</p></li>
-            <li><p>Suivi de progrès</p></li>
-            <li><p>FAQ</p></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h5>Suivez-nous</h5>
-          <div class="footer-social">
-            <a href="#" class="social-btn" aria-label="Instagram">
-              <svg viewBox="0 0 24 24">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path
-                  d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01"
-                />
-              </svg>
-            </a>
-            <a href="#" class="social-btn" aria-label="Facebook">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
-                />
-              </svg>
-            </a>
-            <a href="#" class="social-btn" aria-label="X">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                />
-              </svg>
-            </a>
-            <a href="#" class="social-btn" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
-                />
-                <circle cx="4" cy="4" r="2" />
-              </svg>
-            </a>
+        <p class="footer-desc">
+          Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.31-2.31a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Tunis, Tunisie
           </div>
-          <h5>Légal</h5>
-          <ul>
-            <li>Politique de confidentialité</li>
-            <li>Conditions d'utilisation</li>
-            <li>Mentions légales</li>
-          </ul>
         </div>
       </div>
 
-      <div class="footer-bottom">
-        <span>© 2026 NutriSmart — Tous droits réservés</span>
-        <div class="footer-bottom-links">
-          <a href="#">Confidentialité</a>
-          <a href="#">CGU</a>
-          <a href="contact.html">Contact</a>
+      <!-- Plateforme -->
+      <div class="footer-col">
+        <h5>Plateforme</h5>
+        <ul>
+          <li><a href="#features">Fonctionnalités</a></li>
+          <li><a href="#how-it-works">Comment ça marche</a></li>
+          <li><a href="#modules">Modules</a></li>
+          <li><a href="#programme">Programmes Repas</a></li>
+          <li><a href="#sport">Programmes Sport</a></li>
+        </ul>
+      </div>
+
+      <!-- Ressources -->
+      <div class="footer-col">
+        <h5>Ressources</h5>
+        <ul>
+          <li>
+            <p>Base alimentaire</p>
+          </li>
+          <li>
+            <p>Carnet de recettes</p>
+          </li>
+          <li>
+            <p>Blog Nutrition</p>
+          </li>
+          <li>
+            <p>Suivi de progrès</p>
+          </li>
+          <li>
+            <p>FAQ</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social & Legal -->
+      <div class="footer-col">
+        <h5>Suivez-nous</h5>
+        <div class="footer-social-wrap">
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
+        </div>
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="#">Politique de confidentialitéé</a></li>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 NutriSmart — Tous droits réservés</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">CGU</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>Français</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="lang-popover" id="langPopover">
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
         </div>
       </div>
-    </footer>
-  </body>
+    </div>
+  </footer>
+  <script src="js/validation.js"></script>
+  <script>
+    const dropdownToggle = document.getElementById('dropdownToggle');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (dropdownToggle && userDropdown) {
+      // Toggle dropdown
+      dropdownToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isShow = userDropdown.classList.contains('show');
+        if (isShow) {
+          userDropdown.classList.remove('show');
+          userDropdown.style.display = 'none';
+        } else {
+          userDropdown.classList.add('show');
+          userDropdown.style.display = 'block';
+        }
+      });
+
+      // Close dropdown when clicking outside
+      window.addEventListener('click', () => {
+        userDropdown.classList.remove('show');
+        userDropdown.style.display = 'none';
+      });
+    }
+
+    // AJAX fetch session info
+    fetch('api.php?action=session')
+      .then(response => response.json())
+      .then(data => {
+        const userNav = document.getElementById('user-nav-auth');
+        const guestNav = document.getElementById('guest-nav-auth');
+
+        if (data.loggedIn) {
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          const firstName = data.name.split(' ')[0];
+
+          if (!isAdmin) {
+            userNav.style.display = 'flex';
+
+            document.getElementById('user-name-text').textContent = firstName;
+
+            const userCircle = document.getElementById('user-initial');
+            if (userCircle) {
+              userCircle.textContent = firstName.charAt(0).toUpperCase();
+              if (typeof getAvatarStyle === 'function') {
+                const style = getAvatarStyle(data.name);
+                userCircle.style.background = style.bg;
+                userCircle.style.color = style.text;
+              }
+            }
+
+            document.getElementById('dropdown-name').textContent = data.name;
+            document.getElementById('user-email-text').textContent = data.email;
+          } else {
+            userNav.style.display = 'none';
+          }
+
+          // Pre-fill welcome header (specific to profile page)
+          const welcomeBadge = document.getElementById('profile-welcome-badge');
+          if (welcomeBadge) {
+            welcomeBadge.textContent = '✨ Bienvenue, ' + firstName + ' !';
+          }
+          const profileName = document.getElementById('profile-user-name-span');
+          if (profileName) profileName.textContent = data.name;
+
+          const profileInitial = document.getElementById('profile-user-initial');
+          if (profileInitial) {
+            profileInitial.textContent = firstName.charAt(0).toUpperCase();
+            if (typeof getAvatarStyle === 'function') {
+              const style = getAvatarStyle(data.name);
+              profileInitial.style.background = style.bg;
+              profileInitial.style.color = style.text;
+            }
+          }
+
+          const profileEmail = document.getElementById('profile-user-email-span');
+          if (profileEmail) profileEmail.textContent = data.email;
+
+          // --- Verification Message Handling ---
+          const params = new URLSearchParams(window.location.search);
+          if (params.has('verified')) {
+            const successMsg = document.createElement('div');
+            successMsg.className = "glass-badge";
+            successMsg.style.cssText = "background: rgba(46, 204, 113, 0.2); border: 1px solid rgba(46, 204, 113, 0.4); color: white; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600; width: 100%; justify-content: center;";
+            successMsg.setAttribute('data-i18n', 'msg_verified');
+            successMsg.textContent = "✅ Compte activé avec succès !";
+            const infoContent = document.querySelector('.info-content');
+            if (infoContent) infoContent.prepend(successMsg);
+          }
+
+          // Show Bio security section only if logged in
+          const faceSection = document.getElementById('face-id-section');
+          if (faceSection) {
+            faceSection.style.display = 'block';
+            if (data.hasFaceId) {
+              document.getElementById('face-setup-view').style.display = 'none';
+              document.getElementById('face-manage-view').style.display = 'block';
+            } else {
+              document.getElementById('face-setup-view').style.display = 'block';
+              document.getElementById('face-manage-view').style.display = 'none';
+            }
+          }
+
+        } else {
+          userNav.style.display = 'none';
+
+          // Ensure Bio security section is hidden if not logged in
+          const faceSection = document.getElementById('face-id-section');
+          if (faceSection) faceSection.style.display = 'none';
+        }
+      })
+      .catch(err => {
+        console.error('Erreur session:', err);
+      });
+
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+
+  </script>
+  <script src="js/translations.js"></script>
+  <script>
+    // Monkey patch setLang for placeholders logic
+    const originalSetLang = window.setLang;
+    if (originalSetLang) {
+      window.setLang = (lang) => {
+        originalSetLang(lang);
+        // Apply translations to placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (translations && translations[lang] && translations[lang][key]) {
+            el.setAttribute('placeholder', translations[lang][key]);
+          }
+        });
+      }
+      // initial trigger for placeholders
+      const savedLang = localStorage.getItem('preferred_lang') || 'fr';
+      window.setLang(savedLang);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="js/face-auth.js"></script>
+  <script>
+    // --- SIDEBAR MENU LOGIC ---
+    function openSidebar() {
+      document.getElementById('sidebarMenu').classList.add('active');
+      document.getElementById('sidebarOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebarMenu').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // --- SEARCH LOGIC ---
+    function performSiteSearch(query) {
+      if (!query || query.trim() === '') return;
+      query = query.toLowerCase().trim();
+
+      closeSidebar();
+
+      const searchableElements = document.querySelectorAll('.feat-card, .plate-item, .how-step, h1, h2, h3, h4');
+      let found = false;
+
+      for (const el of searchableElements) {
+        if (el.innerText.toLowerCase().includes(query)) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const originalOutline = el.style.outline;
+          const originalOutlineOffset = el.style.outlineOffset;
+          el.style.outline = '4px solid var(--orange)';
+          el.style.outlineOffset = '4px';
+
+          setTimeout(() => {
+            el.style.outline = originalOutline;
+            el.style.outlineOffset = originalOutlineOffset;
+          }, 2000);
+
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        alert('Aucun résultat trouvé pour : ' + query);
+      }
+      document.getElementById('siteSearch').value = '';
+    }
+
+    // AJAX fetch session info
+    fetch('api.php?action=session')
+      .then(response => response.json())
+      .then(data => {
+        const userNav = document.getElementById('user-nav-auth');
+        const guestNav = document.getElementById('guest-nav-auth');
+
+        if (data.loggedIn) {
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          const firstName = data.name.split(' ')[0];
+
+          if (!isAdmin) {
+            userNav.classList.add('show');
+            if (guestNav) guestNav.classList.remove('show');
+
+            document.getElementById('user-name-text').textContent = firstName;
+
+            const userCircle = document.getElementById('user-initial');
+            if (userCircle) {
+              userCircle.textContent = firstName.charAt(0).toUpperCase();
+              if (typeof getAvatarStyle === 'function') {
+                const style = getAvatarStyle(data.name);
+                userCircle.style.background = style.bg;
+                userCircle.style.color = style.text;
+              }
+            }
+
+            document.getElementById('dropdown-name').textContent = data.name;
+            document.getElementById('user-email-text').textContent = data.email;
+          } else {
+            userNav.classList.remove('show');
+            if (guestNav) guestNav.classList.add('show');
+          }
+        } else {
+          userNav.classList.remove('show');
+          if (guestNav) guestNav.classList.add('show');
+        }
+      })
+      .catch(err => {
+        console.error('Erreur session:', err);
+      });
+  </script>
+
+<script src="js/page-transitions.js"></script>
+
+</body>
+
 </html>
