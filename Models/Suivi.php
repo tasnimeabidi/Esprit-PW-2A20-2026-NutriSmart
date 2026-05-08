@@ -1,52 +1,79 @@
 <?php
 class Suivi {
-    private $id;
-    private $userId;
-    private $type;
-    private $date;
-    private $calories;
-    private $description;
-    private $quantite;
-    private $poids;
-    private $idSport;
-    private $idNutrition;
-    private $idAliment;
+    private $conn;
 
-    // Default constructor
-    public function __construct() {}
+    public function __construct($db) {
+        $this->conn = $db;
+    }
 
-    // Getters and Setters
-    public function getId() { return $this->id; }
-    public function setId($id) { $this->id = $id; }
+    // Read all logs (JOINing nutrition and sport)
+    public function readAll($user_id) {
+        $query = "SELECT id, id_utilisateur as user_id, 'meal' as type, date_entree as date, calories, 'Aliment' as description FROM journal_nutrition WHERE id_utilisateur = :uid
+                  UNION
+                  SELECT id, id_utilisateur as user_id, 'activity' as type, date_seance as date, calories_depensees as calories, type_sport as description FROM journal_sport WHERE id_utilisateur = :uid
+                  UNION
+                  SELECT id, id_utilisateur as user_id, 'weight' as type, date_mesure as date, 0 as calories, CONCAT(poids, ' kg') as description FROM journal_poids WHERE id_utilisateur = :uid
+                  ORDER BY date DESC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':uid', $user_id);
+        $stmt->execute();
+        return $stmt;
+    }
 
-    public function getUserId() { return $this->userId; }
-    public function setUserId($userId) { $this->userId = $userId; }
+    // Create Nutrition Log
+    public function createNutrition($user_id, $date, $calories, $quantite, $id_aliment = 1) {
+        $query = "INSERT INTO journal_nutrition (id_utilisateur, id_aliment, date_entree, calories, quantite) 
+                  VALUES (:uid, :aid, :date, :cal, :qty)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':uid', $user_id);
+        $stmt->bindParam(':aid', $id_aliment);
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':cal', $calories);
+        $stmt->bindParam(':qty', $quantite);
+        return $stmt->execute();
+    }
 
-    public function getType() { return $this->type; }
-    public function setType($type) { $this->type = $type; }
+    // Create Sport Log
+    public function createSport($user_id, $date, $type_sport, $calories, $duration = 30) {
+        $query = "INSERT INTO journal_sport (id_utilisateur, date_seance, type_sport, duree_min, calories_depensees) 
+                  VALUES (:uid, :date, :type, :dur, :cal)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':uid', $user_id);
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':type', $type_sport);
+        $stmt->bindParam(':dur', $duration);
+        $stmt->bindParam(':cal', $calories);
+        return $stmt->execute();
+    }
 
-    public function getDate() { return $this->date; }
-    public function setDate($date) { $this->date = $date; }
+    // Create Weight Log
+    public function createWeight($user_id, $date, $poids) {
+        $query = "INSERT INTO journal_poids (id_utilisateur, poids, date_mesure) VALUES (:uid, :poids, :date)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':uid', $user_id);
+        $stmt->bindParam(':poids', $poids);
+        $stmt->bindParam(':date', $date);
+        return $stmt->execute();
+    }
 
-    public function getCalories() { return $this->calories; }
-    public function setCalories($calories) { $this->calories = $calories; }
+    // Delete Log
+    public function delete($id, $type) {
+        $table = ($type == 'meal') ? "journal_nutrition" : (($type == 'activity') ? "journal_sport" : "journal_poids");
+        if(!$table) return false;
+        $query = "DELETE FROM $table WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute(['id' => $id]);
+    }
 
-    public function getDescription() { return $this->description; }
-    public function setDescription($description) { $this->description = $description; }
-
-    public function getQuantite() { return $this->quantite; }
-    public function setQuantite($quantite) { $this->quantite = $quantite; }
-
-    public function getPoids() { return $this->poids; }
-    public function setPoids($poids) { $this->poids = $poids; }
-
-    public function getIdSport() { return $this->idSport; }
-    public function setIdSport($idSport) { $this->idSport = $idSport; }
-
-    public function getIdNutrition() { return $this->idNutrition; }
-    public function setIdNutrition($idNutrition) { $this->idNutrition = $idNutrition; }
-
-    public function getIdAliment() { return $this->idAliment; }
-    public function setIdAliment($idAliment) { $this->idAliment = $idAliment; }
+    public function updateLog($id, $type, $desc, $cal) {
+        if ($type === 'meal') {
+            $stmt = $this->conn->prepare("UPDATE journal_nutrition SET calories = :cal WHERE id = :id");
+            return $stmt->execute(['id' => $id, 'cal' => $cal]);
+        } else {
+            $stmt = $this->conn->prepare("UPDATE journal_sport SET calories_depensees = :cal, type_sport = :desc WHERE id = :id");
+            return $stmt->execute(['id' => $id, 'cal' => $cal, 'desc' => $desc]);
+        }
+    }
 }
 ?>
