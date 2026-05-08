@@ -123,11 +123,9 @@ body.bo-shell-body .avatar-img {
   height: 32px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--bo-primary), var(--bo-lime));
-  display: grid;
-  place-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #ffffff;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--bo-border);
 }
 
 body.bo-shell-body aside.bo-admin-sidebar {

@@ -145,8 +145,6 @@ body {
   text-decoration: none;
   opacity: 0.9;
 }
-<<<<<<< HEAD
-=======
 .btn-ghost{
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
@@ -172,7 +170,6 @@ body {
   border: none;
   cursor: pointer;
 }
->>>>>>> origin/main
 
 .fo-topnav-admin:hover {
   text-decoration: underline;
