@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
       numbers.forEach(input => {
         if (input.value !== "" && parseFloat(input.value) < 0) {
           isValid = false;
-          const label = input.placeholder || input.name;
+          const labelElement = input.closest('.form-field') ? input.closest('.form-field').querySelector('label') : null;
+          const label = labelElement ? labelElement.textContent.replace('*', '').trim() : (input.placeholder || input.name);
           errors.push(label + " doit être un nombre positif.");
         }
       });

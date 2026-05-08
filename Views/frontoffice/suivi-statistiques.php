@@ -620,7 +620,7 @@ if($totalConsumed < 1200 && date('H') > 18) $aiTip = "Votre apport est faible po
         </a>
         <ul class="nav-links">
             <li><a href="nutrismart-website.html">Accueil</a></li>
-            <li><a href="suivi-statistiques.html" class="active">Suivi et Statistiques</a></li>
+            <li><a href="suivi-statistiques.php" class="active">Suivi et Statistiques</a></li>
             <li><a href="profile.html">Profil</a></li>
             <li><a href="recette.php">Recettes</a></li>
             <li><a href="contact.html">Contact</a></li>
@@ -878,8 +878,8 @@ if($totalConsumed < 1200 && date('H') > 18) $aiTip = "Votre apport est faible po
         <div class="footer-col">
           <h5>Ressources</h5>
           <ul>
-            <li><a href="recette.html">Recettes</a></li>
-            <li><a href="suivi-statistiques.html">Suivi de progrès</a></li>
+            <li><a href="recette.php">Recettes</a></li>
+            <li><a href="suivi-statistiques.php">Suivi de progrès</a></li>
             <li><a href="contact.html">Support</a></li>
           </ul>
         </div>

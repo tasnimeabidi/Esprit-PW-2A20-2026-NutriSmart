@@ -60,5 +60,5 @@ if (isset($_GET['edit_recette'])) {
 }
 
 // Charger la vue (le HTML séparé)
-include 'aliment.html';
+include 'aliment-view.php';
 ?>
