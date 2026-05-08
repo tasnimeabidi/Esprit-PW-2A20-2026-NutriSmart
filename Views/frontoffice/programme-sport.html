@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Programme sport</title>
+    <link rel="stylesheet" href="../css/mp-dashboard.css" />
+  </head>
+  <body>
+    <div class="app app--fo-topnav">
+      <header class="fo-topnav">
+        <a href="accueil.html" class="fo-topnav-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style="overflow: visible"
+            >
+              <mask id="biteMaskPS">
+                <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                <circle cx="92" cy="35" r="18" fill="black" />
+                <circle cx="84" cy="62" r="14" fill="black" />
+              </mask>
+              <g mask="url(#biteMaskPS)">
+                <path
+                  d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
+                  fill="#4a7c59"
+                />
+                <path
+                  d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
+                  fill="#8fbc8f"
+                />
+              </g>
+              <path
+                d="M 22 78 L 12 92"
+                stroke="#4a7c59"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-nutri">Nutri</span><span class="brand-smart">Smart</span>
+          </span>
+        </a>
+        <nav class="fo-topnav-center" aria-label="Navigation membre">
+          <a href="accueil.html" class="fo-topnav-link">Accueil</a>
+          <a href="plan-repas.html" class="fo-topnav-link">Plan repas</a>
+          <a href="programme-sport.html" class="fo-topnav-link is-active">Programme sport</a>
+        </nav>
+        <div class="fo-topnav-right">
+          <a href="../backoffice/nutrismart-dashboard.html" class="fo-topnav-admin">Admin →</a>
+          <div class="fo-topnav-user">
+            <div class="sidebar-avatar" aria-hidden="true">ZT</div>
+            <div>
+              <div class="name">Zeineb Trad</div>
+              <div class="badge">Membre Pro</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <header class="main-header">
+          <div>
+            <h1 class="serif">Bonjour, Zeineb 👋</h1>
+            <p class="date">Dimanche 5 Avril 2026</p>
+          </div>
+          <div class="header-actions">
+            <div class="search-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input type="search" placeholder="Rechercher..." />
+            </div>
+            <button type="button" class="btn-icon" aria-label="Notifications">
+              <span class="notif-dot"></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 01-3.46 0" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="sport-top" aria-label="Programme actif et statistiques">
+          <div class="hero-sport">
+            <div class="hero-sport-bg"></div>
+            <div class="hero-sport-overlay"></div>
+            <div class="hero-sport-inner">
+              <span class="tag">Programme Actif</span>
+              <h2 class="serif">Cardio &amp; Renforcement</h2>
+              <div class="hero-sport-meta">
+                <span>Niveau : Intermédiaire</span>
+                <span>Intensité : Modérée</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <h3>Statistiques de la semaine</h3>
+            <div class="stat-line">
+              <div class="stat-ico orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              </div>
+              <div>
+                <strong>180 min</strong>
+                <small>Temps d'activité</small>
+              </div>
+            </div>
+            <div class="stat-line">
+              <div class="stat-ico green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9H4.5a2.5 2.5 0 010-5H6" />
+                  <path d="M18 9h1.5a2.5 2.5 0 000-5H18" />
+                  <path d="M4 22h16" />
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                  <path d="M18 2H6v7a6 6 0 006 6 6 6 0 006-6V2z" />
+                </svg>
+              </div>
+              <div>
+                <strong>1 / 4</strong>
+                <small>Séances complétées</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <h2 class="section-title serif">Toutes les séances</h2>
+        <section class="sessions-grid" aria-label="Liste des séances">
+          <article class="session-card">
+            <img
+              src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=200&q=80"
+              alt=""
+            />
+            <div class="info">
+              <strong>Cardio</strong>
+              <div class="meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  Lun. 7 avr. 2026
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  45 min
+                </span>
+              </div>
+            </div>
+            <span class="dots" aria-hidden="true">⋯</span>
+          </article>
+
+          <article class="session-card">
+            <img
+              src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&w=200&q=80"
+              alt=""
+            />
+            <div class="info">
+              <strong>Musculation</strong>
+              <div class="meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  Mer. 9 avr. 2026
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  50 min
+                </span>
+              </div>
+            </div>
+            <span class="dots" aria-hidden="true">⋯</span>
+          </article>
+
+          <article class="session-card">
+            <img
+              src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=200&q=80"
+              alt=""
+            />
+            <div class="info">
+              <strong>Yoga</strong>
+              <div class="meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  Ven. 11 avr. 2026
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  40 min
+                </span>
+              </div>
+            </div>
+            <span class="dots" aria-hidden="true">⋯</span>
+          </article>
+
+          <article class="session-card">
+            <img
+              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=200&q=80"
+              alt=""
+            />
+            <div class="info">
+              <strong>HIIT</strong>
+              <div class="meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  Dim. 13 avr. 2026
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  30 min
+                </span>
+              </div>
+            </div>
+            <span class="dots" aria-hidden="true">⋯</span>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Plans de repas</title>
+    <link rel="stylesheet" href="../css/mp-dashboard.css" />
+    <link rel="stylesheet" href="backoffice-shell.css" />
+  </head>
+  <body class="bo-shell-body">
+    <header class="topbar">
+      <a href="nutrismart-dashboard.html" class="topbar-logo">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible"
+        >
+          <mask id="biteMaskShellTB">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMaskShellTB)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#3dba52" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8bc34a" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#3dba52" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div style="display: flex; align-items: center; gap: 2px">
+          <span style="color: #3dba52">Nutri</span><span style="color: #8bc34a">Smart</span>
+        </div>
+        <span class="logo-badge">ADMIN</span>
+      </a>
+      <div class="topbar-right">
+        <div class="notif-btn" title="Notifications">
+          🔔
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-btn" title="Paramètres">⚙️</div>
+        <div class="admin-avatar">
+          <div class="avatar-img">A</div>
+          <div class="admin-info">
+            <div class="admin-name">Admin Principal</div>
+            <div class="admin-role">Super Administrator</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="bo-admin-sidebar" aria-label="Navigation administration">
+      <div class="nav-section-label">Principal</div>
+      <a class="nav-item" href="nutrismart-dashboard.html">
+        <span class="nav-icon">📊</span> Tableau de bord
+      </a>
+      <a class="nav-item" href="users.html">
+        <span class="nav-icon">👥</span> Utilisateurs
+        <span class="nav-badge">284</span>
+      </a>
+      <a class="nav-item" href="aliments.html">
+        <span class="nav-icon">🥗</span> Aliments
+        <span class="nav-badge warn">12</span>
+      </a>
+      <a class="nav-item active" href="tableau-de-bord.html">
+        <span class="nav-icon">📅</span> Plans de repas
+      </a>
+      <a class="nav-item" href="progression.html">
+        <span class="nav-icon">📈</span> Progressions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🛒</span> Courses &amp; Budget
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📖</span> Recettes
+        <span class="nav-badge warn">5</span>
+      </a>
+
+      <div class="nav-section-label">Données</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📉</span> Statistiques
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📤</span> Exports
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🗄️</span> Base de données
+      </a>
+
+      <div class="nav-section-label">Système</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🔒</span> Permissions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📋</span> Logs d'activité
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">⚙️</span> Paramètres
+      </a>
+
+      <div style="margin-top: auto; padding-top: 1.5rem">
+        <a class="nav-item" href="../frontoffice/plan-repas.html" style="color: #3dba52">
+          <span class="nav-icon">🌐</span> Front office
+        </a>
+      </div>
+    </aside>
+
+    <main class="bo-shell-main">
+      <div class="app app--embed-dash">
+        <div class="main dash-workspace">
+        <!-- Vue intégrée back-office : sans barre latérale ni en-tête salutation -->
+        <!-- 1. Hero -->
+        <section class="dash-hero-home" aria-label="Parcours santé">
+          <div class="dash-hero-home-bg"></div>
+          <div class="dash-hero-home-overlay"></div>
+          <div class="dash-hero-home-inner">
+            <h2 class="serif">Votre parcours santé personnalisé</h2>
+            <p class="sub">
+              Plan actuel : <strong>Cardio &amp; Renforcement</strong>. Continuez sur cette lancée pour
+              atteindre votre objectif de perte de poids.
+            </p>
+            <div class="dash-hero-actions">
+              <a class="btn-pill-white" href="../frontoffice/plan-repas.html">Voir mon plan</a>
+              <a class="btn-pill-orange" href="../frontoffice/programme-sport.html">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Séance du jour
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Indicateurs -->
+        <section class="metrics-row" aria-label="Indicateurs">
+          <div class="metric-card border-orange">
+            <div class="metric-ico o">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z" />
+              </svg>
+            </div>
+            <div>
+              <div class="label">Calories aujourd'hui</div>
+              <div class="value metric-value--split">
+                <span class="metric-num">1530</span>
+                <span class="metric-suffix">sur 2100 kcal</span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-card border-slate">
+            <div class="metric-ico s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <div>
+              <div class="label">Séances cette semaine</div>
+              <div class="value metric-value--split">
+                <span class="metric-num">3</span>
+                <span class="metric-suffix">sur 4 prévues</span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-card border-forest">
+            <div class="metric-ico f">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+            </div>
+            <div>
+              <div class="label">Objectif atteint</div>
+              <div class="value metric-value--split">
+                <span class="metric-num">75%</span>
+                <span class="metric-suffix">Perte de poids</span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-card border-purple">
+            <div class="metric-ico p">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+            </div>
+            <div>
+              <div class="label">Jours restants</div>
+              <div class="value metric-value--split">
+                <span class="metric-num">25</span>
+                <span class="metric-suffix">Plan actuel</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Plan du jour + Objectif calories -->
+        <div class="dash-split dash-split--plan-jour">
+          <section class="panel-card panel-card--plan-jour" aria-labelledby="plan-jour">
+            <div class="panel-head">
+              <div>
+                <h3 class="serif" id="plan-jour">Plan du jour</h3>
+                <p class="sub">Repas générés selon votre profil</p>
+              </div>
+              <a href="../frontoffice/plan-repas.html">Voir tout &gt;</a>
+            </div>
+            <div class="plan-jour-stack">
+              <article class="meal-day-card meal-day-card--breakfast">
+                <img
+                  src="https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="txt">
+                  <div class="type-label">Petit dejeuner</div>
+                  <div class="dish serif">Porridge aux fruits rouges</div>
+                </div>
+                <span class="kcal-val">350 kcal</span>
+              </article>
+              <article class="meal-day-card meal-day-card--lunch">
+                <img
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="txt">
+                  <div class="type-label">Dejeuner</div>
+                  <div class="dish serif">Salade César au poulet</div>
+                </div>
+                <span class="kcal-val">520 kcal</span>
+              </article>
+              <article class="meal-day-card meal-day-card--snack">
+                <img
+                  src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="txt">
+                  <div class="type-label">Collation</div>
+                  <div class="dish serif">Yaourt grec &amp; amandes</div>
+                </div>
+                <span class="kcal-val">180 kcal</span>
+              </article>
+              <article class="meal-day-card meal-day-card--dinner">
+                <img
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="txt">
+                  <div class="type-label">Diner</div>
+                  <div class="dish serif">Saumon grillé &amp; légumes</div>
+                </div>
+                <span class="kcal-val">480 kcal</span>
+              </article>
+            </div>
+          </section>
+
+          <aside class="cal-goal-panel" aria-label="Objectif calories">
+            <h3 class="cal-goal-panel__title">Objectif calories</h3>
+            <p class="cal-goal-panel__nums">1530 / 2100 kcal</p>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 140 140" aria-hidden="true">
+                <defs>
+                  <linearGradient id="calRingGradTB" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#e67e22" />
+                    <stop offset="100%" stop-color="#e8b923" />
+                  </linearGradient>
+                </defs>
+                <circle
+                  class="cal-ring__bg"
+                  cx="70"
+                  cy="70"
+                  r="58"
+                  fill="none"
+                  stroke-width="14"
+                />
+                <circle
+                  class="cal-ring__fg cal-ring__fg--grad"
+                  cx="70"
+                  cy="70"
+                  r="58"
+                  fill="none"
+                  stroke="url(#calRingGradTB)"
+                  stroke-width="14"
+                  stroke-linecap="round"
+                  stroke-dasharray="364.4"
+                  stroke-dashoffset="98.4"
+                  transform="rotate(-90 70 70)"
+                />
+              </svg>
+              <span class="ring-center">73%</span>
+            </div>
+            <div class="macro-list">
+              <div>
+                <div class="macro-row__top">
+                  <span>Protéines</span>
+                  <span>68g</span>
+                </div>
+                <div class="macro-bar macro-bar--prot"><span></span></div>
+              </div>
+              <div>
+                <div class="macro-row__top">
+                  <span>Glucides</span>
+                  <span>220g</span>
+                </div>
+                <div class="macro-bar macro-bar--glu"><span></span></div>
+              </div>
+              <div>
+                <div class="macro-row__top">
+                  <span>Lipides</span>
+                  <span>54g</span>
+                </div>
+                <div class="macro-bar macro-bar--lip"><span></span></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- 4. Prochaines séances + widgets -->
+        <div class="dash-top-zone">
+          <div class="dash-top-main">
+            <section class="panel-card dash-upcoming" aria-labelledby="upcoming-sessions-title">
+              <div class="panel-head">
+                <div>
+                  <h3 class="serif" id="upcoming-sessions-title">Prochaines Séances</h3>
+                  <p class="sub">Cardio &amp; Renforcement</p>
+                </div>
+                <a href="../frontoffice/programme-sport.html">Programme &gt;</a>
+              </div>
+              <div class="upcoming-sessions-list upcoming-sessions-list--lined">
+                <div class="session-card session-card--list">
+                  <img
+                    src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=200&q=80"
+                    alt=""
+                  />
+                  <div class="info">
+                    <strong>Cardio</strong>
+                    <div class="meta">
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="18" rx="2" />
+                          <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                        Lun. 7 avr. 2026
+                      </span>
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </svg>
+                        45 min
+                      </span>
+                    </div>
+                  </div>
+                  <button type="button" class="dots" aria-label="Plus d'options">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                      <circle cx="12" cy="5" r="2" />
+                      <circle cx="12" cy="12" r="2" />
+                      <circle cx="12" cy="19" r="2" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="session-card session-card--list">
+                  <img
+                    src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=200&q=80"
+                    alt=""
+                  />
+                  <div class="info">
+                    <strong>Musculation</strong>
+                    <div class="meta">
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="18" rx="2" />
+                          <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                        Mer. 9 avr. 2026
+                      </span>
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </svg>
+                        50 min
+                      </span>
+                    </div>
+                  </div>
+                  <button type="button" class="dots" aria-label="Plus d'options">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                      <circle cx="12" cy="5" r="2" />
+                      <circle cx="12" cy="12" r="2" />
+                      <circle cx="12" cy="19" r="2" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="session-card session-card--list">
+                  <img
+                    src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=200&q=80"
+                    alt=""
+                  />
+                  <div class="info">
+                    <strong>Yoga</strong>
+                    <div class="meta">
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="18" rx="2" />
+                          <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                        Ven. 11 avr. 2026
+                      </span>
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </svg>
+                        35 min
+                      </span>
+                    </div>
+                  </div>
+                  <button type="button" class="dots" aria-label="Plus d'options">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                      <circle cx="12" cy="5" r="2" />
+                      <circle cx="12" cy="12" r="2" />
+                      <circle cx="12" cy="19" r="2" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="dash-rail" aria-label="Progression et programme">
+            <div class="cal-goal-widget">
+              <div class="small">Progression objectif</div>
+              <div class="big">73%</div>
+              <div class="bar" role="presentation"><span></span></div>
+            </div>
+            <div class="featured-prog">
+              <div class="featured-prog-bg" aria-hidden="true"></div>
+              <div class="featured-prog-inner">
+                <span class="badge-prog">PROGRAMME</span>
+                <h4 class="serif">Cardio &amp; Renforcement</h4>
+                <p class="meta">Intermédiaire • Modérée</p>
+              </div>
+            </div>
+            <div class="conseil-card">
+              <div class="ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="6" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+              </div>
+              <div>
+                <h4>Conseil du jour</h4>
+                <p>
+                  Vous êtes en bonne voie pour atteindre votre objectif de protéines. Pensez à bien vous hydrater avant
+                  votre séance de cardio !
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

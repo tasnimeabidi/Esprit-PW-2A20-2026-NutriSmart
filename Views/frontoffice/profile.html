@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil — NutriSmart</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/shared-styles.css" />
+    <style>
+      body {
+        background: linear-gradient(
+            rgba(247, 243, 236, 0.9),
+            rgba(247, 243, 236, 0.9)
+          ),
+          url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=80")
+            center/cover fixed;
+      }
+
+      .profile-hero {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6rem 2rem;
+      }
+
+      .profile-container {
+        max-width: 900px;
+        width: 100%;
+        z-index: 1;
+      }
+
+      .profile-header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+        animation: fadeUp 0.8s ease both;
+      }
+
+      .profile-header h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 900;
+        color: var(--forest);
+        line-height: 1.1;
+      }
+
+      .profile-header p {
+        color: var(--gray);
+        font-size: 1.1rem;
+        margin-top: 0.8rem;
+      }
+
+      .form-card.profile-card {
+        max-width: 100%;
+        padding: 4rem;
+      }
+
+      .btn-update-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAV -->
+    <nav id="navbar">
+      <a href="nutrismart-website.html" class="nav-logo">
+        <!-- logo -->
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible"
+        >
+          <mask id="biteMask">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMask)">
+            <path
+              d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
+              fill="#4a7c59"
+            />
+            <path
+              d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
+              fill="#8fbc8f"
+            />
+          </g>
+          <path
+            d="M 22 78 L 12 92"
+            stroke="#4a7c59"
+            stroke-width="7"
+            stroke-linecap="round"
+          />
+        </svg>
+        <div>
+          <span style="color: #4a7c59">Nutri</span
+          ><span style="color: #8fbc8f">Smart</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="nutrismart-website.html">Accueil</a></li>
+        <li><a href="suivi-statistiques.php">Suivi et Statistiques</a></li>
+        <li><a href="profile.html" class="active">Profil</a></li>
+        <li><a href="recette.html">Recettes</a></li>
+        
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-auth">
+        <a href="register.html" class="nav-cta">Commencer gratuitement</a>
+      </div>
+    </nav>
+
+    <main class="profile-hero">
+      <div class="profile-container">
+        <header class="profile-header">
+          <h1>Votre Profil Nutritionnel</h1>
+          <p>Optimisez vos résultats en personnalisant vos données de santé.</p>
+        </header>
+
+        <div class="form-card profile-card">
+          <form action="user.html">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Âge</label>
+                <input
+                  type="number"
+                  value=""
+                  required
+                  min="1"
+                  max="120"
+                  placeholder="Tapez votre age"
+                />
+              </div>
+              <div class="form-group">
+                <label>Genre</label>
+                <select>
+                  <option>Aucune</option>
+                  <option>Homme</option>
+                  <option>Femme</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Poids Actuel (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value=""
+                  required
+                  placeholder="Tapez votre poids"
+                />
+              </div>
+              <div class="form-group">
+                <label>Taille (cm)</label>
+                <input
+                  type="number"
+                  value=""
+                  required
+                  placeholder="Tapez votre taille"
+                />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem">
+              <label>Objectif Principal</label>
+              <select>
+                <option value="aucune">Aucune</option>
+                <option>Maintien et Tonification</option>
+                <option>Perte de poids</option>
+                <option>Prise de masse musculaire</option>
+                <option>Santé métabolique</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Préférences alimentaires</label>
+              <select>
+                <option value="aucune">Aucune</option>
+                <option value="vegetarien">Végétarien</option>
+                <option value="vegan">Vegan</option>
+                <option value="sans-gluten">Sans gluten</option>
+                <option value="sans-lactose">Sans lactose</option>
+                <option value="low-carb">Low carb</option>
+              </select>
+            </div>
+
+            <div class="btn-update-container">
+              <button type="submit" class="btn-primary btn-small">
+                Enregistrer les préférences &rarr;
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <!-- FOOTER -->
+    <footer id="contact">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg
+              width="34"
+              height="34"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <mask id="biteMaskFooter">
+                <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                <circle cx="92" cy="35" r="18" fill="black" />
+                <circle cx="84" cy="62" r="14" fill="black" />
+              </mask>
+              <g mask="url(#biteMaskFooter)">
+                <path
+                  d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
+                  fill="#4a7c59"
+                />
+                <path
+                  d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
+                  fill="#8fbc8f"
+                />
+              </g>
+              <path
+                d="M 22 78 L 12 92"
+                stroke="#4a7c59"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span style="margin-left: 10px">NutriSmart</span>
+          </div>
+          <p class="footer-desc">
+            Votre plateforme de nutrition intelligente et personnalisée. Mangez
+            mieux, vivez pleinement.
+          </p>
+          <div class="footer-contact-list">
+            <a
+              href="mailto:contact@nutrismart.demo"
+              class="footer-contact-item"
+            >
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              contact@nutrismart.demo
+            </a>
+            <a href="tel:+21612345678" class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                  />
+                </svg>
+              </div>
+              +216 12 345 678
+            </a>
+            <div class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              Tunis, Tunisie
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Plateforme</h5>
+          <ul>
+            <li><a href="#features">Fonctionnalités</a></li>
+            <li><a href="#how-it-works">Comment ça marche</a></li>
+            <li><a href="#modules">Modules</a></li>
+            <li><a href="#programme">Programmes Repas</a></li>
+            <li><a href="#sport">Programmes Sport</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Ressources</h5>
+          <ul>
+            <li><p>Base alimentaire</p></li>
+            <li><p>Carnet de recettes</p></li>
+            <li><p>Blog Nutrition</p></li>
+            <li><p>Suivi de progrès</p></li>
+            <li><p>FAQ</p></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Suivez-nous</h5>
+          <div class="footer-social">
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path
+                  d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="X">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
+                />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </a>
+          </div>
+          <h5>Légal</h5>
+          <ul>
+            <li>Politique de confidentialité</li>
+            <li>Conditions d'utilisation</li>
+            <li>Mentions légales</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 NutriSmart — Tous droits réservés</span>
+        <div class="footer-bottom-links">
+          <a href="#">Confidentialité</a>
+          <a href="#">CGU</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

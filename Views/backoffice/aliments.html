@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Aliments</title>
+    <link rel="stylesheet" href="../css/mp-dashboard.css" />
+    <link rel="stylesheet" href="backoffice-shell.css" />
+  </head>
+  <body class="bo-shell-body">
+    <header class="topbar">
+      <a href="nutrismart-dashboard.html" class="topbar-logo">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible"
+        >
+          <mask id="biteMaskShellAlim">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMaskShellAlim)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#3dba52" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8bc34a" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#3dba52" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div style="display: flex; align-items: center; gap: 2px">
+          <span style="color: #3dba52">Nutri</span><span style="color: #8bc34a">Smart</span>
+        </div>
+        <span class="logo-badge">ADMIN</span>
+      </a>
+      <div class="topbar-right">
+        <div class="notif-btn" title="Notifications">
+          🔔
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-btn" title="Paramètres">⚙️</div>
+        <div class="admin-avatar">
+          <div class="avatar-img">A</div>
+          <div class="admin-info">
+            <div class="admin-name">Admin Principal</div>
+            <div class="admin-role">Super Administrator</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="bo-admin-sidebar" aria-label="Navigation administration">
+      <div class="nav-section-label">Principal</div>
+      <a class="nav-item" href="nutrismart-dashboard.html">
+        <span class="nav-icon">📊</span> Tableau de bord
+      </a>
+      <a class="nav-item" href="users.html">
+        <span class="nav-icon">👥</span> Utilisateurs
+        <span class="nav-badge">284</span>
+      </a>
+      <a class="nav-item active" href="aliments.html">
+        <span class="nav-icon">🥗</span> Aliments
+        <span class="nav-badge warn">12</span>
+      </a>
+      <a class="nav-item" href="planRepas.html">
+        <span class="nav-icon">📅</span> planRepas
+      </a>
+      <a class="nav-item" href="progression.html">
+        <span class="nav-icon">📈</span> Progressions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🛒</span> Courses &amp; Budget
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📖</span> Recettes
+        <span class="nav-badge warn">5</span>
+      </a>
+
+      <div class="nav-section-label">Données</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📉</span> Statistiques
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📤</span> Exports
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🗄️</span> Base de données
+      </a>
+
+      <div class="nav-section-label">Système</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🔒</span> Permissions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📋</span> Logs d'activité
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">⚙️</span> Paramètres
+      </a>
+
+      <div style="margin-top: auto; padding-top: 1.5rem">
+        <a class="nav-item" href="../frontoffice/plan-repas.html" style="color: #3dba52">
+          <span class="nav-icon">🌐</span> Front office
+        </a>
+      </div>
+    </aside>
+
+    <main class="bo-shell-main">
+      <div class="app app--embed-dash">
+        <div class="main dash-workspace bo-aliments-page">
+          <header class="bo-aliments-head">
+            <div>
+              <h1 class="serif">Aliments</h1>
+              <p class="sub">Ajout de recettes, d’aliments et liaison recette ↔ aliment</p>
+            </div>
+            <div class="bo-aliments-actions">
+              <a href="#ajouter-aliment" class="btn-pill-orange">+ Ajouter aliment</a>
+            </div>
+          </header>
+
+          <div class="bo-form-stack">
+            <section class="panel-card bo-form-card" aria-labelledby="titre-recette">
+              <h2 class="bo-form-title serif" id="titre-recette">Ajouter recette</h2>
+              <form class="bo-form-grid" action="#" method="post">
+                <label class="bo-field">
+                  <span>Nom recette</span>
+                  <input type="text" name="nom_recette" placeholder="Nom recette" autocomplete="off" />
+                </label>
+                <label class="bo-field">
+                  <span>Instructions</span>
+                  <textarea name="instructions" placeholder="Instructions" rows="4"></textarea>
+                </label>
+                <label class="bo-field">
+                  <span>Calories totales</span>
+                  <input type="text" name="calories_totales" inputmode="decimal" placeholder="ex. 450" />
+                </label>
+                <button type="submit" class="bo-form-submit">Ajouter recette</button>
+              </form>
+            </section>
+
+            <section class="panel-card bo-form-card" id="ajouter-aliment" aria-labelledby="titre-aliment">
+              <h2 class="bo-form-title serif" id="titre-aliment">Ajouter aliment</h2>
+              <form class="bo-form-grid" action="#" method="post">
+                <label class="bo-field">
+                  <span>Nom aliment</span>
+                  <input type="text" name="nom_aliment" placeholder="Nom aliment" autocomplete="off" />
+                </label>
+                <label class="bo-field">
+                  <span>Catégorie</span>
+                  <select name="categorie">
+                    <option value="">Choisir une catégorie</option>
+                    <option value="legume">Légume</option>
+                    <option value="proteine">Protéine</option>
+                    <option value="feculent">Féculent</option>
+                    <option value="fruit">Fruit</option>
+                    <option value="laitier">Laitier</option>
+                    <option value="autre">Autre</option>
+                  </select>
+                </label>
+                <div class="bo-field-row">
+                  <label class="bo-field">
+                    <span>Calories</span>
+                    <input type="text" name="calories" inputmode="decimal" placeholder="kcal / 100g" />
+                  </label>
+                  <label class="bo-field">
+                    <span>Protéines</span>
+                    <input type="text" name="proteines" inputmode="decimal" placeholder="g / 100g" />
+                  </label>
+                </div>
+                <div class="bo-field-row">
+                  <label class="bo-field">
+                    <span>Glucides</span>
+                    <input type="text" name="glucides" inputmode="decimal" placeholder="g / 100g" />
+                  </label>
+                  <label class="bo-field">
+                    <span>Lipides</span>
+                    <input type="text" name="lipides" inputmode="decimal" placeholder="g / 100g" />
+                  </label>
+                </div>
+                <button type="submit" class="bo-form-submit">Ajouter aliment</button>
+              </form>
+            </section>
+
+            <section class="panel-card bo-form-card" aria-labelledby="titre-liaison">
+              <h2 class="bo-form-title serif" id="titre-liaison">Lier recette et aliment</h2>
+              <form class="bo-form-grid" action="#" method="post">
+                <label class="bo-field">
+                  <span>Choisir recette</span>
+                  <select name="recette_id">
+                    <option value="">— Sélectionner une recette —</option>
+                    <option value="1">Salade quinoa</option>
+                    <option value="2">Bowl tofu</option>
+                  </select>
+                </label>
+                <label class="bo-field">
+                  <span>Choisir aliment</span>
+                  <select name="aliment_id">
+                    <option value="">— Sélectionner un aliment —</option>
+                    <option value="1">Quinoa</option>
+                    <option value="2">Tofu fumé</option>
+                  </select>
+                </label>
+                <label class="bo-field">
+                  <span>Quantité (g)</span>
+                  <input type="text" name="quantite_g" inputmode="decimal" placeholder="ex. 120" />
+                </label>
+                <button type="submit" class="bo-form-submit">Ajouter à la recette</button>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

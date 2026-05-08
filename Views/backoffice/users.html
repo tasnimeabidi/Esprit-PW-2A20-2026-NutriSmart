@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Gestion des Utilisateurs</title>
+    <link rel="stylesheet" href="../css/mp-dashboard.css" />
+    <link rel="stylesheet" href="backoffice-shell.css" />
+    <style>
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1rem;
+      }
+      .modal-title {
+        margin: 0;
+        color: #3dba52;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+      .form-group input, .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+      }
+      .btn-modal {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-cancel {
+        background: #ccc;
+        color: #333;
+      }
+      .btn-save {
+        background: #3dba52;
+        color: white;
+      }
+      .btn-delete {
+        background: #e53935;
+        color: white;
+      }
+    </style>
+  </head>
+  <body class="bo-shell-body">
+    <header class="topbar">
+      <a href="nutrismart-dashboard.html" class="topbar-logo">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible"
+        >
+          <mask id="biteMaskUsers">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMaskUsers)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#3dba52" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8bc34a" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#3dba52" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div style="display: flex; align-items: center; gap: 2px">
+          <span style="color: #3dba52">Nutri</span><span style="color: #8bc34a">Smart</span>
+        </div>
+        <span class="logo-badge">ADMIN</span>
+      </a>
+      <div class="topbar-right">
+        <div class="notif-btn" title="Notifications">
+          🔔
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-btn" title="Paramètres">⚙️</div>
+        <div class="admin-avatar">
+          <div class="avatar-img">A</div>
+          <div class="admin-info">
+            <div class="admin-name">Admin Principal</div>
+            <div class="admin-role">Super Administrator</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="bo-admin-sidebar" aria-label="Navigation administration">
+      <div class="nav-section-label">Principal</div>
+      <a class="nav-item" href="nutrismart-dashboard.html">
+        <span class="nav-icon">📊</span> Tableau de bord
+      </a>
+      <a class="nav-item active" href="users.html">
+        <span class="nav-icon">👥</span> Utilisateurs
+        <span class="nav-badge">284</span>
+      </a>
+      <a class="nav-item" href="aliments.html">
+        <span class="nav-icon">🥗</span> Aliments
+        <span class="nav-badge warn">12</span>
+      </a>
+      <a class="nav-item" href="planRepas.html">
+        <span class="nav-icon">📅</span> planRepas
+      </a>
+      <a class="nav-item" href="progression.html">
+        <span class="nav-icon">📈</span> Progressions
+      </a>
+      <a class="nav-item" href="budget-admin.php">
+        <span class="nav-icon">🛒</span> Courses &amp; Budget
+      </a>
+      <a class="nav-item" href="recettes.php">
+        <span class="nav-icon">📖</span> Recettes
+        <span class="nav-badge warn">5</span>
+      </a>
+
+      <div class="nav-section-label">Données</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📉</span> Statistiques
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📤</span> Exports
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🗄️</span> Base de données
+      </a>
+
+      <div class="nav-section-label">Système</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🔒</span> Permissions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">📋</span> Logs d'activité
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">⚙️</span> Paramètres
+      </a>
+
+      <div style="margin-top: auto; padding-top: 1.5rem">
+        <a class="nav-item" href="../frontoffice/plan-repas.html" style="color: #3dba52">
+          <span class="nav-icon">🌐</span> Front office
+        </a>
+      </div>
+    </aside>
+
+    <main class="bo-shell-main">
+      <div class="app app--embed-dash">
+        <div class="main dash-workspace bo-users-page">
+          <div class="page-header">
+            <div>
+              <div class="page-title">Gestion des Utilisateurs</div>
+              <div class="page-sub">Liste complète des 284 membres inscrits</div>
+            </div>
+            <div class="header-actions">
+              <button type="button" class="btn-sm btn-ghost">📤 Exporter PDF</button>
+              <button type="button" class="btn-sm btn-green" onclick="openModal('create')">+ Nouvel utilisateur</button>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="table-controls">
+              <div class="search-wrapper">
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <input type="text" class="search-input" placeholder="Rechercher par nom, email..." />
+              </div>
+              <div class="filter-group">
+                <select class="filter-select" aria-label="Filtrer par statut">
+                  <option value="">Tous les statuts</option>
+                  <option value="active">Actif</option>
+                  <option value="pending">En attente</option>
+                  <option value="inactive">Inactif</option>
+                </select>
+                <select class="filter-select" aria-label="Filtrer par module">
+                  <option value="">Tous les modules</option>
+                  <option value="meal">Meal Planning</option>
+                  <option value="progress">Progress Tracking</option>
+                  <option value="recipes">Recipes</option>
+                  <option value="grocery">Grocery &amp; Budget</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-scroll">
+              <table class="users-list-table">
+                <thead>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>ID Client</th>
+                    <th>Module Principal</th>
+                    <th>Plans IA</th>
+                    <th>Statut</th>
+                    <th>Dernière activité</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #3f51b5">S</div>
+                        <div>
+                          <div class="u-name">Sarah Benali</div>
+                          <div class="u-email">sarah.b@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-9284</td>
+                    <td class="bo-user-module">Meal Planning</td>
+                    <td class="bo-user-plans">14</td>
+                    <td><span class="status-pill s-active">ACTIF</span></td>
+                    <td class="bo-user-activity">Hier, 14:22</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-9284', 'Sarah Benali', 'sarah.b@mail.com', 'Meal Planning', 'ACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-9284', 'Sarah Benali')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #f57c00">K</div>
+                        <div>
+                          <div class="u-name">Karim Mansouri</div>
+                          <div class="u-email">k.mansouri@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-9102</td>
+                    <td class="bo-user-module">Progress Tracking</td>
+                    <td class="bo-user-plans">7</td>
+                    <td><span class="status-pill s-active">ACTIF</span></td>
+                    <td class="bo-user-activity">27/03/26 10:05</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-9102', 'Karim Mansouri', 'k.mansouri@mail.com', 'Progress Tracking', 'ACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-9102', 'Karim Mansouri')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #00796b">L</div>
+                        <div>
+                          <div class="u-name">Lina Trabelsi</div>
+                          <div class="u-email">lina.t@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-8921</td>
+                    <td class="bo-user-module">Recipes</td>
+                    <td class="bo-user-plans bo-user-plans--muted">2</td>
+                    <td><span class="status-pill s-pending">EN ATTENTE</span></td>
+                    <td class="bo-user-activity">26/03/26 18:40</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-8921', 'Lina Trabelsi', 'lina.t@mail.com', 'Recipes', 'EN ATTENTE')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-8921', 'Lina Trabelsi')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #7b1fa2">M</div>
+                        <div>
+                          <div class="u-name">Mohamed Ghali</div>
+                          <div class="u-email">m.ghali@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-8843</td>
+                    <td class="bo-user-module">Grocery &amp; Budget</td>
+                    <td class="bo-user-plans">21</td>
+                    <td><span class="status-pill s-active">ACTIF</span></td>
+                    <td class="bo-user-activity">Il y a 3h</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-8843', 'Mohamed Ghali', 'm.ghali@mail.com', 'Grocery & Budget', 'ACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-8843', 'Mohamed Ghali')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #e53935">R</div>
+                        <div>
+                          <div class="u-name">Rana Khelifi</div>
+                          <div class="u-email">rana.k@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-8710</td>
+                    <td class="bo-user-module">Food &amp; Nutrition</td>
+                    <td class="bo-user-plans bo-user-plans--muted">0</td>
+                    <td><span class="status-pill s-inactive">INACTIF</span></td>
+                    <td class="bo-user-activity">24/03/26</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-8710', 'Rana Khelifi', 'rana.k@mail.com', 'Food & Nutrition', 'INACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-8710', 'Rana Khelifi')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #0288d1">A</div>
+                        <div>
+                          <div class="u-name">Ahmed Selmi</div>
+                          <div class="u-email">a.selmi@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-8654</td>
+                    <td class="bo-user-module">Meal Planning</td>
+                    <td class="bo-user-plans">31</td>
+                    <td><span class="status-pill s-active">ACTIF</span></td>
+                    <td class="bo-user-activity">Hier, 09:12</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-8654', 'Ahmed Selmi', 'a.selmi@mail.com', 'Meal Planning', 'ACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-8654', 'Ahmed Selmi')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <div class="u-avatar" style="background: #c2185b">Y</div>
+                        <div>
+                          <div class="u-name">Yasmine Feki</div>
+                          <div class="u-email">y.feki@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bo-user-id">#NS-8542</td>
+                    <td class="bo-user-module">Progress Tracking</td>
+                    <td class="bo-user-plans">12</td>
+                    <td><span class="status-pill s-active">ACTIF</span></td>
+                    <td class="bo-user-activity">Il y a 45 min</td>
+                    <td>
+                      <button type="button" class="action-btn" title="Modifier" onclick="openModal('edit', 'NS-8542', 'Yasmine Feki', 'y.feki@mail.com', 'Progress Tracking', 'ACTIF')">✏️</button>
+                      <button type="button" class="action-btn" title="Supprimer" onclick="deleteUser('NS-8542', 'Yasmine Feki')" style="color: red;">🗑️</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination">
+              <div class="page-info">Affichage de 1-7 sur 284 utilisateurs</div>
+              <div class="page-btns">
+                <button type="button" class="page-btn active">1</button>
+                <button type="button" class="page-btn">2</button>
+                <button type="button" class="page-btn">3</button>
+                <button type="button" class="page-btn">…</button>
+                <button type="button" class="page-btn">41</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<script>
+    function openModal(mode, userId = null, name = '', email = '', module = '', status = '') {
+      const modal = document.getElementById('user-modal');
+      const title = document.getElementById('modal-title');
+      const form = document.getElementById('modal-form');
+      const action = document.getElementById('action');
+      
+      title.textContent = mode === 'create' ? 'Ajouter un utilisateur' : 'Modifier un utilisateur';
+      action.value = mode;
+      form.reset();
+      
+      if (mode === 'edit') {
+        // For edit mode: set the user_id hidden field and disable the name field
+        document.getElementById('user_id').value = userId;
+        document.getElementById('user_id').required = true;
+        document.getElementById('name').value = name;
+        document.getElementById('name').disabled = true;
+        document.getElementById('name').required = false;
+        document.getElementById('email').value = email;
+        document.getElementById('email').required = true;
+        document.getElementById('module').value = module;
+        document.getElementById('status').value = status;
+      } else {
+        // For create mode: enable all fields
+        document.getElementById('user_id').value = '';
+        document.getElementById('user_id').required = false;
+        document.getElementById('name').disabled = false;
+        document.getElementById('name').required = true;
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('email').required = true;
+        document.getElementById('module').value = '';
+        document.getElementById('status').value = '';
+      }
+      
+      modal.style.display = 'flex';
+    }
+
+  function closeModal() {
+    document.getElementById('user-modal').style.display = 'none';
+  }
+
+  function deleteUser(userId, userName) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ' + userName + ' ?')) {
+      const form = document.getElementById('delete-form');
+      form.querySelector('[name="user_id"]').value = userId;
+      form.submit();
+    }
+  }
+
+  // Fermer le modal en cliquant en dehors
+  document.getElementById('user-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeModal();
+    }
+  });
+</script>
+
+<!-- Modal pour ajouter/modifier un utilisateur -->
+<div id="user-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title" class="modal-title">Ajouter un utilisateur</h2>
+      <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+    </div>
+    <form id="modal-form" method="POST" action="">
+      <input type="hidden" id="action" name="action" value="create">
+      <input type="hidden" id="user_id" name="user_id" value="">
+      
+      <div class="form-group">
+        <label for="name">Nom complet</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="module">Module principal</label>
+        <select id="module" name="module" required>
+          <option value="meal">Meal Planning</option>
+          <option value="progress">Progress Tracking</option>
+          <option value="recipes">Recipes</option>
+          <option value="grocery">Grocery & Budget</option>
+          <option value="nutrition">Food & Nutrition</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="status">Statut</label>
+        <select id="status" name="status" required>
+          <option value="active">Actif</option>
+          <option value="pending">En attente</option>
+          <option value="inactive">Inactif</option>
+        </select>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" onclick="closeModal()" class="btn-modal btn-cancel">Annuler</button>
+        <button type="submit" class="btn-modal btn-save">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Formulaire caché pour la suppression -->
+<form id="delete-form" method="POST" action="" style="display: none;">
+  <input type="hidden" name="action" value="delete">
+  <input type="hidden" name="user_id" value="">
+</form>

@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Nutrition Intelligente</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/shared-styles.css" />
+    <style>
+      /* ── HERO ── */
+      .hero {
+        min-height: calc(100vh - 130px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 4rem;
+        padding: 4rem 5rem 5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -120px;
+        width: 680px;
+        height: 680px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(76, 175, 80, 0.18) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: -80px;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(139, 195, 74, 0.14) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(76, 175, 80, 0.12);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        color: var(--primary);
+        padding: 0.35rem 0.9rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        margin-bottom: 1.4rem;
+        animation: fadeUp 0.8s 0.1s ease both;
+      }
+
+      .hero-badge::before {
+        content: "✦";
+        color: var(--mid);
+      }
+
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.8rem, 5vw, 4.2rem);
+        line-height: 1.12;
+        font-weight: 900;
+        color: var(--forest);
+        animation: fadeUp 0.8s 0.2s ease both;
+      }
+
+      .hero h1 em {
+        font-style: italic;
+        color: var(--orange);
+        display: block;
+      }
+
+      .hero-sub {
+        margin-top: 1.4rem;
+        font-size: 1.05rem;
+        color: var(--gray);
+        line-height: 1.7;
+        max-width: 480px;
+        animation: fadeUp 0.8s 0.35s ease both;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.2rem;
+        flex-wrap: wrap;
+        animation: fadeUp 0.8s 0.5s ease both;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--mid));
+        color: var(--white);
+        padding: 0.85rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary:hover,
+      .nav-cta:hover {
+        background: var(--lime) !important;
+        color: var(--forest) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(196, 212, 168, 0.4);
+      }
+
+      .btn-primary:active,
+      .nav-cta:active {
+        background: var(--orange) !important;
+        color: var(--white) !important;
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(242, 153, 74, 0.4);
+      }
+
+      .btn-gradient {
+        background: linear-gradient(135deg, var(--orange), var(--peach));
+        color: var(--white);
+        padding: 0.85rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-gradient:hover {
+        background: var(--lime) !important;
+        color: var(--forest) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(196, 212, 168, 0.4);
+      }
+
+      .btn-gradient:active {
+        background: var(--primary) !important;
+        color: var(--white) !important;
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(74, 124, 89, 0.4);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--forest);
+        padding: 0.85rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border: 2px solid var(--lime);
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-outline:hover {
+        background: var(--lime);
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: 2.5rem;
+        margin-top: 3rem;
+        animation: fadeUp 0.8s 0.65s ease both;
+      }
+
+      .stat-num {
+        font-family: "Playfair Display", serif;
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: var(--forest);
+      }
+
+      .stat-lbl {
+        font-size: 0.78rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      /* Hero visual */
+      .hero-visual {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        animation: fadeUp 0.8s 0.3s ease both;
+      }
+
+      .hero-image-main {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 20px 50px rgba(45, 106, 45, 0.2);
+        z-index: 0;
+      }
+
+      .card-float {
+        position: relative;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        border-radius: 1.2rem;
+        padding: 1.3rem;
+        box-shadow: 0 4px 24px rgba(26, 58, 26, 0.08);
+        transition: transform 0.3s;
+      }
+
+      .card-float:hover {
+        transform: translateY(-4px);
+      }
+
+      .card-float.tall {
+        grid-row: span 2;
+      }
+
+      .card-float.green-card {
+        background: rgba(45, 106, 45, 0.92);
+        color: var(--white);
+      }
+
+      .card-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 0.75rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .card-icon.g {
+        background: rgba(76, 175, 80, 0.15);
+      }
+
+      .card-icon.w {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .card-float h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+
+      .card-float p {
+        font-size: 0.78rem;
+        color: var(--gray);
+        line-height: 1.5;
+      }
+
+      .green-card p {
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      .mini-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
+        height: 55px;
+        margin-top: 0.8rem;
+      }
+
+      .bar {
+        flex: 1;
+        border-radius: 3px 3px 0 0;
+        background: rgba(76, 175, 80, 0.25);
+      }
+
+      .bar.active {
+        background: var(--mid);
+      }
+
+      .progress-ring {
+        width: 70px;
+        height: 70px;
+        margin: 0.8rem auto 0;
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+
+      .progress-ring svg {
+        position: absolute;
+        inset: 0;
+        transform: rotate(-90deg);
+      }
+
+      .ring-val {
+        font-family: "Playfair Display", serif;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .macro-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+      }
+
+      .macro-lbl {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 3px;
+      }
+
+      .macro-bar {
+        height: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+      }
+
+      .macro-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--lime);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ── FEATURES ── */
+      .section {
+        padding: 6rem 5rem;
+      }
+
+      .section-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .section-tag::before {
+        content: "";
+        width: 24px;
+        height: 2px;
+        background: var(--mid);
+        display: block;
+      }
+
+      .section h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 3.5vw, 3rem);
+        font-weight: 900;
+        color: var(--forest);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+
+      .section-sub {
+        color: var(--gray);
+        line-height: 1.7;
+        max-width: 540px;
+        font-size: 1rem;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 3.5rem;
+      }
+
+      .feat-card {
+        background: var(--white);
+        border-radius: 1.3rem;
+        padding: 2.5rem;
+        border: 1px solid var(--sand);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .feat-card:nth-child(1) {
+        border-top: 6px solid var(--primary);
+      }
+
+      .feat-card:nth-child(2) {
+        border-top: 6px solid var(--orange);
+      }
+
+      .feat-card:nth-child(3) {
+        border-top: 6px solid var(--mid);
+      }
+
+      .feat-card:nth-child(4) {
+        border-top: 6px solid var(--peach);
+      }
+
+      .feat-card:nth-child(5) {
+        border-top: 6px solid var(--lime);
+      }
+
+      .feat-card:nth-child(6) {
+        border-top: 6px solid var(--forest);
+      }
+
+      .feat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--mid), var(--lime));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s;
+      }
+
+      .feat-card:hover {
+        box-shadow: 0 12px 40px rgba(26, 58, 26, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .feat-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feat-img {
+        width: calc(100% + 4rem);
+        height: 180px;
+        margin: -2rem -2rem 1.5rem -2rem;
+        object-fit: cover;
+        display: block;
+      }
+
+      .feat-emoji {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .feat-card h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--forest);
+        margin-bottom: 0.6rem;
+      }
+
+      .feat-card p {
+        font-size: 0.88rem;
+        color: var(--gray);
+        line-height: 1.65;
+      }
+
+      .feat-tag {
+        display: inline-block;
+        margin-top: 1rem;
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--primary);
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.65rem;
+        border-radius: 1rem;
+        letter-spacing: 0.04em;
+      }
+
+      .feat-tag.ai {
+        background: rgba(249, 168, 37, 0.15);
+        color: #b07d05;
+      }
+
+      /* ── HOW IT WORKS ── */
+      .how-section {
+        background: linear-gradient(
+            rgba(34, 60, 42, 0.88),
+            rgba(34, 60, 42, 0.94)
+          ),
+          url("https://images.unsplash.com/photo-1494390248081-4e521a5940db?auto=format&fit=crop&w=1600&q=80")
+            center/cover fixed;
+        color: var(--white);
+        padding: 8rem 5rem;
+        border-top: 5px solid var(--lime);
+        border-bottom: 5px solid var(--orange);
+      }
+
+      .how-section .section-tag {
+        color: var(--lime);
+      }
+
+      .how-section .section-tag::before {
+        background: var(--lime);
+      }
+
+      .how-section h2 {
+        color: var(--white);
+      }
+
+      .how-section .section-sub {
+        color: rgba(255, 255, 255, 0.65);
+      }
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-top: 3.5rem;
+      }
+
+      .step {
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 1.5rem;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s;
+      }
+
+      .step:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .step::after {
+        content: "→";
+        position: absolute;
+        top: 1.2rem;
+        right: -1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 1.2rem;
+      }
+
+      .step:last-child::after {
+        display: none;
+      }
+
+      .step-num {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--lime);
+        box-shadow: 0 4px 15px rgba(196, 212, 168, 0.3);
+        display: grid;
+        place-items: center;
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--forest);
+        margin-bottom: 1.2rem;
+      }
+
+      .step h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--white);
+      }
+
+      .step p {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+      }
+
+      /* ── MODULES ── */
+      .modules-section {
+        padding: 6rem 5rem;
+        background: var(--sand);
+      }
+
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        margin-top: 3.5rem;
+        max-width: 900px;
+      }
+
+      .module-item {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        background: var(--white);
+        border-radius: 1rem;
+        padding: 1.3rem 1.5rem;
+        border: 1px solid rgba(45, 106, 45, 0.1);
+        transition: all 0.25s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .module-item:hover {
+        box-shadow: 0 8px 28px rgba(45, 106, 45, 0.12);
+        transform: translateX(4px);
+      }
+
+      .module-dot {
+        width: 44px;
+        height: 44px;
+        border-radius: 0.75rem;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        font-size: 1.25rem;
+      }
+
+      .module-item h4 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--forest);
+      }
+
+      .module-item p {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-top: 0.15rem;
+      }
+
+      /* ── AI SECTION ── */
+      .ai-section {
+        padding: 6rem 5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+      }
+
+      .ai-visual {
+        background: linear-gradient(to right, rgba(34, 60, 42, 0.85), rgba(34, 60, 42, 0.7)), url(\'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80\') center/cover;
+        border-radius: 1.8rem;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(26, 58, 26, 0.15);
+      }
+
+      .ai-visual::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(76, 175, 80, 0.15);
+      }
+
+      .ai-prompt {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 0.9rem;
+        padding: 1.2rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .ai-prompt strong {
+        color: var(--lime);
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 0.4rem;
+      }
+
+      .ai-response {
+        background: var(--primary);
+        border-radius: 0.9rem;
+        padding: 1.2rem;
+        color: var(--white);
+      }
+
+      .ai-response strong {
+        color: var(--lime);
+        display: block;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .meal-plan {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .meal-item {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-size: 0.82rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.8rem;
+      }
+
+      .meal-icon {
+        font-size: 1rem;
+      }
+
+      /* ── PRICING / CTA ── */
+      .cta-section {
+        padding: 6rem 5rem;
+        text-align: center;
+        background: var(--cream);
+      }
+
+      .cta-section h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: var(--forest);
+        margin-bottom: 1rem;
+      }
+
+      .cta-section p {
+        color: var(--gray);
+        font-size: 1.05rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .footer-bottom-links a:hover {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      @media (max-width: 900px) {
+        .footer-inner {
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+
+        footer {
+          padding: 4rem 2rem 0;
+        }
+      }
+
+      button:hover,
+      .btn-primary:hover,
+      .btn-gradient:hover,
+      .btn-outline:hover,
+      .nav-cta:hover,
+      input[type="submit"]:hover {
+        background: var(--light-g) !important;
+        color: var(--forest) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(197, 213, 192, 0.4) !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAV -->
+    <nav id="navbar">
+      <a href="#" class="nav-logo">
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible"
+        >
+          <mask id="biteMask">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMask)">
+            <path
+              d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
+              fill="#4a7c59"
+            />
+            <path
+              d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
+              fill="#8fbc8f"
+            />
+          </g>
+          <path
+            d="M 22 78 L 12 92"
+            stroke="#4a7c59"
+            stroke-width="7"
+            stroke-linecap="round"
+          />
+        </svg>
+        <div>
+          <span style="color: #4a7c59">Nutri</span
+          ><span style="color: #8fbc8f">Smart</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="nutrismart-website.html" class="active">Accueil</a></li>
+        <li><a href="suivi-statistiques.php">Suivi et Statistiques</a></li>
+        <li><a href="profile.html">Profil</a></li>
+        <li><a href="recette.html">Recettes</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="../backoffice/nutrismart-dashboard.php" style="color: #f2994a; font-weight: 700;">Dashboard Admin</a></li>
+      </ul>
+
+      <div class="nav-auth">
+        <a href="register.html" class="nav-cta">Commencer gratuitement</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">
+          Nutrition Intelligente · 100% Personnalisée
+        </div>
+        <h1>
+          Mangez mieux,
+          <em>vivez pleinement.</em>
+        </h1>
+        <p class="hero-sub">
+          NutriSmart vous offre un suivi nutritionnel complet et sur mesure pour
+          vous aider à atteindre vos objectifs de santé simplement et
+          efficacement.
+        </p>
+        <div class="hero-actions">
+          <a href="login.html" class="btn-primary"> Connexion</a>
+          <a href="#features" class="btn-gradient"> Fonctionnalités</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">6</div>
+            <div class="stat-lbl">Modules complets</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">+500</div>
+            <div class="stat-lbl">Aliments indexés</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">100%</div>
+            <div class="stat-lbl">Gratuit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual cards -->
+      <div class="hero-visual">
+        <img
+          src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80"
+          alt="Plat Nutritif"
+          class="hero-image-main"
+        />
+        <div class="card-float">
+          <h4>Plan du jour</h4>
+          <p>Repas générés selon votre profil</p>
+          <div class="mini-chart">
+            <div class="bar" style="height: 40%"></div>
+            <div class="bar active" style="height: 70%"></div>
+            <div class="bar active" style="height: 90%"></div>
+            <div class="bar active" style="height: 65%"></div>
+            <div class="bar" style="height: 50%"></div>
+            <div class="bar active" style="height: 80%"></div>
+            <div class="bar" style="height: 45%"></div>
+          </div>
+        </div>
+
+        <div class="card-float green-card tall">
+          <h4>Objectif calories</h4>
+          <p style="margin-bottom: 0.5rem">2 100 kcal / jour</p>
+          <div class="progress-ring">
+            <svg viewBox="0 0 70 70" width="70" height="70">
+              <circle
+                cx="35"
+                cy="35"
+                r="29"
+                fill="none"
+                stroke="rgba(255,255,255,.15)"
+                stroke-width="6"
+              />
+              <circle
+                cx="35"
+                cy="35"
+                r="29"
+                fill="none"
+                stroke="#8bc34a"
+                stroke-width="6"
+                stroke-dasharray="182"
+                stroke-dashoffset="46"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span class="ring-val">75%</span>
+          </div>
+          <div class="macro-row">
+            <div class="macro">
+              <div class="macro-lbl">
+                <span>Protéines</span><span>68g</span>
+              </div>
+              <div class="macro-bar">
+                <div class="macro-fill" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="macro">
+              <div class="macro-lbl">
+                <span>Glucides</span><span>220g</span>
+              </div>
+              <div class="macro-bar">
+                <div
+                  class="macro-fill"
+                  style="width: 80%; background: var(--orange)"
+                ></div>
+              </div>
+            </div>
+            <div class="macro">
+              <div class="macro-lbl"><span>Lipides</span><span>54g</span></div>
+              <div class="macro-bar">
+                <div
+                  class="macro-fill"
+                  style="width: 55%; background: var(--peach)"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-float">
+          <h4>Courses</h4>
+          <p>Budget restant</p>
+          <div
+            style="
+              font-family: 'Playfair Display', serif;
+              font-size: 1.7rem;
+              font-weight: 900;
+              color: #2d6a2d;
+              margin-top: 0.5rem;
+            "
+          >
+            38,50 TND
+          </div>
+        </div>
+
+        <div
+          class="card-float"
+          style="
+            background: var(--sand);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+          "
+        >
+          <img
+            src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=150&q=80"
+            style="
+              width: 50px;
+              height: 50px;
+              border-radius: 12px;
+              object-fit: cover;
+              border: 2px solid var(--white);
+            "
+            alt="Fitness"
+          />
+          <div>
+            <h4 style="margin-bottom: 0">Activité</h4>
+            <p style="font-size: 0.75rem; margin-bottom: 0">Séance Cardio</p>
+            <div
+              style="
+                font-family: 'Playfair Display', serif;
+                font-size: 1.4rem;
+                font-weight: 900;
+                color: var(--forest);
+                margin-top: 0.2rem;
+              "
+            >
+              45 min
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="section-tag">Fonctionnalités</div>
+      <h2>Tout ce dont vous avez besoin,<br />en un seul endroit.</h2>
+      <p class="section-sub">
+        NutriSmart regroupe 6 modules complémentaires pour une gestion
+        nutritionnelle complète et intelligente.
+      </p>
+
+      <div class="features-grid">
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Salade"
+          />
+          <h3>Profil Personnalisé</h3>
+          <p>
+            Créez votre profil nutritionnel avec vos objectifs, restrictions
+            alimentaires, IMC et préférences. L'application adapte chaque
+            recommandation à votre situation unique.
+          </p>
+        </div>
+
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Bowl"
+          />
+          <h3>Base de Données Alimentaire</h3>
+          <p>
+            Accédez à une base de données riche d'aliments avec valeurs
+            nutritionnelles détaillées : protéines, glucides, lipides, vitamines
+            et minéraux.
+          </p>
+        </div>
+
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Veggies"
+          />
+          <h3>Planification Intelligente</h3>
+          <p>
+            Notre algorithme génère automatiquement des plans de repas
+            équilibrés adaptés à vos objectifs, préférences et budget
+            alimentaire.
+          </p>
+        </div>
+
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Avocado"
+          />
+          <h3>Suivi de Progression</h3>
+          <p>
+            Visualisez votre évolution avec des graphiques interactifs. Suivez
+            votre poids, vos mensurations et vos apports nutritionnels au fil du
+            temps.
+          </p>
+        </div>
+
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Food mix"
+          />
+          <h3>Courses & Budget</h3>
+          <p>
+            Générez automatiquement votre liste de courses depuis votre plan de
+            repas. Gérez votre budget alimentaire et suivez vos dépenses
+            hebdomadaires.
+          </p>
+        </div>
+
+        <div class="feat-card">
+          <img
+            src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"
+            style="
+              width: calc(100% + 5rem);
+              height: 180px;
+              border-radius: 1.2rem 1.2rem 0 0;
+              object-fit: cover;
+              margin: -2.5rem -2.5rem 1.5rem -2.5rem;
+              border: none;
+              display: block;
+            "
+            alt="Fruits"
+          />
+          <h3>Carnet de Recettes</h3>
+          <p>
+            Créez, partagez et découvrez des recettes saines. Filtrez par régime
+            alimentaire, temps de préparation ou valeur nutritionnelle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section" id="comment">
+      <div class="section-tag">Comment ça marche</div>
+      <h2>Simple. Intelligent. Efficace.</h2>
+      <p class="section-sub">
+        Commencez votre parcours nutritionnel en quelques minutes.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h4>Créez votre profil</h4>
+          <p>
+            Renseignez vos informations de base : âge, poids, taille, objectifs
+            et restrictions alimentaires.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h4>Analyse personnalisée</h4>
+          <p>
+            Notre algorithme calcule vos besoins caloriques et nutritionnels
+            personnalisés.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h4>Recevez votre plan</h4>
+          <p>
+            Un plan de repas sur mesure est généré automatiquement avec des
+            recettes adaptées.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h4>Suivez votre progression</h4>
+          <p>
+            Enregistrez vos repas, suivez vos progrès et ajustez vos objectifs
+            en temps réel.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULES -->
+    <section class="modules-section" id="modules">
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: start;
+        "
+      >
+        <div>
+          <div class="section-tag">Architecture</div>
+          <h2>6 modules, une vision complète.</h2>
+          <p class="section-sub" style="margin-bottom: 0">
+            Chaque module est conçu pour fonctionner de manière autonome et
+            s'intégrer parfaitement avec les autres.
+          </p>
+        </div>
+        <div class="modules-grid">
+          <a href="#" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--primary);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>User & Profile</h4>
+              <p>Gestion des comptes et profils</p>
+            </div>
+          </a>
+          <a href="#" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--lime);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>Food & Nutrition</h4>
+              <p>Base de données alimentaire</p>
+            </div>
+          </a>
+          <a href="#" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--orange);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>Meal Planning</h4>
+              <p>Planification sur mesure</p>
+            </div>
+          </a>
+          <a href="suivi-statistiques.php" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--mid);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>Progress Tracking</h4>
+              <p>Suivi et statistiques</p>
+            </div>
+          </a>
+          <a href="#" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--peach);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>Grocery & Budget</h4>
+              <p>Courses et dépenses</p>
+            </div>
+          </a>
+          <a href="#" class="module-item">
+            <img
+              src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 55px;
+                height: 55px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid var(--forest);
+              "
+              alt="Module Image"
+            />
+            <div>
+              <h4>Recipes</h4>
+              <p>Carnet de recettes interactif</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRAM SECTION -->
+    <section class="ai-section" id="programme">
+      <div>
+        <div class="section-tag">Programme Personnalisé</div>
+        <h2>Votre aide nutritionnelle digitale.</h2>
+        <p class="section-sub">
+          Notre algorithme analyse votre profil, vos habitudes et vos objectifs
+          pour générer des recommandations ultra personnalisées. Elle s'adapte
+          en temps réel à votre progression.
+        </p>
+        <div
+          style="
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.8rem;
+              font-size: 0.9rem;
+              color: var(--gray);
+            "
+          >
+            <span style="color: var(--mid); font-weight: 700"></span> Plans de
+            repas sur mesure
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.8rem;
+              font-size: 0.9rem;
+              color: var(--gray);
+            "
+          >
+            <span style="color: var(--mid); font-weight: 700"></span>
+            Recommandations basées sur votre profil
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.8rem;
+              font-size: 0.9rem;
+              color: var(--gray);
+            "
+          >
+            <span style="color: var(--mid); font-weight: 700"></span>
+            Optimisation selon votre budget alimentaire
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.8rem;
+              font-size: 0.9rem;
+              color: var(--gray);
+            "
+          >
+            <span style="color: var(--mid); font-weight: 700"></span> Analyse de
+            progression et ajustements
+          </div>
+        </div>
+        <a
+          href="#"
+          class="btn-primary"
+          style="margin-top: 2rem; display: inline-flex"
+          >Démarrer mon programme →</a
+        >
+      </div>
+
+      <div class="ai-visual">
+        <div class="ai-response">
+          <strong> Votre plan de la journée</strong>
+          <div class="meal-plan">
+            <div class="meal-item">
+              <span
+                >Petit-déj · Porridge avoine + fruits rouges · 380 kcal</span
+              >
+            </div>
+            <div class="meal-item">
+              <span>Déjeuner · Bowl quinoa légumes grillés · 520 kcal</span>
+            </div>
+            <div class="meal-item">
+              <span>Dîner · Curry lentilles corail + riz · 490 kcal</span>
+            </div>
+            <div class="meal-item">
+              <span>Collation · Pomme + amandes · 180 kcal</span>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 1rem;
+              padding: 0.7rem;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 0.5rem;
+              font-size: 0.8rem;
+              color: rgba(255, 255, 255, 0.75);
+            "
+          >
+            1 570 kcal · Budget estimé : 38,50 TND · 42g protéines
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPORTS SECTION -->
+    <section
+      class="section"
+      id="sport"
+      style="
+        background: var(--cream);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+        padding: 6rem 5rem;
+      "
+    >
+      <div style="position: relative">
+        <img
+          src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80"
+          style="
+            width: 100%;
+            border-radius: 1.8rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+          "
+          alt="Trainer"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=400&q=80"
+          style="
+            position: absolute;
+            bottom: -2rem;
+            right: -2rem;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 1.2rem;
+            border: 6px solid var(--cream);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          "
+          alt="Yoga"
+        />
+      </div>
+
+      <div>
+        <h2
+          style="
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 900;
+            color: var(--forest);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+          "
+        >
+          Programmes Sportifs Multidisciplinaires.
+        </h2>
+        <p
+          style="
+            color: var(--gray);
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+          "
+        >
+          Parce que la nutrition et l'activité physique vont de pair, NutriSmart
+          vous propose désormais des programmes d'entraînement complets en
+          photo/vidéo, adaptés à votre niveau.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1.2rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 1.5rem;
+              background: var(--white);
+              padding: 1.2rem;
+              border-radius: 1rem;
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+              border: 1px solid var(--sand);
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--lime);
+              "
+              alt="Musculation"
+            />
+            <div>
+              <h4
+                style="
+                  color: var(--forest);
+                  font-weight: 700;
+                  margin-bottom: 0.2rem;
+                  font-size: 1.1rem;
+                "
+              >
+                Renforcement Musculaire
+              </h4>
+              <p
+                style="font-size: 0.88rem; color: var(--gray); margin-bottom: 0"
+              >
+                Tonifiez votre corps à la maison ou en salle avec des circuits
+                adaptés.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 1.5rem;
+              background: var(--white);
+              padding: 1.2rem;
+              border-radius: 1rem;
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+              border: 1px solid var(--sand);
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=150&q=80"
+              style="
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--orange);
+              "
+              alt="Yoga"
+            />
+            <div>
+              <h4
+                style="
+                  color: var(--forest);
+                  font-weight: 700;
+                  margin-bottom: 0.2rem;
+                  font-size: 1.1rem;
+                "
+              >
+                Yoga & Mobilité
+              </h4>
+              <p
+                style="font-size: 0.88rem; color: var(--gray); margin-bottom: 0"
+              >
+                Améliorez votre souplesse, votre posture et réduisez le stress.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2>Prêt à transformer<br />votre alimentation ?</h2>
+      <p>
+        Rejoignez NutriSmart et commencez votre parcours nutritionnel dès
+        aujourd'hui.<br />100% gratuit, aucune carte bancaire requise.
+      </p>
+      <div
+        style="
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          flex-wrap: wrap;
+        "
+      >
+        <a
+          href="register.html"
+          class="btn-gradient"
+          style="font-size: 1rem; padding: 1rem 2.5rem"
+        >
+          Créer mon compte gratuit</a
+        >
+        <a
+          href="#"
+          class="btn-outline"
+          style="font-size: 1rem; padding: 1rem 2.5rem"
+          >En savoir plus</a
+        >
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg
+              width="34"
+              height="34"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <mask id="biteMaskFooter">
+                <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                <circle cx="92" cy="35" r="18" fill="black" />
+                <circle cx="84" cy="62" r="14" fill="black" />
+              </mask>
+              <g mask="url(#biteMaskFooter)">
+                <path
+                  d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z"
+                  fill="#4a7c59"
+                />
+                <path
+                  d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z"
+                  fill="#8fbc8f"
+                />
+              </g>
+              <path
+                d="M 22 78 L 12 92"
+                stroke="#4a7c59"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span style="margin-left: 10px">NutriSmart</span>
+          </div>
+          <p class="footer-desc">
+            Votre plateforme de nutrition intelligente et personnalisée. Mangez
+            mieux, vivez pleinement.
+          </p>
+          <div class="footer-contact-list">
+            <a
+              href="mailto:contact@nutrismart.demo"
+              class="footer-contact-item"
+            >
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              contact@nutrismart.demo
+            </a>
+            <a href="tel:+21612345678" class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                  />
+                </svg>
+              </div>
+              +216 12 345 678
+            </a>
+            <div class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              Tunis, Tunisie
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Plateforme</h5>
+          <ul>
+            <li><a href="#features">Fonctionnalités</a></li>
+            <li><a href="#how-it-works">Comment ça marche</a></li>
+            <li><a href="#modules">Modules</a></li>
+            <li><a href="#programme">Programmes Repas</a></li>
+            <li><a href="#sport">Programmes Sport</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Ressources</h5>
+          <ul>
+            <li><p>Base alimentaire</p></li>
+            <li><p>Carnet de recettes</p></li>
+            <li><p>Blog Nutrition</p></li>
+            <li><p>Suivi de progrès</p></li>
+            <li><p>FAQ</p></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Suivez-nous</h5>
+          <div class="footer-social">
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path
+                  d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="X">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
+                />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </a>
+          </div>
+          <h5>Légal</h5>
+          <ul>
+            <li>Politique de confidentialité</li>
+            <li>Conditions d'utilisation</li>
+            <li>Mentions légales</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 NutriSmart — Tous droits réservés</span>
+        <div class="footer-bottom-links">
+          <a href="#">Confidentialité</a>
+          <a href="#">CGU</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
