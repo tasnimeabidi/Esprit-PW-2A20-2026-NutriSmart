@@ -221,7 +221,7 @@ class SuiviController {
         Réponds de manière naturelle, concise et en français. Si l'utilisateur pose une question générale (comme l'heure), réponds-lui poliment en utilisant le contexte fourni, tout en restant prêt à l'aider pour sa nutrition.";
 
         $data = [
-            'model' => 'llama3',
+            'model' => 'llava',
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $message]

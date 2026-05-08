@@ -671,7 +671,7 @@ while($row = $logs->fetch(PDO::FETCH_ASSOC)) { $logsList[] = $row; }
                 <h2>Enregistrement Intelligent ✦</h2>
                 <p>Décrivez votre journée. Notre IA calcule instantanément l'impact sur votre objectif.</p>
                 <div id="aiCoach" class="ai-insight" style="margin-top: 2rem; background: rgba(255,255,255,0.1); color: white; border-color: var(--lime);">
-                    ✨ <strong>Statut du jour :</strong> Vous avez consommé <?php echo $totalConsumed; ?> kcal. Il vous reste encore de la marge pour un dîner équilibré !
+                    ✨ <strong>Statut du jour :</strong> Vous avez consommé <?php echo $totalConsumed; ?> kcal. <?php echo $aiTip; ?>
                 </div>
             </div>
 

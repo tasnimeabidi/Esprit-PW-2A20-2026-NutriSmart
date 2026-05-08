@@ -161,24 +161,19 @@ class SuiviDAO {
 
     // ADVANCED BUSINESS LOGIC: Calculate daily statistics, BMI, and balance, plus predictive and gamification models
     public function getStatistics($user_id) {
-        // Use the most reliable date: the one from the database
-        $today = $this->conn->query("SELECT CURDATE()")->fetchColumn();
+        // SMART LOGIC: Find the most recent date the user was active
+        $lastDateQuery = $this->conn->prepare("SELECT MAX(DATE(date_entree)) FROM journal_nutrition WHERE id_utilisateur = ?");
+        $lastDateQuery->execute([$user_id]);
+        $today = $lastDateQuery->fetchColumn() ?: date('Y-m-d');
         
-        // Total Consumed
+        // Total Consumed for that specific active day
         $stmtIn = $this->conn->prepare("SELECT SUM(calories) as total FROM journal_nutrition WHERE id_utilisateur = ? AND DATE(date_entree) = ?");
         $stmtIn->execute([$user_id, $today]);
         $consumed = (int) $stmtIn->fetchColumn();
 
-        // If consumed is 0, maybe it's a timezone issue? Let's try the last 24 hours as fallback
-        if ($consumed === 0) {
-            $stmtInFallback = $this->conn->prepare("SELECT SUM(calories) as total FROM journal_nutrition WHERE id_utilisateur = ? AND date_entree >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
-            $stmtInFallback->execute([$user_id]);
-            $consumed = (int) $stmtInFallback->fetchColumn();
-        }
-
-        // Total Burned (More robust query)
-        $stmtOut = $this->conn->prepare("SELECT SUM(calories_depensees) as total FROM journal_sport WHERE id_utilisateur = ? AND (DATE(date_seance) = ? OR date_seance = ?)");
-        $stmtOut->execute([$user_id, $today, $today]);
+        // Total Burned for the same day
+        $stmtOut = $this->conn->prepare("SELECT SUM(calories_depensees) as total FROM journal_sport WHERE id_utilisateur = ? AND DATE(date_seance) = ?");
+        $stmtOut->execute([$user_id, $today]);
         $burned = (int) $stmtOut->fetchColumn();
 
         // 1. Current Weight & History (For Predictive Math)
@@ -256,14 +251,22 @@ class SuiviDAO {
         $stmtStreak->execute([$user_id]);
         $streakDays = (int) $stmtStreak->fetchColumn();
 
-        // Smart Advice
-        $advice = "Maintenez vos efforts !";
-        if ($bmi > 25) {
-            $advice = "Essayez de maintenir un déficit calorique pour perdre du poids.";
-            if ($consumed > $dynamicGoal) $advice .= " Aujourd'hui vous êtes en surplus.";
-            else $advice .= " Bon travail sur votre déficit aujourd'hui !";
-        } elseif ($bmi > 0 && $bmi < 18.5) {
-            $advice = "Vous êtes en sous-poids, essayez d'augmenter votre apport calorique.";
+        // Smart Advice (AI Coach Logic)
+        $advice = "Analyse de votre profil...";
+        if ($consumed === 0) {
+            $advice = "Bienvenue ! Enregistrez votre premier repas pour lancer l'analyse.";
+        } elseif ($consumed > 5000) {
+            $advice = "⚠️ Alerte Calorie : Consommation extrêmement élevée. Hydratez-vous et évitez les efforts violents ce soir.";
+        } elseif ($consumed > $dynamicGoal) {
+            $advice = "Objectif dépassé ! Une petite marche de 20 min aiderait à équilibrer votre balance.";
+        } elseif ($consumed > $dynamicGoal * 0.8) {
+            $advice = "Attention, vous approchez de votre limite. Privilégiez des aliments légers pour le reste de la journée.";
+        } elseif ($bmi > 25 && $consumed < $dynamicGoal) {
+            $advice = "Excellent ! Vous maintenez un déficit idéal pour votre perte de poids progressive.";
+        } elseif ($bmi < 18.5 && $consumed < $dynamicGoal * 0.5) {
+            $advice = "Consommation faible. Pensez à enrichir vos repas pour atteindre votre objectif de masse.";
+        } else {
+            $advice = "Très bonne gestion ! Votre équilibre nutritionnel est sur la bonne voie aujourd'hui.";
         }
 
         return [
