@@ -26,8 +26,18 @@ class UserController
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = SMTP_PORT;
         $mail->CharSet = 'UTF-8';
-        $mail->Timeout = 7;
+        $mail->Timeout = 10;
         $mail->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+
+        // Relaxed SSL for local development (common fix for XAMPP/Localhost)
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+        
         return $mail;
     }
 
@@ -304,6 +314,7 @@ class UserController
 
     public function requestReset($email)
     {
+        file_put_contents('reset_debug.log', date('[Y-m-d H:i:s] ') . "Request reset for: $email\n", FILE_APPEND);
         $user = $this->userModel->getByEmail($email);
         if (!$user) {
             // Security: don't reveal if email exists, but here we can be helpful or silent
@@ -317,6 +328,7 @@ class UserController
             $resetLink = "http://" . $_SERVER['HTTP_HOST'] . str_replace('api.php', 'reset_password.html', $_SERVER['PHP_SELF']) . "?token=" . $token;
 
             try {
+                file_put_contents('reset_debug.log', "Token generated, sending mail...\n", FILE_APPEND);
                 $mail = $this->getMailer();
                 $mail->addAddress($email);
 
@@ -341,8 +353,10 @@ class UserController
                 $mail->AltBody = "Bonjour, \n\nVous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le lien suivant : $resetLink \n\nCe lien expirera dans 2 heures.";
 
                 $mail->send();
+                file_put_contents('reset_debug.log', "Mail sent successfully!\n", FILE_APPEND);
                 return ['success' => true, 'message' => 'Un lien de réinitialisation a été envoyé à votre adresse email.'];
             } catch (Exception $e) {
+                file_put_contents('reset_debug.log', "Mail error: " . $mail->ErrorInfo . "\n", FILE_APPEND);
                 return ['success' => false, 'message' => "L'e-mail n'a pas pu être envoyé. Erreur: {$mail->ErrorInfo}"];
             }
         }

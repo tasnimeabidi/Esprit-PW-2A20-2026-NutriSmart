@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Interception AJAX du formulaire:", formId);
 
       // Handle Error Containers based on form ID
-      let errorContainer, errorText;
+        let errorContainer, errorText, successContainer, successText;
       if (formId === 'loginForm') {
         errorContainer = document.getElementById('login-error-container');
         errorText = document.getElementById('login-error-text');
@@ -248,90 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.openModal = () => {
-    const modal = document.getElementById('loginModal');
-    const overlay = document.getElementById('modalOverlay');
-    if (modal && overlay) {
-      modal.style.display = 'block';
-      overlay.style.display = 'block';
-      setTimeout(() => {
-        modal.classList.add('active');
-        overlay.classList.add('active');
-      }, 10);
-      document.body.style.overflow = 'hidden';
-    }
-  };
+  // Modal control functions moved to HTML for onclick reliability
 
-  window.closeModal = () => {
-    const modal = document.getElementById('loginModal');
-    const overlay = document.getElementById('modalOverlay');
-    if (modal && overlay) {
-      modal.classList.remove('active');
-      overlay.classList.remove('active');
-      setTimeout(() => {
-        modal.style.display = 'none';
-        overlay.style.display = 'none';
-      }, 300);
-      document.body.style.overflow = '';
-    }
-  };
-
-  window.openResetModal = () => {
-    window.closeModal();
-    const modal = document.getElementById('resetModal');
-    if (modal) {
-      modal.style.display = 'flex';
-      setTimeout(() => modal.classList.add('active'), 10);
-    }
-  };
-
-  window.closeResetModal = () => {
-    const modal = document.getElementById('resetModal');
-    if (modal) {
-      modal.classList.remove('active');
-      setTimeout(() => modal.style.display = 'none', 300);
-    }
-  };
-
-  window.handleResetSubmit = () => {
-    const emailInput = document.getElementById('reset_email');
-    const email = emailInput ? emailInput.value : '';
-    const resetBtn = document.querySelector('#reset-initial-view button');
-
-    if (email && email.includes('@')) {
-      if (resetBtn) resetBtn.disabled = true;
-
-      const formData = new FormData();
-      formData.append('email', email);
-
-      fetch('api.php?action=request_reset', {
-        method: 'POST',
-        body: formData
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            const initialView = document.getElementById('reset-initial-view');
-            const successView = document.getElementById('reset-success-view');
-            const emailDisplay = document.getElementById('reset-email-display');
-            if (initialView && successView) {
-              initialView.style.display = 'none';
-              successView.style.display = 'block';
-              if (emailDisplay) emailDisplay.textContent = email;
-            }
-          } else {
-            alert(data.message || 'Erreur lors de la réinitialisation.');
-            if (resetBtn) resetBtn.disabled = false;
-          }
-        })
-        .catch(() => {
-          alert("Erreur de connexion au serveur.");
-          if (resetBtn) resetBtn.disabled = false;
-        });
-    } else {
-      alert('Veuillez entrer un email valide.');
-    }
-  };
+  // handleResetSubmit moved to HTML for onclick reliability
 
   // Adaptive Navbar & Profile logic
   fetch('api.php?action=session')

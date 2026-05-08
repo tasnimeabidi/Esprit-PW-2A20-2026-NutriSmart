@@ -137,8 +137,8 @@ class User {
     }
 
     public function getUserByToken($token) {
-        $stmt = $this->pdo->prepare("SELECT * FROM utilisateur WHERE reset_token = ? AND reset_expires > NOW()");
-        $stmt->execute([$token]);
+        $stmt = $this->pdo->prepare("SELECT * FROM utilisateur WHERE reset_token = ? AND reset_expires > ?");
+        $stmt->execute([$token, date('Y-m-d H:i:s')]);
         return $stmt->fetch();
     }
 

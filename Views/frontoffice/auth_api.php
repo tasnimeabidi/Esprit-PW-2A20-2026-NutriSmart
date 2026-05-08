@@ -169,7 +169,9 @@ switch ($action) {
             $isProfileComplete = !empty($user['age']) && !empty($user['poids']) && !empty($user['taille']);
             $isAdmin = strtolower(trim($user['role'] ?? '')) === 'admin';
 
-            if (!$isProfileComplete && !$isAdmin) {
+            if ($isAdmin) {
+                header("Location: ../backoffice/nutrismart-dashboard.html");
+            } elseif (!$isProfileComplete) {
                 header("Location: profile.html");
             } else {
                 header("Location: nutrismart-home.html");

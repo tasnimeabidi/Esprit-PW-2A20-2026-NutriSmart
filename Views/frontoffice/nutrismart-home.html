@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NutriSmart — Mon Espace</title>
+  <title>NutriSmart  Mon Espace</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="css/shared-styles.css?v=3" />
   <script src="js/avatar-utils.js"></script>
   <style>
-    /* ── DESIGN SYSTEM ── */
+    /* -- DESIGN SYSTEM -- */
     :root {
       --forest: #223c2a;
       --primary: #4a7c59;
@@ -42,7 +42,7 @@
     }
 
 
-    /* ── DASHBOARD PREMIUM REDESIGN ── */
+    /* -- DASHBOARD PREMIUM REDESIGN -- */
     .profile-header {
       position: relative;
       background: var(--sand);
@@ -263,7 +263,7 @@
       }
     }
 
-    /* ── 3D MODULES SLIDER ── */
+    /* -- 3D MODULES SLIDER -- */
     .features-slider-container {
       position: relative;
       max-width: 1200px;
@@ -424,42 +424,148 @@
       font-size: 0.8rem;
       opacity: 0.7;
     }
+
+    /* -- SIDEBAR MENU -- */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
   </style>
 </head>
 
 <body>
+
+
+  <!-- NAV -->
   <nav id="navbar">
-    <a href="nutrismart-home.html" class="nav-logo">
-      <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-        style="overflow: visible">
-        <mask id="biteMask">
-          <rect x="-20" y="-20" width="140" height="140" fill="white" />
-          <circle cx="92" cy="35" r="18" fill="black" />
-          <circle cx="84" cy="62" r="14" fill="black" />
-        </mask>
-        <g mask="url(#biteMask)">
-          <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
-          <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
-        </g>
-        <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
-      </svg>
-      <div>
-        <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
-      </div>
-    </a>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); document.body.style.overflow='hidden';"
+        style="background:none; border:none; cursor:pointer; color:var(--forest); padding:0.5rem; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="12" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+
+      <a href="nutrismart-website.html" class="nav-logo">
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible">
+          <mask id="biteMask">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMask)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div>
+          <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
+        </div>
+      </a>
+    </div>
     <ul class="nav-links">
-      <li><a href="nutrismart-home.html" class="active">Accueil</a></li>
-      <li><a href="profile.html">Profil</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="nutrismart-website.html" class="active" data-i18n="nav_home">Accueil</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
     </ul>
 
-    <div class="nav-auth" id="user-nav-auth" style="display: none;">
-      <div class="user-dropdown" style="position: relative; display: inline-block;">
-        <div class="user-badge" id="dropdownToggle"
-          style="cursor: pointer; display: flex; align-items: center; gap: 0.75rem; background: #fdfbf7; padding: 0.5rem 1.2rem; border-radius: 2rem; border: 1px solid rgba(74, 124, 89, 0.15); color: #223c2a; font-weight: 600;">
-          <div class="user-avatar" id="user-initial"
-            style="width: 32px; height: 32px; background: #4a7c59; color: #223c2a; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; font-weight: 800;">
-            ?</div>
+    <div class="nav-auth" id="user-nav-auth">
+      <div class="user-dropdown">
+        <div class="user-badge" id="dropdownToggle">
+          <div class="user-avatar" id="user-initial">?</div>
           <span id="user-name-text">Chargement...</span>
           <svg style="width:14px; height:14px; margin-left:4px; opacity:0.6;" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -493,7 +599,80 @@
         </div>
       </div>
     </div>
+
+
   </nav>
+  <!-- SIDEBAR MENU -->
+  <div class="sidebar-overlay" id="sidebarOverlay"
+    onclick="document.getElementById('sidebarMenu').classList.remove('active'); this.classList.remove('active'); document.body.style.overflow='auto';">
+  </div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h2 style="color: var(--orange); margin: 0; font-size: 1.5rem; font-family: 'Playfair Display', serif;">Menu</h2>
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); document.body.style.overflow='auto';"
+        style="background:none; border:none; cursor:pointer; color:#999;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" id="siteSearch" placeholder="Rechercher sur le site"
+        onkeypress="if(event.key === 'Enter') performSiteSearch(this.value)">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+
+    <div class="sidebar-links">
+      <a href="nutrismart-website.html">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        ACCUEIL
+      </a>
+      <a href="#features">
+        FONCTIONNALITÉS
+      </a>
+      <a href="#comment">
+        COMMENT ÇA MARCHE
+      </a>
+      <a href="#quiz">
+        Quizz Alimentaire
+      </a>
+      <a href="profile.html">
+        PROFIL NUTRITIONNEL
+      </a>
+
+      <a href="aliments.html">
+        ALIMENTS
+      </a>
+      <a href="recette.html">
+        CARNET DE RECETTES
+      </a>
+      <a href="recette.html">
+        PLAN DE REPAS
+      </a>
+      <a href="recette.html">
+        BLOG
+      </a>
+      <a href="budget.html">
+        COURSES ET BUDGET
+      </a>
+
+    </div>
+  </div>
+
+
+
+
 
   <!-- PROFILE HEADER REDESIGN -->
   <section class="profile-header">
@@ -533,10 +712,10 @@
             <span style="font-size: 1.8rem;">🔥</span>
             <h4 style="margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Série</h4>
           </div>
-          <div style="font-size: 3rem; font-weight: 900;">12</div>
+          <div id="user-streak-val" style="font-size: 3rem; font-weight: 900;">12</div>
         </div>
 
-        <!-- Calories Card -->
+        <!--🎯 Calories Card -->
         <div class="stat-card-premium" style="padding: 1.5rem;">
           <h3
             style="font-size: 0.85rem; color: #223c2a; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">
@@ -545,13 +724,14 @@
             <div class="progress-ring-dashboard" style="position: relative; width: 70px; height: 70px;">
               <svg viewBox="0 0 70 70" width="70" height="70">
                 <circle cx="35" cy="35" r="30" fill="none" stroke="#f0f0f0" stroke-width="4" />
-                <circle cx="35" cy="35" r="30" fill="none" stroke="#4a7c59" stroke-width="4" stroke-dasharray="188"
-                  stroke-dashoffset="47" stroke-linecap="round" />
+                <circle id="cal-ring" cx="35" cy="35" r="30" fill="none" stroke="#4a7c59" stroke-width="4"
+                  stroke-dasharray="188" stroke-dashoffset="47" stroke-linecap="round"
+                  style="transition: stroke-dashoffset 1.5s ease-in-out;" />
               </svg>
-              <span
+              <span id="cal-pct"
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 800; color: #4a7c59; font-size: 0.9rem;">75%</span>
             </div>
-            <div style="font-size: 1.3rem; font-weight: 900; color: #223c2a;">2 100 kcal</div>
+            <div id="cal-val" style="font-size: 1.3rem; font-weight: 900; color: #223c2a;">2 100 kcal</div>
           </div>
         </div>
 
@@ -562,9 +742,10 @@
             💧 Hydratation</h3>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
             <div style="font-size: 2.2rem;">🥤</div>
-            <div style="font-size: 1.3rem; font-weight: 900; color: #223c2a;">1.5 / 2L</div>
+            <div id="hydro-val" style="font-size: 1.3rem; font-weight: 900; color: #223c2a;">1.5 / 2L</div>
             <div style="height: 6px; width: 100px; background: #eee; border-radius: 4px; overflow: hidden;">
-              <div style="width: 75%; height: 100%; background: #3498db;"></div>
+              <div id="hydro-bar"
+                style="width: 75%; height: 100%; background: #3498db; transition: width 1.5s ease-in-out;"></div>
             </div>
           </div>
         </div>
@@ -574,7 +755,7 @@
       <div class="stat-card-premium" style="background: #fdfbf7; padding: 2rem;">
         <h3
           style="font-size: 1.1rem; color: #223c2a; margin: 0 0 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-          <span>🏆 Classement Communauté</span>
+          <span>🏆 Classement Communautéé</span>
         </h3>
         <div class="podium-container" style="margin-top: 1rem;">
           <!-- 2nd Place -->
@@ -589,11 +770,12 @@
           <!-- 1st Place -->
           <div class="podium-item first" style="background: white; transform: scale(1.05);">
             <span class="rank-medal" style="font-size: 1.8rem;">🥇</span>
-            <div
+            <div id="podium-user-initial"
               style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; margin: 0 auto 0.5rem; display: grid; place-items: center; font-weight: 900; font-size: 1.2rem;">
-              T</div>
-            <div style="font-weight: 900; font-size: 1rem;">Vous</div>
-            <div style="color: var(--primary); font-weight: 900; font-size: 0.9rem;">7 210 pts</div>
+              ?</div>
+            <div id="podium-user-name" style="font-weight: 900; font-size: 1rem;">Vous</div>
+            <div id="podium-user-score" style="color: var(--primary); font-weight: 900; font-size: 0.9rem;">7 210 pts
+            </div>
           </div>
           <!-- 3rd Place -->
           <div class="podium-item" style="background: white;">
@@ -626,29 +808,25 @@
       <div class="features-slider" id="featuresSlider">
         <!-- Module 1 -->
         <div class="feat-card-3d" style="border-bottom-color: #4a7c59;">
-          <img src="../../image/santer.jpg"
-            class="feat-img-3d" alt="Health">
+          <img src="../../image/santer.jpg" class="feat-img-3d" alt="Health">
           <h3 style="font-size: 1.8rem; margin-top: 1rem;">Profil Santé</h3>
           <p style="font-size:1rem; opacity: 0.7;">Gérez vos objectifs et IMC en temps réel.</p>
         </div>
         <!-- Module 2 -->
         <div class="feat-card-3d" style="border-bottom-color: #8fbc8f;">
-          <img src="../../image/pintrest.jpg"
-            class="feat-img-3d" alt="Cooking">
+          <img src="../../image/pintrest.jpg" class="feat-img-3d" alt="Cooking">
           <h3 style="font-size: 1.8rem; margin-top: 1rem;">Menus IA</h3>
           <p style="font-size: 1rem; opacity: 0.7;">Programmes repas générés sur mesure.</p>
         </div>
         <!-- Module 3 -->
         <div class="feat-card-3d" style="border-bottom-color: #f39f55;">
-          <img src="../../image/sports.jpg"
-            class="feat-img-3d" alt="Fitness">
+          <img src="../../image/sports.jpg" class="feat-img-3d" alt="Fitness">
           <h3 style="font-size: 1.8rem; margin-top: 1rem;">Sport & Fit</h3>
           <p style="font-size:1rem; opacity: 0.7;">Routines d'exercices adaptées à vos buts.</p>
         </div>
         <!-- Module 4 -->
         <div class="feat-card-3d" style="border-bottom-color: #fcd55e;">
-          <img src="../../image/budget2.jpg"
-            class="feat-img-3d" alt="Budget">
+          <img src="../../image/budget2.jpg" class="feat-img-3d" alt="Budget">
           <h3 style="font-size: 1.8rem; margin-top: 1rem;">Courses</h3>
           <p style="font-size: 1rem; opacity: 0.7;">Optimisez votre panier santé et budget.</p>
         </div>
@@ -660,8 +838,7 @@
         </div>
         <!-- Module 6 -->
         <div class="feat-card-3d" style="border-bottom-color: #9b59b6;">
-          <img src="../../image/cnnx.jpg"
-            class="feat-img-3d" alt="Stats">
+          <img src="../../image/cnnx.jpg" class="feat-img-3d" alt="Stats">
           <h3 style="font-size: 1.8rem; margin-top: 1rem;">Tracking</h3>
           <p style="font-size: 1rem; opacity: 0.7;">Visualisez votre évolution complète.</p>
         </div>
@@ -709,7 +886,7 @@
     <h2>Votre transformation continue</h2>
     <p>
       Mettez à jour vos données régulièrement pour des résultats optimaux.
-      Vous faites partie de la communauté NutriSmart.
+      Vous faites partie de la communautéé NutriSmart.
     </p>
     <div style="display: flex; gap: 1.5rem; justify-content: center;">
       <a href="profile.html" class="cta-btn-forest">Mettre à jour mon profil</a>
@@ -827,7 +1004,7 @@
         </div>
         <h5>Légal</h5>
         <ul>
-          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Politique de confidentialitéé</a></li>
           <li><a href="#">Conditions d'utilisation</a></li>
           <li><a href="#">Mentions légales</a></li>
         </ul>
@@ -835,7 +1012,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 NutriSmart — Tous droits réservés</span>
+      <span>© 2026 NutriSmart  Tous droits réservés</span>
       <div class="footer-bottom-links">
         <a href="#">Confidentialité</a>
         <a href="#">CGU</a>
@@ -903,38 +1080,97 @@
     fetch('api.php?action=session')
       .then(response => response.json())
       .then(data => {
-        console.log('Session data:', data);
+        const userNav = document.getElementById('user-nav-auth');
+        const guestNav = document.getElementById('guest-nav-auth');
+
         if (data.loggedIn) {
+
+
           const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
 
           if (!isAdmin) {
-            // Only show member profile for non-admins
-            document.getElementById('user-nav-auth').style.display = 'flex';
-            document.getElementById('user-name-text').textContent = data.name;
+            userNav.classList.add('show');
+            if (guestNav) guestNav.classList.remove('show');
+
+            const firstName = data.name.split(' ')[0];
+            document.getElementById('user-name-text').textContent = firstName;
+
+            const userCircle = document.getElementById('user-initial');
+            if (userCircle) {
+              userCircle.textContent = firstName.charAt(0).toUpperCase();
+              if (typeof getAvatarStyle === 'function') {
+                const style = getAvatarStyle(data.name);
+                userCircle.style.background = style.bg;
+                userCircle.style.color = style.text;
+              }
+            }
+
+            document.getElementById('dropdown-name').textContent = data.name;
+            document.getElementById('user-email-text').textContent = data.email;
           } else {
-            // For Admins, hide the profile in front-office
-            document.getElementById('user-nav-auth').style.display = 'none';
+            userNav.classList.remove('show');
+            if (guestNav) guestNav.classList.add('show');
           }
-          const userCircle = document.getElementById('user-initial');
-          if (userCircle) {
-            userCircle.textContent = data.name.charAt(0).toUpperCase();
-            const style = getAvatarStyle(data.name);
-            userCircle.style.background = style.bg;
-            userCircle.style.color = style.text;
-          }
+        } else {
+          userNav.classList.remove('show');
+          if (guestNav) guestNav.classList.add('show');
+        }
 
-          document.getElementById('dropdown-name').textContent = data.name;
-          document.getElementById('user-email-text').textContent = data.email;
-
+        if (data.loggedIn) {
           // Inject email into the new profile card
           const profileEmail = document.getElementById('profile-email-display');
           if (profileEmail) profileEmail.textContent = data.email;
 
           // Inject objective into the profile card
           const profileObjectif = document.getElementById('user-objectif-display');
+          let objText = data.objectifs ? data.objectifs.toLowerCase() : "";
           if (profileObjectif && data.objectifs) {
             profileObjectif.textContent = data.objectifs;
           }
+
+          // DYNAMIC STATS BASED ON OBJECTIVE
+          const calVal = document.getElementById('cal-val');
+          const calPct = document.getElementById('cal-pct');
+          const calRing = document.getElementById('cal-ring');
+          const hydroVal = document.getElementById('hydro-val');
+          const hydroBar = document.getElementById('hydro-bar');
+          const streakVal = document.getElementById('user-streak-val');
+
+          if (streakVal && data.name) {
+            // Simulate a personal streak based on user name length
+            let simulatedStreak = (data.name.length * 3) % 25 + 3;
+            streakVal.textContent = simulatedStreak;
+          }
+
+          // Smooth transition
+          setTimeout(() => {
+            document.body.classList.add('loaded');
+            document.getElementById('page-loader').classList.add('hidden');
+          }, 100);
+
+          setTimeout(() => {
+            if (objText.includes('perte') || objText.includes('perdre')) {
+              if (calVal) calVal.textContent = '1 600 kcal';
+              if (calPct) calPct.textContent = '85%';
+              if (calRing) calRing.style.strokeDashoffset = 188 - (188 * 0.85);
+              if (hydroVal) hydroVal.textContent = '2.2 / 2.5L';
+              if (hydroBar) hydroBar.style.width = '88%';
+            }
+            else if (objText.includes('prise') || objText.includes('gagner') || objText.includes('masse')) {
+              if (calVal) calVal.textContent = '2 800 kcal';
+              if (calPct) calPct.textContent = '60%';
+              if (calRing) calRing.style.strokeDashoffset = 188 - (188 * 0.60);
+              if (hydroVal) hydroVal.textContent = '1.5 / 3L';
+              if (hydroBar) hydroBar.style.width = '50%';
+            }
+            else {
+              if (calVal) calVal.textContent = '2 100 kcal';
+              if (calPct) calPct.textContent = '75%';
+              if (calRing) calRing.style.strokeDashoffset = 188 - (188 * 0.75);
+              if (hydroVal) hydroVal.textContent = '1.5 / 2L';
+              if (hydroBar) hydroBar.style.width = '75%';
+            }
+          }, 100);
 
           // DYNAMIC AVATAR BASED ON GENDER (from DB field 'genre')
           const avatarImg = document.getElementById('user-avatar-img');
@@ -956,19 +1192,40 @@
 
           const profileName = document.getElementById('hero-user-name-profile');
           if (profileName) profileName.textContent = firstName;
+
+          // DYNAMIC PODIUM RANKING
+          const podiumInitial = document.getElementById('podium-user-initial');
+          const podiumName = document.getElementById('podium-user-name');
+          const podiumScore = document.getElementById('podium-user-score');
+
+          if (podiumInitial && data.name) {
+            podiumInitial.textContent = firstName.charAt(0).toUpperCase();
+            const style = getAvatarStyle(data.name);
+            podiumInitial.style.background = style.bg;
+            podiumInitial.style.color = style.text;
+          }
+          if (podiumName && firstName) {
+            podiumName.textContent = firstName + " (Vous)";
+          }
+          if (podiumScore && data.name) {
+            // Simulate score based on name length so it's dynamic
+            let score = 7000 + (data.name.length * 45);
+            podiumScore.textContent = score + " pts";
+          }
+
           // --- Verification Message Handling ---
           const params = new URLSearchParams(window.location.search);
           if (params.has('verified')) {
             const successMsg = document.createElement('div');
             successMsg.style.cssText = "background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #27ae60; padding: 1.2rem; border-radius: 1.5rem; margin: 2rem 5rem 0; text-align: center; font-weight: 600; backdrop-filter: blur(10px);";
-            successMsg.textContent = "✅ Votre compte a été activé avec succès ! Bienvenue dans votre espace NutriSmart.";
+            successMsg.textContent = "? Votre compte a été activé avec succès ! Bienvenue dans votre espace NutriSmart.";
             const hero = document.querySelector('.hero');
             if (hero) hero.parentNode.insertBefore(successMsg, hero);
           }
         } else {
-          // Not logged in: show public nav but do NOT auto-redirect.
-          // The user must click 'Déconnexion' to go back to public site.
-          document.getElementById('user-nav-auth').style.display = 'none';
+          userNav.classList.remove('show');
+          guestNav.classList.add('show');
+          if (profileLink) profileLink.style.display = 'none';
         }
       })
       .catch(err => {
@@ -993,7 +1250,7 @@
     }
 
     window.setLang = (lang) => {
-      console.log('Language changed to:', lang);
+      console.log('Language changééed to:', lang);
       // In real app: window.location.search = '?lang=' + lang;
     };
 
@@ -1011,7 +1268,59 @@
         slider.scrollBy({ left: -350, behavior: 'smooth' });
       });
     }
+
+    // --- SIDEBAR MENU LOGIC ---
+    function openSidebar() {
+      document.getElementById('sidebarMenu').classList.add('active');
+      document.getElementById('sidebarOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebarMenu').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // --- SEARCH LOGIC ---
+    function performSiteSearch(query) {
+      if (!query || query.trim() === '') return;
+      query = query.toLowerCase().trim();
+
+      closeSidebar();
+
+      const searchableElements = document.querySelectorAll('.feat-card, .plate-item, .how-step, h1, h2, h3, h4');
+      let found = false;
+
+      for (const el of searchableElements) {
+        if (el.innerText.toLowerCase().includes(query)) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const originalOutline = el.style.outline;
+          const originalOutlineOffset = el.style.outlineOffset;
+          el.style.outline = '4px solid var(--orange)';
+          el.style.outlineOffset = '4px';
+
+          setTimeout(() => {
+            el.style.outline = originalOutline;
+            el.style.outlineOffset = originalOutlineOffset;
+          }, 2000);
+
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        alert('Aucun résultat trouvé pour : ' + query);
+      }
+      document.getElementById('siteSearch').value = '';
+    }
+
   </script>
+
+  <script src="js/page-transitions.js"></script>
+
 
 </body>
 

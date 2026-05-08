@@ -8,7 +8,7 @@
 define('OAUTH_CONFIG', [
     'google' => [
         'client_id'     => '783998000082-6njhv9j0m41nheki10e7293n0rovm7l2.apps.googleusercontent.com',
-        'client_secret' => 'YOUR_GOOGLE_CLIENT_SECRET',
+        'client_secret' => 'YOUR_GOOGLE_CLIENT_SECRET_HERE',
         
         // URL d'autorisation
         'auth_url'      => 'https://accounts.google.com/o/oauth2/v2/auth',
@@ -22,7 +22,7 @@ define('OAUTH_CONFIG', [
     
     'facebook' => [
         'client_id'     => '1296056348517578',
-        'client_secret' => '8336b4a87a0c73dbd71eb1bb44e819fa',
+        'client_secret' => 'YOUR_FACEBOOK_CLIENT_SECRET_HERE',
         
         // URL d'autorisation (v19.0 ou la version la plus récente de l\'API FB)
         'auth_url'      => 'https://www.facebook.com/v19.0/dialog/oauth',

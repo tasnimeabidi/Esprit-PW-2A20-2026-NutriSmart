@@ -8,7 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="css/shared-styles.css?v=2" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
   <script src="js/avatar-utils.js"></script>
   <style>
     /* ── HERO ── */
@@ -124,7 +124,6 @@
       font-weight: 600;
       letter-spacing: 0.05em;
       margin-bottom: 1.4rem;
-      animation: fadeUp 0.8s 0.1s ease both;
     }
 
     /* ── DOTS PATTERN ── */
@@ -171,7 +170,6 @@
       line-height: 1.12;
       font-weight: 900;
       color: var(--forest);
-      animation: fadeUp 0.8s 0.2s ease both;
     }
 
     .hero h1 em {
@@ -186,7 +184,6 @@
       color: var(--gray);
       line-height: 1.7;
       max-width: 480px;
-      animation: fadeUp 0.8s 0.35s ease both;
     }
 
     .hero-actions {
@@ -194,7 +191,6 @@
       gap: 1rem;
       margin-top: 2.2rem;
       flex-wrap: wrap;
-      animation: fadeUp 0.8s 0.5s ease both;
     }
 
     /* Hero Buttons now handled globally by shared-styles.css */
@@ -222,7 +218,6 @@
       display: flex;
       gap: 2.5rem;
       margin-top: 3rem;
-      animation: fadeUp 0.8s 0.65s ease both;
     }
 
     .stat-num {
@@ -245,7 +240,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      animation: fadeUp 0.8s 0.3s ease both;
     }
 
     .hero-image-main {
@@ -388,8 +382,8 @@
 
     @keyframes fadeUp {
       from {
-        opacity: 0;
-        transform: translateY(30px);
+        opacity: 1;
+        transform: translateY(0);
       }
 
       to {
@@ -528,9 +522,38 @@
     }
 
     .feat-card p {
-      font-size: 0.88rem;
-      color: var(--gray);
-      line-height: 1.65;
+      font-size: 0.95rem;
+      color: #666;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .feat-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.8rem;
+      margin-bottom: 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--forest);
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .feat-link:hover {
+      color: var(--orange);
+      transform: translateX(4px);
+    }
+
+    .feat-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    .feat-link:hover svg {
+      transform: translateX(4px);
     }
 
     .feat-tag {
@@ -825,37 +848,499 @@
       color: var(--forest) !important;
       transform: translateY(-2px);
     }
+
+    /* ── PLATES SHOWCASE (NOUVEAU MENU) ── */
+    .plates-showcase {
+      padding: 6rem 5rem;
+      background: #fdfdfc;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .plates-showcase::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(var(--forest) 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.05;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .showcase-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .showcase-header h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--forest);
+      margin-bottom: 0.5rem;
+    }
+
+    .showcase-header p {
+      color: var(--gray);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .showcase-tabs {
+      display: inline-flex;
+      gap: 2.5rem;
+      border-bottom: 2px solid rgba(74, 124, 89, 0.1);
+      padding-bottom: 0.8rem;
+      margin-bottom: 4rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #999;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+      padding: 0 0.5rem;
+    }
+
+    .tab-btn.active {
+      color: var(--forest);
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 100%;
+      height: 3px;
+      background: var(--orange);
+      border-radius: 3px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-btn.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    .plates-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .plate-item {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .plate-item.animating {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+
+    .plate-img-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      background: white;
+      padding: 6px;
+      /* White rim */
+    }
+
+    .plate-img-wrapper:hover {
+      transform: translateY(-15px) rotate(8deg) scale(1.03);
+      box-shadow: 0 35px 55px rgba(0, 0, 0, 0.15);
+    }
+
+    .plate-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* Play Button Overlay (Optional for video indication) */
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 65px;
+      height: 65px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      opacity: 0.9;
+    }
+
+    .plate-img-wrapper:hover .play-overlay {
+      transform: translate(-50%, -50%) scale(1.15);
+      background: rgba(255, 255, 255, 1);
+      color: var(--orange);
+    }
+
+    .play-overlay svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+      margin-left: 4px;
+      /* Optical alignment */
+    }
+
+    .plate-info h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--forest);
+      margin-bottom: 0.5rem;
+    }
+
+    .plate-info p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.6;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    /* ── SCROLL REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 1;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── QUIZ NUTRITIONNEL ── */
+    .quiz-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fdfbf7;
+      border-radius: 2rem;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(74, 124, 89, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-progress {
+      height: 6px;
+      background: rgba(74, 124, 89, 0.2);
+      border-radius: 3px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .quiz-progress-bar {
+      height: 100%;
+      background: var(--forest);
+      width: 33.33%;
+      transition: width 0.4s ease;
+    }
+
+    .quiz-question {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .quiz-question.active {
+      display: block;
+    }
+
+    .quiz-question h3 {
+      font-size: 1.5rem;
+      color: var(--forest);
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .quiz-option {
+      padding: 1.2rem;
+      border: 2px solid rgba(74, 124, 89, 0.2);
+      border-radius: 1rem;
+      background: white;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--forest);
+      background: rgba(74, 124, 89, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .quiz-result {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .quiz-result h3 {
+      font-size: 1.8rem;
+      color: var(--forest);
+      margin-bottom: 1rem;
+    }
+
+    .quiz-result p {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .plates-container {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+      }
+
+      .showcase-tabs {
+        gap: 1.5rem;
+      }
+    }
+
+    /* ── SIDEBAR MENU ── */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+
+    /* ── MODAL SCROLLBAR ── */
+    .modal-content {
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) transparent;
+    }
+
+    .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 20px;
+    }
+
+    .quiz-header-btn {
+      background: #D18A5B;
+      color: white !important;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      margin-left: 1rem;
+    }
+
+    .quiz-header-btn:hover {
+      background: #c27d4f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(209, 138, 91, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .quiz-header-btn {
+        display: none;
+      }
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- ===== MODAL CONTROL — Standalone, must stay at top ===== -->
+  <script>
+    function openModal() {
+      var m = document.getElementById('loginModal');
+      if (!m) { alert('Erreur: loginModal introuvable'); return; }
+      m.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      var m = document.getElementById('loginModal');
+      if (!m) return;
+      m.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+  </script>
+  <!-- ========================================================== -->
+
   <!-- NAV -->
   <nav id="navbar">
-    <a href="nutrismart-website.html" class="nav-logo">
-      <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-        style="overflow: visible">
-        <mask id="biteMask">
-          <rect x="-20" y="-20" width="140" height="140" fill="white" />
-          <circle cx="92" cy="35" r="18" fill="black" />
-          <circle cx="84" cy="62" r="14" fill="black" />
-        </mask>
-        <g mask="url(#biteMask)">
-          <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
-          <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
-        </g>
-        <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
-      </svg>
-      <div>
-        <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
-      </div>
-    </a>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); document.body.style.overflow='hidden';"
+        style="background:none; border:none; cursor:pointer; color:var(--forest); padding:0.5rem; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="12" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+
+      <a href="nutrismart-website.html" class="nav-logo">
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+          style="overflow: visible">
+          <mask id="biteMask">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#biteMask)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div>
+          <span style="color: #4a7c59">Nutri</span><span style="color: #8fbc8f">Smart</span>
+        </div>
+      </a>
+    </div>
     <ul class="nav-links">
       <li><a href="nutrismart-website.html" class="active" data-i18n="nav_home">Accueil</a></li>
-      <li><a href="profile.html" data-i18n="nav_profile">Profil</a></li>
       <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
-    </ul>
 
+    </ul>
     <div class="nav-auth" id="user-nav-auth" style="display: none;">
       <div class="user-dropdown">
         <div class="user-badge" id="dropdownToggle">
@@ -893,18 +1378,96 @@
         </div>
       </div>
     </div>
-    <div class="nav-auth" id="public-nav-auth">
-      <a href="register.html" class="nav-cta">Commencer gratuitement</a>
+
+    <div style="display:flex; align-items:center; gap:1rem;">
+
+      <a href="register.html"
+        style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none; color: var(--forest); font-weight: 700; font-size: 1.05rem;">
+        <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        S'inscrire
+      </a>
     </div>
   </nav>
+
+  <!-- SIDEBAR MENU -->
+  <div class="sidebar-overlay" id="sidebarOverlay"
+    onclick="document.getElementById('sidebarMenu').classList.remove('active'); this.classList.remove('active'); document.body.style.overflow='auto';">
+  </div>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+      <h2 style="color: var(--orange); margin: 0; font-size: 1.5rem; font-family: 'Playfair Display', serif;">Menu</h2>
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); document.body.style.overflow='auto';"
+        style="background:none; border:none; cursor:pointer; color:#999;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" id="siteSearch" placeholder="Rechercher sur le site"
+        onkeypress="if(event.key === 'Enter') performSiteSearch(this.value)">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+
+    <div class="sidebar-links">
+      <a href="nutrismart-website.html" onclick="closeSidebar()">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        ACCUEIL
+      </a>
+      <a href="#features" onclick="closeSidebar()">
+        FONCTIONNALITÉS
+      </a>
+      <a href="#comment" onclick="closeSidebar()">
+        COMMENT ÇA MARCHE
+      </a>
+      <a href="#quiz" onclick="closeSidebar()">
+        Quizz Alimentaire
+      </a>
+      <a href="profile.html">
+        PROFIL NUTRITIONNEL
+      </a>
+
+      <a href="aliments.html">
+        ALIMENTS
+      </a>
+      <a href="recette.html">
+        CARNET DE RECETTES
+      </a>
+      <a href="recette.html">
+        PLAN DE REPAS
+      </a>
+      <a href="recette.html">
+        BLOG
+      </a>
+      <a href="budget.html">
+        COURSES ET BUDGET
+      </a>
+
+    </div>
+  </div>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-content">
-      <div class="hero-badge" data-i18n="hero_badge">
+      <div class="hero-badge">
         Nutrition Intelligente · 100% Personnalisée
       </div>
-      <h1 data-i18n="hero_title">
+      <h1>
         Mangez mieux,
         <em>vivez pleinement.</em>
       </h1>
@@ -914,10 +1477,10 @@
         efficacement.
       </p>
       <div class="hero-actions">
-        <a href="#" class="btn-primary" data-i18n="btn_login"
-          onclick="event.preventDefault(); document.getElementById('loginModal').style.display='flex'">
-          Connexion
-        </a>
+        <button type="button" class="btn-primary" onclick="openModal()"
+          style="border:none; cursor:pointer; padding: 0.9rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 700;">
+          Se connecter
+        </button>
         <a href="#features" class="btn-beige"> Fonctionnalités</a>
       </div>
       <div class="hero-stats">
@@ -1011,6 +1574,10 @@
             </div>
           </div>
         </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+
+        </div>
       </div>
 
       <div class="card-float">
@@ -1057,6 +1624,64 @@
     </div>
   </section>
 
+  <!-- PLATES MENU SHOWCASE (NEW) -->
+  <section class="plates-showcase" id="showcase-menu">
+    <div class="showcase-content">
+      <div class="showcase-header">
+        <h2 data-i18n="showcase_h2">Ce qu'il y a dans votre assiette</h2>
+        <p data-i18n="showcase_p">Servez-vous sans la moindre hésitation, tout est généré pour votre bien-être.</p>
+
+        <div class="showcase-tabs">
+          <button class="tab-btn active" onclick="switchMenu('matin', this)" data-i18n="tab_matin">Petit
+            Déjeuner</button>
+          <button class="tab-btn" onclick="switchMenu('midi', this)" data-i18n="tab_midi">Plat Principal</button>
+          <button class="tab-btn" onclick="switchMenu('soir', this)" data-i18n="tab_soir">Snacks & Desserts</button>
+        </div>
+      </div>
+
+      <div class="plates-container" id="platesContainer">
+        <!-- Default State (Matin) -->
+        <div class="plate-item">
+          <div class="plate-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80"
+              alt="Bowl" class="plate-img">
+          </div>
+          <div class="plate-info">
+            <h3>Bowl Énergisant</h3>
+            <p>Le meilleur moyen de commencer la journée avec des fibres et des vitamines.</p>
+          </div>
+        </div>
+
+        <div class="plate-item">
+          <div class="plate-img-wrapper">
+            <img src="https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=400"
+              alt="Pancakes" class="plate-img">
+            <div class="play-overlay">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+          <div class="plate-info">
+            <h3>Pancakes Protéinés</h3>
+            <p>Une douceur sans culpabilité pour combler vos envies de sucre.</p>
+          </div>
+        </div>
+
+        <div class="plate-item">
+          <div class="plate-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=400&q=80"
+              alt="Avocado" class="plate-img">
+          </div>
+          <div class="plate-info">
+            <h3>Avocado Toast</h3>
+            <p>Du bon gras et des protéines pour une matinée productive.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FEATURES -->
   <section class="section" id="features" style="position:relative; overflow:hidden;">
     <!-- 🎨 Stickers -->
@@ -1068,17 +1693,25 @@
       style="position:absolute; width:85px; bottom:60px; left:-8px; transform:rotate(16deg); opacity:0.80; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.14));">
     <img src="../../image/sticker.png" aria-hidden="true" draggable="false"
       style="position:absolute; width:75px; bottom:30px; right:-5px; transform:rotate(-11deg); opacity:0.85; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.16));">
-    <div class="section-tag" data-i18n="feat_tag">Fonctionnalités</div>
-    <h2 data-i18n="feat_title">Tout ce dont vous avez besoin,<br />en un seul endroit.</h2>
-    <p class="section-sub" data-i18n="feat_sub">
+    <div class="section-tag reveal" data-i18n="feat_tag">Fonctionnalités</div>
+    <h2 class="reveal" data-i18n="feat_title">Tout ce dont vous avez besoin,<br />en un seul endroit.</h2>
+    <p class="section-sub reveal" data-i18n="feat_sub">
       NutriSmart regroupe 6 modules complémentaires pour une gestion
       nutritionnelle complète et intelligente.
     </p>
 
-    <div class="features-grid">
+    <div class="features-grid reveal">
       <div class="feat-card card-forest">
         <img src="../../image/user.jpg" class="feat-img" alt="Health Data" />
         <h3 data-i18n="f1_t">Profil Personnalisé</h3>
+        <a href="profile.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f1_d">
           Créez votre profil nutritionnel avec vos objectifs, restrictions
           alimentaires, IMC et préférences. L'application adapte chaque
@@ -1089,6 +1722,14 @@
       <div class="feat-card card-primary">
         <img src="../../image/base.jpg" class="feat-img" alt="Aliments" />
         <h3 data-i18n="f2_t">Base de Données Alimentaire</h3>
+        <a href="aliments.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f2_d">
           Accédez à une base de données riche d'aliments avec valeurs
           nutritionnelles détaillées : protéines, glucides, lipides, vitamines
@@ -1099,6 +1740,14 @@
       <div class="feat-card card-orange">
         <img src="../../image/repas.jpg" class="feat-img" alt="Planification" />
         <h3 data-i18n="f3_t">Planification Intelligente</h3>
+        <a href="repas.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f3_d">
           Notre algorithme génère automatiquement des plans de repas
           équilibrés adaptés à vos objectifs, préférences et budget
@@ -1109,6 +1758,14 @@
       <div class="feat-card card-peach">
         <img src="../../image/suivi.jpg" class="feat-img" alt="Tracking" />
         <h3 data-i18n="f4_t">Suivi de Progression</h3>
+        <a href="suivi.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f4_d">
           Visualisez votre évolution avec des graphiques interactifs. Suivez
           votre poids, vos mensurations et vos apports nutritionnels au fil du
@@ -1119,6 +1776,14 @@
       <div class="feat-card card-lime">
         <img src="../../image/grocery.jpg" class="feat-img" alt="Budget" />
         <h3 data-i18n="f5_t">Courses & Budget</h3>
+        <a href="budget.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f5_d">
           Générez automatiquement votre liste de courses depuis votre plan de
           repas. Gérez votre budget alimentaire et suives vos dépenses
@@ -1128,7 +1793,16 @@
 
       <div class="feat-card card-mid">
         <img src="../../image/ground.jpg" class="feat-img" alt="Recettes" />
+
         <h3 data-i18n="f6_t">Carnet de Recettes</h3>
+        <a href="recette.html" class="feat-link">
+          Voir plus
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <p data-i18n="f6_d">
           Accédez à des centaines de recettes gourmandes et saines. Sauvegardez
           vos favorites et créez votre propre livre de cuisine digital
@@ -1145,13 +1819,13 @@
       style="position:absolute; width:100px; top:30px; right:-5px; transform:rotate(-14deg); opacity:0.82; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.15));">
     <img src="../../image/s.png" aria-hidden="true" draggable="false"
       style="position:absolute; width:90px; bottom:20px; left:-8px; transform:rotate(18deg); opacity:0.78; pointer-events:none; filter:drop-shadow(2px 4px 8px rgba(0,0,0,0.13));">
-    <div class="section-tag" data-i18n="how_tag">Comment ça marche</div>
-    <h2 data-i18n="how_title">Simple. Intelligent. Efficace.</h2>
-    <p class="section-sub" data-i18n="how_sub">
+    <div class="section-tag reveal" data-i18n="how_tag">Comment ça marche</div>
+    <h2 class="reveal" data-i18n="how_title">Simple. Intelligent. Efficace.</h2>
+    <p class="section-sub reveal" data-i18n="how_sub">
       Commencez votre parcours nutritionnel en quelques minutes.
     </p>
 
-    <div class="steps-grid">
+    <div class="steps-grid reveal">
       <div class="step">
         <div class="step-num">01</div>
         <h4 data-i18n="h1_t">Créez votre profil</h4>
@@ -1190,7 +1864,7 @@
   <!-- ABOUT US SECTION -->
   <section class="section" id="about" style="background: white; padding: 8rem 5rem;">
     <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; align-items: center;">
-      <div style="position: relative;">
+      <div class="reveal" style="position: relative;">
         <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
           style="width: 100%; border-radius: 2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.1); object-fit: cover; height: 550px;"
           alt="NutriSmart Team">
@@ -1200,7 +1874,7 @@
           <div style="font-size: 0.9rem; opacity: 0.8; font-weight: 600;">Utilisateurs Actifs</div>
         </div>
       </div>
-      <div>
+      <div class="reveal">
         <div class="section-tag">À propos de nous</div>
         <h2 style="margin-bottom: 1.5rem;">NutriSmart : L'Intelligence au Service de votre Bien-être.</h2>
         <p class="section-sub" style="max-width: 100%; margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.8;">
@@ -1229,108 +1903,124 @@
     </div>
   </section>
 
-  <!-- MODULES -->
-  <section class="modules-section" id="modules">
-    <div style="
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4rem;
-          align-items: start;
-        ">
-      <div>
-        <div class="section-tag" data-i18n="mod_tag">Architecture</div>
-        <h2 data-i18n="mod_title">6 modules, une vision complète.</h2>
-        <p class="section-sub" style="margin-bottom: 0" data-i18n="mod_sub">
-          Chaque module est conçu pour fonctionner de manière autonome et
-          s'intégrer parfaitement avec les autres.
-        </p>
+  <!-- QUIZ SECTION (Moved from below) -->
+  <section class="section" id="quiz" style="background: white;">
+    <div class="reveal" style="text-align: center; margin-bottom: 3rem;">
+      <div class="section-tag">Votre Profil</div>
+      <h2>Quel est votre profil nutritionnel ?</h2>
+      <p class="section-sub" style="margin: 0 auto;">Faites ce test rapide en 3 questions pour découvrir comment
+        NutriSmart peut vous aider.</p>
+    </div>
+
+    <div class="quiz-container">
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="quiz-progress-bar" style="width:20%;"></div>
       </div>
-      <div class="modules-grid">
-        <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=150&q=80" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--primary);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m1_t">User & Profile</h4>
-            <p data-i18n="m1_d">Gestion des comptes et profils</p>
-          </div>
-        </a>
-        <a href="#" class="module-item">
-          <img src="../../image/base.jpg" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--lime);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m2_t">Food & Nutrition</h4>
-            <p data-i18n="m2_d">Base de données alimentaire</p>
-          </div>
-        </a>
-        <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=150&q=80" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--orange);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m3_t">Meal Planning</h4>
-            <p data-i18n="m3_d">Planification sur mesure</p>
-          </div>
-        </a>
-        <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=150&q=80" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--mid);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m4_t">Progress Tracking</h4>
-            <p data-i18n="m4_d">Suivi et statistiques</p>
-          </div>
-        </a>
-        <a href="#" class="module-item">
-          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--peach);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m5_t">Grocery & Budget</h4>
-            <p data-i18n="m5_d">Courses et dépenses</p>
-          </div>
-        </a>
-        <a href="#" class="module-item">
-          <img src="../../image/ground.jpg" style="
-                width: 55px;
-                height: 55px;
-                border-radius: 12px;
-                object-fit: cover;
-                border: 2px solid var(--forest);
-              " alt="Module Image" />
-          <div>
-            <h4 data-i18n="m6_t">Recipes</h4>
-            <p data-i18n="m6_d">Carnet de recettes interactif</p>
-          </div>
-        </a>
+
+      <!-- Question 1 -->
+      <div class="quiz-question active" id="q1">
+        <h3>1. Quel est votre principal objectif actuel ?</h3>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q2').style.display='block'; document.getElementById('quiz-progress-bar').style.width='40%';">🍏
+            Perte de poids</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q2').style.display='block'; document.getElementById('quiz-progress-bar').style.width='40%';">💪
+            Prise de masse musculaire</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q2').style.display='block'; document.getElementById('quiz-progress-bar').style.width='40%';">⚡
+            Regain d'énergie</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q2').style.display='block'; document.getElementById('quiz-progress-bar').style.width='40%';">🧘‍♀️
+            Maintien et Santé</button>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="quiz-question" id="q2" style="display: none;">
+        <h3>2. Combien de verres d'eau buvez-vous par jour ?</h3>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q3').style.display='block'; document.getElementById('quiz-progress-bar').style.width='60%';">💧
+            Moins de 3 verres (Je dois faire des efforts)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q3').style.display='block'; document.getElementById('quiz-progress-bar').style.width='60%';">💧💧
+            3 à 6 verres (Pas mal)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q3').style.display='block'; document.getElementById('quiz-progress-bar').style.width='60%';">💧💧💧
+            Plus de 6 verres (Parfait !)</button>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="quiz-question" id="q3" style="display: none;">
+        <h3>3. À quelle fréquence mangez-vous des légumes ?</h3>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q4').style.display='block'; document.getElementById('quiz-progress-bar').style.width='80%';">🍔
+            Rarement (moins d'une fois par jour)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q4').style.display='block'; document.getElementById('quiz-progress-bar').style.width='80%';">🥗
+            1 fois par jour</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q4').style.display='block'; document.getElementById('quiz-progress-bar').style.width='80%';">🥦
+            À chaque repas</button>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="quiz-question" id="q4" style="display: none;">
+        <h3>4. Quel est votre niveau d'activité physique actuel ?</h3>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q5').style.display='block'; document.getElementById('quiz-progress-bar').style.width='90%';">🛋️
+            Sédentaire (peu ou pas de sport)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q5').style.display='block'; document.getElementById('quiz-progress-bar').style.width='90%';">🚶
+            Légèrement actif (1-2 fois / semaine)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q5').style.display='block'; document.getElementById('quiz-progress-bar').style.width='90%';">🏃
+            Actif (3-5 fois / semaine)</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q5').style.display='block'; document.getElementById('quiz-progress-bar').style.width='90%';">🏋️
+            Très actif (sportif intense)</button>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="quiz-question" id="q5" style="display: none;">
+        <h3>5. Comment décririez-vous vos habitudes alimentaires ?</h3>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('quiz-result').style.display='block'; document.getElementById('quiz-progress-bar').style.width='100%'; document.getElementById('quiz-result-title').textContent='Votre Profil : Débutant Motivé 🌱'; document.getElementById('quiz-result-text').textContent='Vous partez de loin mais vous avez la bonne attitude ! NutriSmart va vous guider pas à pas avec des plans simples et efficaces pour transformer vos habitudes sans stress.';">🍕
+            Je mange souvent en dehors / plats préparés</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('quiz-result').style.display='block'; document.getElementById('quiz-progress-bar').style.width='100%'; document.getElementById('quiz-result-title').textContent='Votre Profil : En Progression 📈'; document.getElementById('quiz-result-text').textContent='Vous avez de bonnes bases mais il y a encore de la marge ! NutriSmart va vous aider à optimiser chaque repas pour atteindre vos objectifs plus rapidement.';">🥙
+            Je cuisine parfois mais pas toujours équilibré</button>
+          <button type="button" class="quiz-option"
+            onclick="document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('quiz-result').style.display='block'; document.getElementById('quiz-progress-bar').style.width='100%'; document.getElementById('quiz-result-title').textContent='Votre Profil : Expert Nutrition 🏆'; document.getElementById('quiz-result-text').textContent='Vous avez déjà d\'excellentes habitudes ! NutriSmart va utiliser l\'IA pour affiner votre nutrition au niveau des micro-nutriments et vous faire passer au niveau supérieur.';">🥗
+            Je mange très équilibré et je fais attention</button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="quiz-result" id="quiz-result" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+        <h3 id="quiz-result-title">Votre Profil</h3>
+        <p id="quiz-result-text"></p>
+        <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+          <a href="register.html" class="btn btn-primary">Commencer gratuitement</a>
+          <button type="button" class="btn btn-outline"
+            onclick="document.getElementById('quiz-result').style.display='none'; document.querySelectorAll('.quiz-question').forEach(function(q){q.style.display='none'}); document.getElementById('q1').style.display='block'; document.getElementById('quiz-progress-bar').style.width='20%';">Refaire
+            le test</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- PROGRAM SECTION -->
   <section class="ai-section" id="programme">
-    <div>
+    <div class="reveal">
       <div class="section-tag" data-i18n="prog_tag">Programme Personnalisé</div>
       <h2 data-i18n="prog_title">Votre aide nutritionnelle digitale.</h2>
       <p class="section-sub" data-i18n="prog_sub">
@@ -1389,7 +2079,7 @@
         programme →</a>
     </div>
 
-    <div class="ai-visual">
+    <div class="ai-visual reveal">
       <div class="ai-response">
         <strong data-i18n="plan_day"> Votre plan de la journée</strong>
         <div class="meal-plan">
@@ -1420,6 +2110,7 @@
     </div>
   </section>
 
+
   <!-- SPORTS SECTION -->
   <section class="section" id="sport" style="
         background: var(--cream);
@@ -1446,7 +2137,7 @@
       filter: blur(30px);
     "></div>
 
-    <div style="position: relative; z-index: 1;">
+    <div class="reveal" style="position: relative; z-index: 1;">
       <!-- DOTS PATTERNS SPORT AGRANDIS -->
       <div class="dots-pattern dots-tl" style="width: 220px; height: 220px; top: -50px; left: -50px;"></div>
       <div class="dots-pattern dots-br" style="width: 220px; height: 220px; bottom: -60px; right: 0px;"></div>
@@ -1471,7 +2162,7 @@
           " alt="Yoga" />
     </div>
 
-    <div>
+    <div class="reveal">
       <h2 style="
             font-family: 'Playfair Display', serif;
             font-size: clamp(2rem, 3.5vw, 3rem);
@@ -1710,7 +2401,7 @@
         </div>
         <h5 data-i18n="foot_legal">Légal</h5>
         <ul>
-          <li><a href="#" data-i18n="l1">Politique de confidentialité</a></li>
+          <li><a href="#" data-i18n="l1">Politique de confidentialitéé</a></li>
           <li><a href="#" data-i18n="l2">Conditions d'utilisation</a></li>
           <li><a href="#" data-i18n="l3">Mentions légales</a></li>
         </ul>
@@ -1757,13 +2448,64 @@
   </footer>
 
   <!-- Login Modal -->
-  <div id="loginModal" class="modal-overlay" style="display:none;">
-    <div class="modal-content glass-card" style="max-height: 90vh; overflow-y: auto;">
-      <button class="modal-close" onclick="document.getElementById('loginModal').style.display='none'">×</button>
-      <h2>Connexion</h2>
-      <p>Accédez à votre espace NutriSmart</p>
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-content glass-card modal-compact">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h2 style="margin-bottom: 0.5rem; font-family: 'Playfair Display', serif; font-weight: 900;">Se connecter</h2>
+      <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;">Accédez à votre espace NutriSmart</p>
 
-      <div class="social-auth-wrap">
+      <div id="modal-login-error"
+        style="display: none; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #c0392b; padding: 0.8rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 0.85rem; text-align: left; align-items: center; gap: 0.6rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span id="modal-error-text">Identifiants incorrects.</span>
+      </div>
+
+      <form method="POST" action="api.php?action=login" id="modalLoginForm" class="auth-form"
+        style="margin-top: 0.5rem;">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="nom@exemple.com">
+        </div>
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+            <label style="margin-bottom: 0;">Mot de passe</label>
+            <button type="button" onclick="openResetModal()"
+              style="font-size: 0.8rem; color: var(--primary); background:none; border:none; padding:0; cursor:pointer; text-decoration: none; font-weight: 500;">Oublié
+              ?</button>
+          </div>
+          <div class="pw-wrapper">
+            <input type="password" id="modal_password" name="password" required placeholder="••••••••">
+            <button type="button" class="toggle-pw" onclick="togglePW('modal_password')" title="Afficher/Masquer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div
+          style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.8rem 0 1.2rem; cursor: pointer;">
+          <input type="checkbox" id="modal_remember" name="remember" style="width: auto; margin: 0; cursor: pointer;">
+          <label for="modal_remember"
+            style="margin: 0; font-size: 0.85rem; color: #666; cursor: pointer; font-weight: 400;">Se souvenir de
+            moi</label>
+        </div>
+
+        <div style="display: flex; justify-content: center; margin: 0.5rem 0 1rem;">
+          <button type="submit" class="btn-submit" style="width: 100%;">Se connecter</button>
+        </div>
+      </form>
+
+      <div class="auth-divider" style="margin: 1.5rem 0 1rem;">ou continuer avec</div>
+
+      <div class="social-auth-wrap" style="margin-bottom: 1.5rem;">
         <a href="auth_api.php?action=oauth_redirect&provider=google" class="btn-social">
           <svg viewBox="0 0 48 48">
             <path fill="#FFC107"
@@ -1779,65 +2521,16 @@
               d="M43.611,20.083L43.611,20.083L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
             </path>
           </svg>
-          Continuer avec Google
+          Google
         </a>
         <a href="auth_api.php?action=oauth_redirect&provider=facebook" class="btn-social btn-facebook">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
-          Continuer avec Facebook
+          Facebook
         </a>
       </div>
-
-      <div class="auth-divider">ou</div>
-
-      <div id="modal-login-error"
-        style="display: none; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #c0392b; padding: 0.8rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 0.85rem; text-align: left; align-items: center; gap: 0.6rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        <span id="modal-error-text">Identifiants incorrects.</span>
-      </div>
-
-      <form method="POST" action="api.php?action=login" id="modalLoginForm" class="auth-form">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" name="email" required placeholder="nom@exemple.com">
-        </div>
-        <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <label style="margin-bottom: 0;">Mot de passe</label>
-            <a href="javascript:void(0)" onclick="openResetModal()"
-              style="font-size: 0.8rem; color: var(--primary); text-decoration: none; font-weight: 500;">Oublié ?</a>
-          </div>
-          <div class="pw-wrapper">
-            <input type="password" id="modal_password" name="password" required placeholder="••••••••">
-            <button type="button" class="toggle-pw" onclick="togglePW('modal_password')" title="Afficher/Masquer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div
-          style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0 1.5rem; cursor: pointer;">
-          <input type="checkbox" id="modal_remember" name="remember" style="width: auto; margin: 0; cursor: pointer;">
-          <label for="modal_remember"
-            style="margin: 0; font-size: 0.9rem; color: #666; cursor: pointer; font-weight: 400;">Se souvenir de
-            moi</label>
-        </div>
-
-        <div style="display: flex; justify-content: center; margin: 1rem 0 1.5rem;">
-          <button type="submit" class="btn-submit">Se connecter</button>
-        </div>
-      </form>
 
       <!-- Face ID Modal Divider -->
       <div style="margin-top: 2rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 2rem; text-align: center;">
@@ -1853,11 +2546,10 @@
 
         <div id="modal-face-container" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
           <div class="face-id-video-container" style="margin-bottom: 0.5rem;">
-            <video id="modalLoginVideo" class="face-id-video" autoplay muted></video>
-            <div class="scanning-line"></div>
+            <video id="modalLoginVideo" class="face-id-video" autoplay muted playsinline></video>
+            <div class="scanning-line" style="display:none;"></div>
           </div>
-          <div id="modalLoginStatus" class="face-id-status" style="margin-bottom: 0.5rem;">Prêt pour la reconnaissance
-          </div>
+          <div id="modalLoginStatus" class="face-id-status" style="margin-bottom: 0.5rem;">Cliquez pour scanner votre visage</div>
           <button type="button" id="btnModalFace" class="btn-face-id"
             onclick="loginWithFace('modalLoginVideo', 'modalLoginStatus', 'btnModalFace')">Connexion Face ID</button>
         </div>
@@ -1871,95 +2563,11 @@
     </div>
   </div>
 
-  <style>
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(5px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
 
-    .modal-content {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 3rem;
-      border-radius: 32px;
-      position: relative;
-      width: 100%;
-      max-width: 440px;
-      text-align: center;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
 
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-    }
 
-    .auth-form {
-      text-align: left;
-      margin-top: 2rem;
-    }
-
-    /* Password toggle */
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear {
-      display: none;
-    }
-
-    .pw-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .pw-wrapper input {
-      padding-right: 2.8rem !important;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .toggle-pw {
-      position: absolute;
-      right: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      color: #888;
-    }
-
-    .toggle-pw svg {
-      transition: transform 0.2s;
-    }
-
-    .toggle-pw.showing-pw svg {
-      transform: scale(1.1);
-      color: var(--primary);
-    }
-
-    .shake-anim {
-      animation: shake-anim 0.4s ease-in-out;
-    }
-  </style>
-
-  <!-- Modal Overlay Background -->
-  <div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="closeModal(); closeResetModal();"></div>
-
-  <!-- Reset Password Modal (Static Template) -->
-  <div id="resetModal" class="modal-overlay" style="display:none; z-index: 10000;">
+  <!-- Reset Password Modal -->
+  <div id="resetModal" class="modal-overlay" style="z-index: 10001;">
     <div class="modal-content glass-card">
       <button class="modal-close" onclick="closeResetModal()">×</button>
 
@@ -1992,65 +2600,119 @@
     </div>
   </div>
 
-  <script src="js/validation.js?v=1.1"></script>
-  <script>
-    const dropdownToggle = document.getElementById('dropdownToggle');
-    const userDropdown = document.getElementById('userDropdown');
+  <style>
+    /* .modal-overlay styles handled by shared-styles.css */
 
-    if (dropdownToggle && userDropdown) {
-      // Toggle dropdown
-      dropdownToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isShow = userDropdown.classList.contains('show');
-        if (isShow) {
-          userDropdown.classList.remove('show');
-          userDropdown.style.display = 'none';
-        } else {
-          userDropdown.classList.add('show');
-          userDropdown.style.display = 'block';
-        }
-      });
-
-      // Close dropdown when clicking outside
-      window.addEventListener('click', () => {
-        userDropdown.classList.remove('show');
-        userDropdown.style.display = 'none';
-      });
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2.5rem 2rem;
+      border-radius: 32px;
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
     }
 
-    // AJAX fetch session info
-    fetch('api.php?action=session')
-      .then(response => response.json())
-      .then(data => {
-        if (data.loggedIn) {
-          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
 
-          if (!isAdmin) {
-            document.getElementById('user-nav-auth').style.display = 'flex';
-            document.getElementById('public-nav-auth').style.display = 'none';
-            document.getElementById('user-name-text').textContent = data.name;
-          } else {
-            document.getElementById('user-nav-auth').style.display = 'none';
-            document.getElementById('public-nav-auth').style.display = 'flex';
-          }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+    }
+  </style>
 
-          // Use centralized avatar style
-          const circleEl = document.getElementById('user-initial');
-          if (circleEl) {
-            circleEl.textContent = data.name.charAt(0).toUpperCase();
-            const style = getAvatarStyle(data.name);
-            circleEl.style.background = style.bg;
-            circleEl.style.color = style.text;
-          }
+  <script src="js/validation.js?v=1.1"></script>
+  <script>
 
-          document.getElementById('dropdown-name').textContent = data.name;
-          document.getElementById('user-email-text').textContent = data.email;
-        } else {
-          document.getElementById('public-nav-auth').style.display = 'flex';
-          document.getElementById('user-nav-auth').style.display = 'none';
+    // openModal / closeModal defined at top of body (standalone script)
+
+    window.openResetModal = function () {
+      window.closeModal();
+      const modal = document.getElementById('resetModal');
+      if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        // Pre-fill email if possible
+        const loginEmail = document.querySelector('#modalLoginForm input[name="email"]')?.value;
+        if (loginEmail) document.getElementById('reset_email').value = loginEmail;
+      }
+    };
+
+    window.closeResetModal = function () {
+      const modal = document.getElementById('resetModal');
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    };
+
+    window.handleResetSubmit = function () {
+      const emailInput = document.getElementById('reset_email');
+      const email = emailInput ? emailInput.value : '';
+      const resetBtn = document.querySelector('#reset-initial-view button');
+
+      if (email && email.includes('@')) {
+        if (resetBtn) {
+          resetBtn.disabled = true;
+          resetBtn.innerHTML = '<span class="spinner"></span> Envoi...';
         }
-      })
-      .catch(err => console.error('Erreur session:', err));
+
+        const formData = new FormData();
+        formData.append('email', email);
+
+        fetch('api.php?action=request_reset', {
+          method: 'POST',
+          body: formData
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              const initialView = document.getElementById('reset-initial-view');
+              const successView = document.getElementById('reset-success-view');
+              const emailDisplay = document.getElementById('reset-email-display');
+              if (initialView && successView) {
+                initialView.style.display = 'none';
+                successView.style.display = 'block';
+                if (emailDisplay) emailDisplay.textContent = email;
+              }
+            } else {
+              alert(data.message || 'Erreur lors de la réinitialisation.');
+              if (resetBtn) {
+                resetBtn.disabled = false;
+                resetBtn.innerHTML = 'Envoyer le lien &rarr;';
+              }
+            }
+          })
+          .catch(err => {
+            console.error("Erreur Fetch:", err);
+            alert("Erreur de connexion au serveur.");
+            if (resetBtn) {
+              resetBtn.disabled = false;
+              resetBtn.innerHTML = 'Envoyer le lien &rarr;';
+            }
+          });
+      } else {
+        alert('Veuillez entrer un email valide.');
+      }
+    };
+
+    // Dropdown toggle handled by validation.js
+
+
 
     // --- Language Selector Logic ---
     const langBtn = document.getElementById('langBtn');
@@ -2068,10 +2730,319 @@
         langPopover.classList.remove('show');
       });
     }
+    // AJAX fetch session info
+    fetch('api.php?action=session')
+      .then(response => response.json())
+      .then(data => {
+        const userNav = document.getElementById('user-nav-auth');
+        const guestNav = document.getElementById('guest-nav-auth');
+
+        if (data.loggedIn) {
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          const firstName = data.name.split(' ')[0];
+
+          if (!isAdmin) {
+            userNav.classList.add('show');
+            if (guestNav) guestNav.classList.remove('show');
+
+            document.getElementById('user-name-text').textContent = firstName;
+
+            const userCircle = document.getElementById('user-initial');
+            if (userCircle) {
+              userCircle.textContent = firstName.charAt(0).toUpperCase();
+              if (typeof getAvatarStyle === 'function') {
+                const style = getAvatarStyle(data.name);
+                userCircle.style.background = style.bg;
+                userCircle.style.color = style.text;
+              }
+            }
+
+            document.getElementById('dropdown-name').textContent = data.name;
+            document.getElementById('user-email-text').textContent = data.email;
+          } else {
+            userNav.classList.remove('show');
+            if (guestNav) guestNav.classList.add('show');
+          }
+        } else {
+          userNav.classList.remove('show');
+          if (guestNav) guestNav.classList.add('show');
+        }
+      })
+      .catch(err => {
+        console.error('Erreur session:', err);
+      });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
   <script src="js/face-auth.js"></script>
   <script src="js/translations.js"></script>
+  <script>
+    // --- GLOBAL QUIZ LOGIC (DEFENSIVE VERSION) ---
+    window.nextQuiz = function (step) {
+      // 1. Hide everything first
+      const allQuestions = document.querySelectorAll('.quiz-question');
+      allQuestions.forEach(q => {
+        q.style.display = 'none';
+        q.classList.remove('active');
+      });
+      const resultDiv = document.getElementById('quiz-result');
+      if (resultDiv) resultDiv.style.display = 'none';
+
+      // 2. Show target
+      const target = document.getElementById('q' + step);
+      if (target) {
+        target.style.display = 'block';
+        target.classList.add('active');
+
+        // 3. Update progress
+        const pb = document.getElementById('quiz-progress-bar');
+        if (pb) {
+          const percent = ((step - 1) * 33.33 + 33.33);
+          pb.style.width = percent + '%';
+        }
+      }
+    };
+
+    window.showQuizResult = function () {
+      const allQuestions = document.querySelectorAll('.quiz-question');
+      allQuestions.forEach(q => {
+        q.style.display = 'none';
+        q.classList.remove('active');
+      });
+
+      const res = document.getElementById('quiz-result');
+      if (res) {
+        res.style.display = 'block';
+        const pb = document.getElementById('quiz-progress-bar');
+        if (pb) pb.style.width = '100%';
+
+        const p = [
+          { t: "Novice Motivé !", d: "Vous avez d'excellentes intentions ! NutriSmart va vous aider à structurer tout cela facilement sans frustration." },
+          { t: "Profil Équilibré", d: "Vous avez déjà de très bonnes bases. NutriSmart vous aidera à passer au niveau supérieur et à optimiser vos résultats." },
+          { t: "Expert en Devenir", d: "Vous savez ce que vous voulez ! Utilisez nos outils d'intelligence artificielle pour peaufiner chaque macro-nutriment." }
+        ];
+        const r = p[Math.floor(Math.random() * p.length)];
+        document.getElementById('quiz-result-title').textContent = "Votre Profil : " + r.t;
+        document.getElementById('quiz-result-text').textContent = r.d;
+      }
+    };
+
+    window.resetQuiz = function () {
+      window.nextQuiz(1);
+    };
+
+    // --- PLATES SHOWCASE LOGIC ---
+    const menuData = {
+      matin: [
+        { title: "Bowl Énergisant", desc: "Le meilleur moyen de commencer la journée avec des fibres et des vitamines.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80", video: false },
+        { title: "Pancakes Protéinés", desc: "Une douceur sans culpabilité pour combler vos envies de sucre.", img: "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=400", video: true },
+        { title: "Avocado Toast", desc: "Du bon gras et des protéines pour une matinée productive.", img: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=400&q=80", video: false }
+      ],
+      midi: [
+        { title: "Poulet Teriyaki", desc: "Accompagné de riz complet et de brocolis croquants.", img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=400&q=80", video: false },
+        { title: "Saumon Grillé", desc: "Riche en oméga-3, parfait pour la récupération musculaire.", img: "https://images.pexels.com/photos/725997/pexels-photo-725997.jpeg?auto=compress&cs=tinysrgb&w=400", video: true },
+        { title: "Bowl Végétarien", desc: "Pois chiches, patate douce et sauce tahini onctueuse.", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80", video: false }
+      ],
+      soir: [
+        { title: "Pudding de Chia", desc: "Lait d'amande, graines de chia et fruits rouges frais.", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&q=80", video: false },
+        { title: "Brownie Protéiné", desc: "Un délice au chocolat intense, riche en protéines et sans sucre ajouté.", img: "https://images.pexels.com/photos/45202/brownie-dessert-cake-sweet-45202.jpeg?auto=compress&cs=tinysrgb&w=400", video: true },
+        { title: "Yaourt Grec & Granola", desc: "L'en-cas parfait avec son granola croquant maison et une touche de miel.", img: "https://images.pexels.com/photos/4099238/pexels-photo-4099238.jpeg?auto=compress&cs=tinysrgb&w=400", video: false }
+      ]
+    };
+
+    function switchMenu(category, btn) {
+      document.querySelectorAll('.showcase-tabs .tab-btn').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      const plates = document.querySelectorAll('#platesContainer .plate-item');
+      const data = menuData[category];
+
+      plates.forEach((plate, index) => {
+        plate.classList.add('animating');
+
+        setTimeout(() => {
+          plate.querySelector('img').src = data[index].img;
+          plate.querySelector('h3').textContent = data[index].title;
+          plate.querySelector('p').textContent = data[index].desc;
+
+          let playOverlay = plate.querySelector('.play-overlay');
+          if (data[index].video) {
+            if (!playOverlay) {
+              playOverlay = document.createElement('div');
+              playOverlay.className = 'play-overlay';
+              playOverlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+              plate.querySelector('.plate-img-wrapper').appendChild(playOverlay);
+            }
+          } else {
+            if (playOverlay) playOverlay.remove();
+          }
+
+          requestAnimationFrame(() => {
+            plate.classList.remove('animating');
+          });
+        }, 500); // Wait 500ms for fade out
+      });
+    }
+
+    // Scroll reveal animations for entire page
+    document.addEventListener("DOMContentLoaded", () => {
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // For general reveal elements
+            entry.target.classList.add('active');
+            // For plate items
+            entry.target.classList.remove('animating');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Initialize Plates
+      document.querySelectorAll('#platesContainer .plate-item').forEach(plate => {
+        plate.classList.add('animating');
+        observer.observe(plate);
+      });
+
+      // Initialize all generic reveals
+      document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+      });
+
+      // --- Hide Banner when Quiz Section is visible ---
+      const quizSection = document.getElementById('quiz');
+      const quizBanner = document.getElementById('quizBanner');
+      if (quizSection && quizBanner) {
+        let quizReached = false; // once true, banner stays hidden
+
+        const quizObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              quizReached = true;
+              quizBanner.classList.add('hidden');
+            } else if (!quizReached) {
+              quizBanner.classList.remove('hidden');
+            }
+          });
+        }, { threshold: 0.05 });
+        quizObserver.observe(quizSection);
+      }
+
+      // --- Attach Quiz Listeners ---
+      document.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const next = this.getAttribute('data-next');
+          const isResult = this.getAttribute('data-result');
+
+          if (next) window.nextQuiz(parseInt(next));
+          else if (isResult) window.showQuizResult();
+        });
+      });
+    });
+
+    // --- SIDEBAR MENU LOGIC ---
+    function openSidebar() {
+      document.getElementById('sidebarMenu').classList.add('active');
+      document.getElementById('sidebarOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebarMenu').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // --- SEARCH LOGIC ---
+    function performSiteSearch(query) {
+      if (!query || query.trim() === '') return;
+      query = query.toLowerCase().trim();
+
+      closeSidebar();
+
+      const searchableElements = document.querySelectorAll('.feat-card, .plate-item, .how-step, h1, h2, h3, h4');
+      let found = false;
+
+      for (const el of searchableElements) {
+        if (el.innerText.toLowerCase().includes(query)) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const originalOutline = el.style.outline;
+          const originalOutlineOffset = el.style.outlineOffset;
+          el.style.outline = '4px solid var(--orange)';
+          el.style.outlineOffset = '4px';
+
+          setTimeout(() => {
+            el.style.outline = originalOutline;
+            el.style.outlineOffset = originalOutlineOffset;
+          }, 2000);
+
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        alert('Aucun résultat trouvé pour : ' + query);
+      }
+      document.getElementById('siteSearch').value = '';
+    }
+    // Dropdown toggle logic is handled earlier in the file
+
+
+    // AJAX fetch session info
+    fetch('api.php?action=session')
+      .then(response => response.json())
+      .then(data => {
+        const userNav = document.getElementById('user-nav-auth');
+        const guestNav = document.getElementById('guest-nav-auth');
+
+        if (data.loggedIn) {
+          // Hide quiz banner if logged in
+          const qb = document.getElementById('quizBanner');
+          if (qb) qb.style.display = 'none';
+
+          const isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+          const firstName = data.name.split(' ')[0];
+
+          if (!isAdmin) {
+            userNav.classList.add('show');
+            if (guestNav) guestNav.classList.remove('show');
+
+            document.getElementById('user-name-text').textContent = firstName;
+
+            const userCircle = document.getElementById('user-initial');
+            if (userCircle) {
+              userCircle.textContent = firstName.charAt(0).toUpperCase();
+              if (typeof getAvatarStyle === 'function') {
+                const style = getAvatarStyle(data.name);
+                userCircle.style.background = style.bg;
+                userCircle.style.color = style.text;
+              }
+            }
+
+            document.getElementById('dropdown-name').textContent = data.name;
+            document.getElementById('user-email-text').textContent = data.email;
+          } else {
+            userNav.classList.remove('show');
+            if (guestNav) guestNav.classList.add('show');
+          }
+        } else {
+          userNav.classList.remove('show');
+          if (guestNav) guestNav.classList.add('show');
+        }
+      })
+      .catch(err => {
+        console.error('Erreur session:', err);
+      });
+  </script>
+
+  <script src="js/page-transitions.js"></script>
+  <script src="js/quiz-banner.js"></script>
 </body>
 
 </html>
