@@ -10,3 +10,6 @@ Mail sent successfully!
 [2026-05-08 22:34:32] Request reset for: tasnime.abidi@esprit.tn
 Token generated, sending mail...
 Mail sent successfully!
+[2026-05-09 15:37:25] Request reset for: bouchaaraed@gmail.com
+Token generated, sending mail...
+Mail error: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond

@@ -69,6 +69,101 @@ $favoris = $_SESSION['favoris'];
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared-styles.css">
   <link rel="stylesheet" href="css/recette.css">
+  <style>
+    /* -- SIDEBAR MENU -- */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -78,17 +173,34 @@ $favoris = $_SESSION['favoris'];
 <!-- NAV -->
 <nav id="navbar">
   <div class="logo-container">
-    <a href="nutrismart-website.html" class="nav-logo">
-      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" style="overflow:visible">
-        <mask id="m"><rect x="-20" y="-20" width="140" height="140" fill="white"/><circle cx="92" cy="35" r="18" fill="black"/><circle cx="84" cy="62" r="14" fill="black"/></mask>
-        <g mask="url(#m)">
-          <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59"/>
-          <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f"/>
-        </g>
-        <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
-      </svg>
-      <div><span style="color:#4a7c59">Nutri</span><span style="color:#8fbc8f">Smart</span></div>
-    </a>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button
+        onclick="document.getElementById('sidebarMenu').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); document.body.style.overflow='hidden';"
+        style="background:none; border:none; cursor:pointer; color:var(--forest); padding:0.5rem; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="12" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+
+      <a href="nutrismart-website.html" class="nav-logo">
+        <svg width="30" height="30" viewBox="0 0 100 100" fill="none" style="overflow:visible">
+          <mask id="m">
+            <rect x="-20" y="-20" width="140" height="140" fill="white" />
+            <circle cx="92" cy="35" r="18" fill="black" />
+            <circle cx="84" cy="62" r="14" fill="black" />
+          </mask>
+          <g mask="url(#m)">
+            <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+            <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+          </g>
+          <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <div><span style="color:#4a7c59">Nutri</span><span style="color:#8fbc8f">Smart</span></div>
+      </a>
+    </div>
     <a href="proposer-recette.php" class="btn-proposer">Proposer une recette</a>
   </div>
   <ul class="nav-links">
@@ -101,6 +213,44 @@ $favoris = $_SESSION['favoris'];
   </ul>
   <div class="nav-auth"><a href="register.html" class="nav-cta">Commencer</a></div>
 </nav>
+
+<!-- SIDEBAR MENU -->
+<div class="sidebar-overlay" id="sidebarOverlay"
+  onclick="document.getElementById('sidebarMenu').classList.remove('active'); this.classList.remove('active'); document.body.style.overflow='auto';">
+</div>
+<div class="sidebar-menu" id="sidebarMenu">
+  <div class="sidebar-header">
+    <h2 style="color: var(--orange); margin: 0; font-size: 1.5rem; font-family: 'Playfair Display', serif;">Menu</h2>
+    <button
+      onclick="document.getElementById('sidebarMenu').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); document.body.style.overflow='auto';"
+      style="background:none; border:none; cursor:pointer; color:#999;">
+      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sidebar-search">
+    <input type="text" id="siteSearch" placeholder="Rechercher sur le site"
+      onkeypress="if(event.key === 'Enter') performSiteSearch(this.value)">
+    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"
+      stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+  </div>
+
+  <div class="sidebar-links">
+    <a href="nutrismart-website.html">ACCUEIL</a>
+    <a href="profile.html">PROFIL NUTRITIONNEL</a>
+    <a href="recette.php">CARNET DE RECETTES</a>
+    <a href="suivi-statistiques.php">SUIVI ET STATISTIQUES</a>
+    <a href="budget-user.php">COURSES ET BUDGET</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <div class="hero">

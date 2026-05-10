@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $port = "3307";
+    private $port = "3306";
     private $db_name = "nutrismart";
     private $username = "root";
     private $password = "";
