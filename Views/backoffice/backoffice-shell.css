@@ -1,18 +1,18 @@
 /**
- * Coque admin — thème clair (sidebar + grille). À utiliser avec body.bo-shell-body + main.bo-shell-main.
+ * Coque admin — thème sombre unifié (sidebar + grille). À utiliser avec body.bo-shell-body + main.bo-shell-main.
  */
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap");
 
 body.bo-shell-body {
-  --bo-bg: #eef2f0;
-  --bo-surface: #ffffff;
-  --bo-card: #eef5f0;
-  --bo-border: #dce5df;
+  --bo-bg: #0c1014;
+  --bo-surface: #141a21;
+  --bo-card: #1a222c;
+  --bo-border: #2a3544;
   --bo-primary: #3dba52;
   --bo-lime: #8bc34a;
   --bo-gold: #f9a825;
-  --bo-text: #1a3228;
-  --bo-muted: #5c6b62;
+  --bo-text: #e8edf3;
+  --bo-muted: #8b9cb1;
   --bo-mono: "Space Mono", monospace;
   --bo-sans: "Syne", sans-serif;
 
@@ -28,9 +28,9 @@ body.bo-shell-body {
 
 body.bo-shell-body .topbar {
   grid-column: 1 / -1;
-  background: #ffffff;
-  border-bottom: 1px solid #e8ece9;
-  box-shadow: 0 1px 0 rgba(26, 60, 34, 0.04);
+  background: var(--bo-surface);
+  border-bottom: 1px solid var(--bo-border);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,7 +46,7 @@ body.bo-shell-body .topbar-logo {
   gap: 0.6rem;
   font-size: 1.1rem;
   font-weight: 800;
-  color: #1a3c22;
+  color: var(--bo-text);
   text-decoration: none;
   letter-spacing: -0.01em;
 }
@@ -71,8 +71,8 @@ body.bo-shell-body .topbar .notif-btn {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: #f3f6f4;
-  border: 1px solid #e8ece9;
+  background: var(--bo-card);
+  border: 1px solid var(--bo-border);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -83,7 +83,7 @@ body.bo-shell-body .topbar .notif-btn {
 
 body.bo-shell-body .topbar .notif-btn:hover {
   border-color: var(--bo-primary);
-  background: #e8f5e9;
+  background: rgba(61, 186, 82, 0.08);
 }
 
 body.bo-shell-body .notif-dot {
@@ -110,12 +110,12 @@ body.bo-shell-body .admin-info {
 body.bo-shell-body .topbar .admin-name {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #1a1f1c;
+  color: var(--bo-text);
 }
 
 body.bo-shell-body .topbar .admin-role {
   font-size: 0.68rem;
-  color: #6b7280;
+  color: var(--bo-muted);
 }
 
 body.bo-shell-body .avatar-img {
@@ -123,16 +123,14 @@ body.bo-shell-body .avatar-img {
   height: 32px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--bo-primary), var(--bo-lime));
-  display: grid;
-  place-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #ffffff;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--bo-border);
 }
 
 body.bo-shell-body aside.bo-admin-sidebar {
-  background: #ffffff;
-  border-right: 1px solid #e5ebe7;
+  background: var(--bo-surface);
+  border-right: 1px solid var(--bo-border);
   padding: 1.2rem 0.75rem;
   display: flex;
   flex-direction: column;
@@ -204,12 +202,162 @@ body.bo-shell-body main.bo-shell-main {
   padding: 0;
   margin: 0;
   display: block;
-  background: #f8f9fa;
+  background: var(--bo-bg);
   min-height: 0;
 }
 
 body.bo-shell-body main.bo-shell-main .app {
   min-height: min-content;
+}
+
+body.bo-shell-body .panel-card,
+body.bo-shell-body .bo-table-wrap,
+body.bo-shell-body .form-card,
+body.bo-shell-body .bo-blog-card,
+body.bo-shell-body .bo-blog-list li,
+body.bo-shell-body .content-card,
+body.bo-shell-body .metric-card,
+body.bo-shell-body .users-list-table,
+body.bo-shell-body .bo-crud-panel,
+body.bo-shell-body .bo-crud-form,
+body.bo-shell-body .bo-form-card {
+  background: var(--bo-card) !important;
+  color: var(--bo-text);
+  border: 1px solid var(--bo-border) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.bo-shell-body .bo-table th,
+body.bo-shell-body .bo-table td,
+body.bo-shell-body .data-table th,
+body.bo-shell-body .data-table td,
+body.bo-shell-body .users-list-table th,
+body.bo-shell-body .users-list-table td {
+  color: var(--bo-text);
+  border-color: var(--bo-border) !important;
+}
+
+body.bo-shell-body .bo-table th,
+body.bo-shell-body .data-table th,
+body.bo-shell-body .users-list-table th {
+  color: var(--bo-muted);
+}
+
+body.bo-shell-body .bo-table tr:hover td,
+body.bo-shell-body .data-table tr:hover td,
+body.bo-shell-body .users-list-table tr:hover td {
+  background: rgba(61, 186, 82, 0.06) !important;
+}
+
+body.bo-shell-body input,
+body.bo-shell-body textarea,
+body.bo-shell-body select {
+  background: var(--bo-card);
+  color: var(--bo-text);
+  border: 1px solid var(--bo-border);
+}
+
+body.bo-shell-body input::placeholder,
+body.bo-shell-body textarea::placeholder {
+  color: var(--bo-muted);
+}
+
+body.bo-shell-body .alert-info {
+  background: rgba(41, 182, 246, 0.1) !important;
+  color: var(--bo-text) !important;
+  border-left-color: #29b6f6 !important;
+}
+
+body.bo-shell-body .alert-warning {
+  background: rgba(249, 168, 37, 0.12) !important;
+  color: var(--bo-text) !important;
+  border-left-color: var(--bo-gold) !important;
+}
+
+body.bo-shell-body .badge-viande {
+  background: rgba(229, 57, 53, 0.16) !important;
+  color: #ff8a80 !important;
+}
+
+body.bo-shell-body .badge-legume {
+  background: rgba(61, 186, 82, 0.16) !important;
+  color: #9be7a8 !important;
+}
+
+body.bo-shell-body .badge-fruit {
+  background: rgba(249, 168, 37, 0.16) !important;
+  color: #ffcc80 !important;
+}
+
+body.bo-shell-body .badge-autre {
+  background: rgba(139, 156, 177, 0.16) !important;
+  color: #c7d2e0 !important;
+}
+
+body.bo-shell-body #budget-modal > div,
+body.bo-shell-body #purchase-edit-modal > div,
+body.bo-shell-body #purchase-delete-modal > div,
+body.bo-shell-body #recetteModal > div,
+body.bo-shell-body #chatModal > div,
+body.bo-shell-body .modal-content {
+  background: var(--bo-card) !important;
+  color: var(--bo-text) !important;
+  border: 1px solid var(--bo-border) !important;
+}
+
+body.bo-shell-body #modalMessages {
+  background: #131922 !important;
+}
+
+body.bo-shell-body #chatModal textarea,
+body.bo-shell-body #purchase-edit-modal input,
+body.bo-shell-body #budget-modal input,
+body.bo-shell-body #budget-modal select {
+  background: #131922 !important;
+  color: var(--bo-text) !important;
+  border: 1px solid var(--bo-border) !important;
+}
+
+body.bo-shell-body #chatModal > div > div:last-child {
+  background: var(--bo-card) !important;
+  border-top-color: var(--bo-border) !important;
+}
+
+body.bo-shell-body [style*="background: white"],
+body.bo-shell-body [style*="background:white"],
+body.bo-shell-body [style*="background: #fff"],
+body.bo-shell-body [style*="background:#fff"],
+body.bo-shell-body [style*="background: #ffffff"],
+body.bo-shell-body [style*="background:#ffffff"] {
+  background: var(--bo-card) !important;
+  color: var(--bo-text) !important;
+}
+
+body.bo-shell-body [style*="background: #f8faf9"],
+body.bo-shell-body [style*="background:#f8faf9"],
+body.bo-shell-body [style*="background: #f9fbf9"],
+body.bo-shell-body [style*="background:#f9fbf9"],
+body.bo-shell-body [style*="background: #fbfdfb"],
+body.bo-shell-body [style*="background:#fbfdfb"] {
+  background: #131922 !important;
+  color: var(--bo-text) !important;
+}
+
+body.bo-shell-body [style*="background: #fff8e1"],
+body.bo-shell-body [style*="background:#fff8e1"] {
+  background: rgba(249, 168, 37, 0.12) !important;
+  color: var(--bo-text) !important;
+}
+
+body.bo-shell-body [style*="color: #333"],
+body.bo-shell-body [style*="color:#333"],
+body.bo-shell-body [style*="color: #555"],
+body.bo-shell-body [style*="color:#555"],
+body.bo-shell-body [style*="color: #666"],
+body.bo-shell-body [style*="color:#666"],
+body.bo-shell-body [style*="color: #999"],
+body.bo-shell-body [style*="color:#999"] {
+  color: var(--bo-text) !important;
 }
 
 @media (max-width: 1100px) {
