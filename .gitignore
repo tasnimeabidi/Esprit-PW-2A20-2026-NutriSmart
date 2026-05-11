@@ -1,0 +1,4 @@
+# Secrets locaux
+config/groq.local.php
+config/claude.local.php
+.env

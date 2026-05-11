@@ -1,0 +1,20 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open accueil.html",
+            "file": "c:\\Users\\msi\\Documents\\projetNutriSmart\\Views\\frontoffice\\accueil.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open blissflo-exact.html",
+            "file": "c:\\Users\\msi\\Documents\\projetNutriSmart\\Views\\frontoffice\\blissflo-exact.html"
+        }
+    ]
+}

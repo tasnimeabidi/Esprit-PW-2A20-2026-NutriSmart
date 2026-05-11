@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact  NutriSmart</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+  <script src="js/avatar-utils.js"></script>
+  <script src="js/nutrismart-validation.js"></script>
+  <style>
+    body {
+      background: #f9faf8;
+      color: #1a2f21;
+      margin: 0;
+      padding: 0;
+    }
+
+    .contact-hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      padding: 8rem 3% 3rem;
+      background: #1a2f21;
+      color: white;
+      gap: 3rem;
+      min-height: 60vh;
+    }
+
+    .hero-text-side h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      /* White text for green background */
+    }
+
+    .hero-text-side p {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.8);
+      /* Light text */
+      max-width: 500px;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .hero-img-side {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-circle-img {
+      width: 360px;
+      /* Slimmer circle */
+      height: 360px;
+      border-radius: 50%;
+      background: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+      border: 10px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 4 Colorful Cards Row */
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin: -6rem auto 10rem;
+      max-width: 1000px;
+      /* Even smaller container as requested */
+      padding: 0;
+      z-index: 20;
+      position: relative;
+    }
+
+    .info-box {
+      padding: 2.5rem 1.2rem;
+      text-align: left;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border-radius: 0;
+    }
+
+    .info-box:nth-child(even) {
+      transform: translateY(3rem);
+    }
+
+    .info-box.purple {
+      background: #8e7d8d;
+      color: white;
+    }
+
+    .info-box.pink {
+      background: #b48a8a;
+      color: white;
+    }
+
+    .info-box.yellow-light {
+      background: #f9d58d;
+      color: #3d2b24;
+    }
+
+    .info-box.yellow-bright {
+      background: #f2c94c;
+      color: #3d2b24;
+    }
+
+    .info-box .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .info-box h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+
+    .info-box p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    /* Content Section: Form & Map side-by-side */
+    .contact-content-section {
+      max-width: 1000px;
+      /* Even smaller container as requested */
+      margin: 0 auto 10rem;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: stretch;
+    }
+
+    /* Right Column: Form */
+    .form-side {
+      background: white;
+      padding: 1.2rem;
+      /* Ultra compact padding */
+      border-radius: 1.5rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-side h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.6rem;
+      /* Smaller title */
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+      color: #1a2f21;
+    }
+
+    .form-side .sub {
+      color: #64748b;
+      margin-bottom: 1rem;
+      /* Smaller margin */
+      line-height: 1.4;
+      font-size: 0.85rem;
+    }
+
+    .contact-form-group {
+      margin-bottom: 0.6rem;
+      /* Minimal gap */
+    }
+
+    .contact-form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1a2f21;
+      margin-bottom: 0.2rem;
+    }
+
+    .contact-form-group input,
+    .contact-form-group textarea {
+      width: 100%;
+      padding: 0.6rem 1.2rem;
+      /* Very compact inputs */
+      border-radius: 5rem;
+      border: 1.5px solid #f0f0f0;
+      background: white;
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .contact-form-group textarea {
+      border-radius: 1.5rem;
+    }
+
+    /* Buttons handled by shared-styles.css .btn-beige */
+
+    @media (max-width: 991px) {
+      .contact-content-section {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+      }
+
+      .contact-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: 6rem;
+      }
+
+      .hero-text-side {
+        text-align: center;
+      }
+
+      .hero-text-side p {
+        margin: 0 auto 2rem;
+      }
+
+      .cards-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .info-box:nth-child(even) {
+        transform: none;
+      }
+    }
+
+    /* -- FORCE FACE ID CIRCLE -- */
+    .face-id-video-container {
+      width: 200px !important;
+      height: 200px !important;
+      border-radius: 50% !important;
+      overflow: hidden !important;
+      border: 4px solid #4a7c59 !important;
+      margin: 0 auto 1.5rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #000 !important;
+    }
+
+    .face-id-video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      border-radius: 50% !important;
+    }
+
+    @media (max-width: 600px) {
+      .cards-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-form-group input.invalid,
+    .contact-form-group textarea.invalid {
+      border-color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.05) !important;
+    }
+
+    .contact-form-group input.valid,
+    .contact-form-group textarea.valid {
+      border-color: #4a7c59 !important;
+      background: rgba(74, 124, 89, 0.05) !important;
+    }
+
+    .error-text {
+      color: #ef4444;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 0.2rem;
+      display: none;
+    }
+
+    /* -- SIDEBAR MENU -- */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+  </style>
+</head>
+
+<body data-site-nav="contact">
+  <div id="site-nav-root"></div>
+  <script src="js/site-nav-loader.js"></script>
+
+  <header class="contact-hero">
+    <div class="hero-text-side">
+      <h1>Restons en contact.</h1>
+      <p>Découvrez une nouvelle façon de gérer votre nutrition avec nos experts à vos côtés. Écrivez-nous pour toute
+        question ou accompagnement personnalisé.</p>
+      <a href="#contactForm" class="btn-beige">Contactez-nous</a>
+
+
+    </div>
+    <div class="hero-img-side">
+      <div class="hero-circle-img"></div>
+    </div>
+  </header>
+
+  <section class="cards-row">
+    <div class="info-box purple">
+      <div class="icon">📞</div>
+      <h3>Téléphone</h3>
+      <p>+216 12 345 678</p>
+    </div>
+    <div class="info-box pink">
+      <div class="icon">📱</div>
+      <h3>WhatsApp</h3>
+      <p>+216 99 888 777</p>
+    </div>
+    <div class="info-box yellow-light">
+      <div class="icon">📧</div>
+      <h3>E-mail</h3>
+      <p>support@nutrismart.tn</p>
+    </div>
+    <div class="info-box yellow-bright">
+      <div class="icon">📍</div>
+      <h3>Notre Bureau</h3>
+      <p>Ariana, Hay Ghazella</p>
+    </div>
+  </section>
+
+  <main class="contact-content-section">
+    <!-- Form Side -->
+    <div class="form-side">
+      <h2>Écrivez-nous</h2>
+      <p class="sub">Notre équipe vous répondra dans les plus brefs délais (sous 24h).</p>
+
+      <div id="contact-status"
+        style="display: none; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; font-size: 0.9rem;"></div>
+
+      <form id="contactForm" method="POST" action="api.php?action=contact" novalidate>
+        <div class="contact-form-group">
+          <label>Nom complet</label>
+          <input type="text" name="nom" id="contact_nom" placeholder="Entrez votre nom">
+          <span class="error-text" id="error_nom">Veuillez entrer au moins 3 caractères.</span>
+        </div>
+        <div class="contact-form-group">
+          <label>Adresse E-mail</label>
+          <input type="email" name="email" id="contact_email" placeholder="votre@email.com">
+          <span class="error-text" id="error_email">Veuillez entrer un email valide.</span>
+        </div>
+        <div class="contact-form-group">
+          <label>Sujet</label>
+          <input type="text" name="sujet" id="contact_sujet" placeholder="Sujet de votre message">
+          <span class="error-text" id="error_sujet">Le sujet est requis.</span>
+        </div>
+        <div class="contact-form-group">
+          <label>Message</label>
+          <textarea name="message" id="contact_message" rows="5" placeholder="Votre message ici..."></textarea>
+          <span class="error-text" id="error_message">Le message doit contenir au moins 10 caractères.</span>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button type="submit" id="submitBtn" class="btn-beige">
+            <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Envoyer le message
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Map Side -->
+    <div class="map-side" style="height: 100%;">
+      <div class="map-box" style="height: 100%; min-height: 350px; margin-top: 0; border-radius: 1.5rem;">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3191.132517869634!2d10.1873833!3d36.8931235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e2cb7454c6ed51%3A0x683b365a33d23ad4!2sHay%20Ghazela!5e0!3m2!1sfr!2stn!4v1714650000000!5m2!1sfr!2stn"
+          width="100%" height="100%" style="border:0; display: block;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </main>
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-inner">
+      <!-- Brand & Contact -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="biteMaskFooterFinal">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterFinal)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span>NutriSmart</span>
+        </div>
+        <p class="footer-desc" data-i18n="foot_desc">
+          Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.31-2.31a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Tunis, Tunisie
+          </div>
+        </div>
+      </div>
+
+      <!-- Plateforme -->
+      <div class="footer-col">
+        <h5 data-i18n="foot_plat">Plateforme</h5>
+        <ul>
+          <li><a href="#features" data-i18n="feat_tag">Fonctionnalités</a></li>
+          <li><a href="#how-it-works" data-i18n="how_tag">Comment ça marche</a></li>
+          <li><a href="#modules" data-i18n="mod_tag">Modules</a></li>
+          <li><a href="#programme" data-i18n="prog_tag">Programmes Repas</a></li>
+          <li><a href="#sport" data-i18n="sport_title">Programmes Sport</a></li>
+        </ul>
+      </div>
+
+      <!-- Ressources -->
+      <div class="footer-col">
+        <h5 data-i18n="foot_res">Ressources</h5>
+        <ul>
+          <li>
+            <p data-i18n="r1">Base alimentaire</p>
+          </li>
+          <li>
+            <p data-i18n="r2">Carnet de recettes</p>
+          </li>
+          <li>
+            <p data-i18n="r3">Blog Nutrition</p>
+          </li>
+          <li>
+            <p data-i18n="r4">Suivi de progrès</p>
+          </li>
+          <li>
+            <p data-i18n="r5">FAQ</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social & Legal -->
+      <div class="footer-col">
+        <h5 data-i18n="foot_follow">Suivez-nous</h5>
+        <div class="footer-social-wrap">
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
+        </div>
+        <h5 data-i18n="foot_legal">Légal</h5>
+        <ul>
+          <li><a href="#" data-i18n="l1">Politique de confidentialitéé</a></li>
+          <li><a href="#" data-i18n="l2">Conditions d'utilisation</a></li>
+          <li><a href="#" data-i18n="l3">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span data-i18n="rights">© 2026 NutriSmart  Tous droits réservés</span>
+      <div class="footer-bottom-links">
+        <a href="#" data-i18n="l1">Confidentialité</a>
+        <a href="#" data-i18n="l2">CGU</a>
+        <a href="contact.html" data-i18n="nav_contact">Contact</a>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>Français</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="lang-popover" id="langPopover">
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content glass-card" style="max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="document.getElementById('loginModal').style.display='none'">×</button>
+      <h2>Connexion</h2>
+      <p>Accédez à votre espace NutriSmart</p>
+
+      <div class="social-auth-wrap">
+        <a href="auth_api.php?action=oauth_redirect&provider=google" class="btn-social">
+          <svg viewBox="0 0 48 48">
+            <path fill="#FFC107"
+              d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
+            </path>
+            <path fill="#FF3D00"
+              d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z">
+            </path>
+            <path fill="#4CAF50"
+              d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z">
+            </path>
+            <path fill="#1976D2"
+              d="M43.611,20.083L43.611,20.083L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
+            </path>
+          </svg>
+          Continuer avec Google
+        </a>
+        <a href="auth_api.php?action=oauth_redirect&provider=facebook" class="btn-social btn-facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+          </svg>
+          Continuer avec Facebook
+        </a>
+      </div>
+
+      <div class="auth-divider">ou</div>
+
+      <div id="modal-login-error"
+        style="display: none; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #c0392b; padding: 0.8rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 0.85rem; text-align: left; align-items: center; gap: 0.6rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span id="modal-error-text">Identifiants incorrects.</span>
+      </div>
+
+      <form method="POST" action="api.php?action=login" id="modalLoginForm" class="auth-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="nom@exemple.com">
+        </div>
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label style="margin-bottom: 0;">Mot de passe</label>
+            <a href="javascript:void(0)" onclick="openResetModal()"
+              style="font-size: 0.8rem; color: var(--primary); text-decoration: none; font-weight: 500;">Oublié ?</a>
+          </div>
+          <div class="pw-wrapper">
+            <input type="password" id="modal_password" name="password" required placeholder="">
+            <button type="button" class="toggle-pw" onclick="togglePW('modal_password')" title="Afficher/Masquer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0 1.5rem; cursor: pointer;">
+          <input type="checkbox" id="modal_remember" name="remember" style="width: auto; margin: 0; cursor: pointer;">
+          <label for="modal_remember"
+            style="margin: 0; font-size: 0.9rem; color: #666; cursor: pointer; font-weight: 400;">Se souvenir de
+            moi</label>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+          Se connecter
+        </button>
+      </form>
+
+      <!-- Face ID Section Premium Design (Modal) -->
+      <div class="face-id-card" style="margin-top: 1.5rem; padding: 1.5rem;">
+        <h3 class="face-id-title" style="font-size: 1rem; margin-bottom: 1.2rem;">
+          <svg style="width:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          S'authentifier par IA
+        </h3>
+
+        <div class="face-id-video-container">
+          <video id="modalLoginVideo" class="face-id-video" autoplay muted></video>
+          <div id="modalScanLine" class="scanning-line"></div>
+        </div>
+
+        <div id="modalLoginStatus" class="face-id-status" style="margin-bottom: 1.2rem; font-size: 0.85rem;">Prêt pour
+          la reconnaissance</div>
+
+        <button type="button" id="btnModalFace" class="btn-face-id"
+          onclick="loginWithFace('modalLoginVideo', 'modalLoginStatus', 'btnModalFace')">
+          <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2z" />
+            <path d="M8 11V9a4 4 0 1 1 8 0v2" />
+            <rect x="6" y="11" width="12" height="10" rx="2" />
+          </svg>
+          Connexion Face ID
+        </button>
+      </div>
+
+      <div style="margin-top:1.5rem; font-size:0.9rem; color: #666;">
+        Nouveau ? <a href="register.html" style="color:var(--primary); font-weight:700;">Créer un compte</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 3rem;
+      border-radius: 32px;
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .auth-form {
+      text-align: left;
+      margin-top: 2rem;
+    }
+
+    /* Password toggle */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+      display: none;
+    }
+
+    .pw-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pw-wrapper input {
+      padding-right: 2.8rem !important;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #888;
+    }
+
+    .toggle-pw svg {
+      transition: transform 0.2s;
+    }
+
+    .toggle-pw.showing-pw svg {
+      transform: scale(1.1);
+      color: var(--primary);
+    }
+
+    .shake-anim {
+      animation: shake-anim 0.4s ease-in-out;
+    }
+  </style>
+
+  <!-- Modal Overlay Background -->
+  <div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="closeModal(); closeResetModal();"></div>
+
+  <!-- Reset Password Modal (Static Template) -->
+  <div id="resetModal" class="modal-overlay" style="display:none; z-index: 10000;">
+    <div class="modal-content glass-card">
+      <button class="modal-close" onclick="closeResetModal()">×</button>
+
+      <!-- Initial View -->
+      <div id="reset-initial-view">
+        <h2 style="font-family:'Playfair Display', serif; font-weight:900; color:#223c2a; margin-bottom:0.5rem;">
+          Réinitialisation</h2>
+        <p style="color:#666; margin-bottom:2rem;">Entrez votre email pour recevoir un lien sécurisé.</p>
+        <div style="text-align:left;">
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Votre adresse e-mail</label>
+            <input type="email" id="reset_email" placeholder="jean@exemple.com"
+              style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:12px; box-sizing:border-box;" />
+          </div>
+          <button onclick="handleResetSubmit()" class="btn-primary"
+            style="width:100%; border:none; padding:1rem; border-radius:12px; cursor:pointer; font-weight:600;">Envoyer
+            le lien &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Success View -->
+      <div id="reset-success-view" style="display:none;">
+        <div style="font-size:3rem; color:#4a7c59; margin-bottom:1rem;">??</div>
+        <h2 style="font-family:'Playfair Display', serif; font-weight:900; color:#223c2a;">Lien envoyé !</h2>
+        <p style="color:#666; margin-bottom:2rem;">Consultez votre boîte mail (<b id="reset-email-display"></b>) pour
+          réinitialiser votre mot de passe.</p>
+        <button onclick="closeResetModal()" class="btn-primary"
+          style="width:100%; border:none; padding:1rem; border-radius:12px; cursor:pointer; font-weight:600;">Compris</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    // Real-time validation
+    const formInputs = document.querySelectorAll('#contactForm input, #contactForm textarea');
+    formInputs.forEach(input => {
+      input.addEventListener('input', function () {
+        validateField(this);
+      });
+    });
+
+    function validateField(input) {
+      let isValid = true;
+      const errorSpan = document.getElementById('error_' + input.id.split('_')[1]);
+
+      if (input.type === 'email') {
+        isValid = NutriSmartValidate.email(input.value).ok;
+      } else if (input.id === 'contact_nom') {
+        isValid = NutriSmartValidate.contactNom(input.value).ok;
+      } else if (input.id === 'contact_sujet') {
+        isValid = NutriSmartValidate.contactSujet(input.value).ok;
+      } else if (input.id === 'contact_message') {
+        isValid = NutriSmartValidate.contactMessage(input.value).ok;
+      }
+
+      if (isValid) {
+        input.classList.remove('invalid');
+        input.classList.add('valid');
+        if (errorSpan) errorSpan.style.display = 'none';
+      } else {
+        input.classList.remove('valid');
+        input.classList.add('invalid');
+        if (errorSpan) errorSpan.style.display = 'block';
+      }
+      return isValid;
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      let isFormValid = true;
+      formInputs.forEach(input => {
+        if (!validateField(input)) isFormValid = false;
+      });
+
+      if (!isFormValid) {
+        showStatus('Veuillez corriger les erreçurs dans le formulaire.', 'error');
+        return;
+      }
+
+      const status = document.getElementById('contact-status');
+      // Show loading state
+      const btn = this.querySelector('button');
+      const originalBtnText = btn.innerText;
+      btn.innerText = 'Envoi en cours...';
+      btn.disabled = true;
+
+      const formData = new FormData(this);
+
+      fetch('api.php?action=contact', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showStatus(data.message, 'success');
+            this.reset();
+            formInputs.forEach(i => i.classList.remove('valid', 'invalid'));
+          } else {
+            showStatus(data.message, 'error');
+          }
+        })
+        .catch(error => {
+          showStatus('Une erreçur technique est survenue.', 'error');
+        })
+        .finally(() => {
+          btn.innerText = originalBtnText;
+          btn.disabled = false;
+        });
+    });
+
+    function showStatus(msg, type) {
+      const status = document.getElementById('contact-status');
+      status.innerText = msg;
+      status.style.display = 'block';
+      status.style.background = type === 'success' ? 'rgba(74, 124, 89, 0.1)' : 'rgba(231, 76, 60, 0.1)';
+      status.style.color = type === 'success' ? '#4a7c59' : '#c0392b';
+      status.style.border = `1px solid ${type === 'success' ? 'rgba(74, 124, 89, 0.3)' : 'rgba(231, 76, 60, 0.3)'}`;
+
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 5000);
+    }
+
+  </script>
+  <script src="js/page-transitions.js"></script>
+
+
+</body>
+
+</html>

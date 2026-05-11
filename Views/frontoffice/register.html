@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription — NutriSmart</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+  <script src="js/avatar-utils.js"></script>
+  <style>
+    :root {
+      --accent: #4a7c59;
+      --accent-light: #ecfdf5;
+      --text-dark: #2d3436;
+      --bg-white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-white);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      /* full viewport height, no scroll */
+      overflow: hidden;
+    }
+
+    .split-container {
+      display: flex;
+      flex: 1;
+      /* fill all space left after navbar */
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* Allow inner form to scroll if screen is very short */
+    .split-form {
+      overflow-y: auto;
+    }
+
+    /* Left Side - Image */
+    .split-image {
+      flex: 1.25;
+      background: url('https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      position: relative;
+    }
+
+    .split-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--bg-white));
+    }
+
+    /* Right Side - Form */
+    .split-form {
+      flex: 0.9;
+      display: grid;
+      place-items: center;
+      padding: 4rem;
+      background: var(--bg-white);
+    }
+
+    .form-content {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .form-header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -1px;
+      font-weight: bold;
+    }
+
+    .form-header p {
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .form-header a {
+      color: var(--accent);
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    /* Pill Inputs Style */
+    .input-box {
+      margin-bottom: 1rem;
+      background: var(--accent-light);
+      padding: 0.7rem 1.6rem;
+      border-radius: 60px;
+      border: 2.5px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-box:focus-within {
+      border-color: var(--accent);
+      background: white;
+      box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+    }
+
+    .input-box label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-bottom: 0.3rem;
+      text-transform: capitalize;
+    }
+
+    .input-box input,
+    .input-box select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0;
+      outline: none;
+    }
+
+    .input-box input::placeholder {
+      color: var(--accent);
+      opacity: 0.3;
+    }
+
+    .or-divider {
+      text-align: center;
+      margin: 1.8rem 0;
+      position: relative;
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+      content: "";
+      flex: 1;
+      height: 2.5px;
+      background: var(--accent);
+      opacity: 0.2;
+    }
+
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .social-icon {
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.15);
+    }
+
+    /* Button now handled globally by shared-styles.css */
+
+    @media (max-width: 991px) {
+      .split-image {
+        display: none;
+      }
+    }
+
+    /* -- SIDEBAR MENU -- */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+  </style>
+</head>
+
+<body data-site-nav="home">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (location.protocol !== 'file:') return;
+      var p = location.pathname.replace(/\\/g, '/');
+      var i = p.toLowerCase().indexOf('/htdocs/');
+      if (i < 0) return;
+      var pageUrl = 'http://localhost/' + p.slice(i + '/htdocs/'.length).replace(/^\/+/, '');
+      var dir = pageUrl.substring(0, pageUrl.lastIndexOf('/') + 1);
+      document.querySelectorAll('a[href*="auth_api.php"]').forEach(function (a) {
+        var rel = a.getAttribute('href') || '';
+        var qi = rel.indexOf('?');
+        a.setAttribute('href', dir + 'auth_api.php' + (qi >= 0 ? rel.substring(qi) : ''));
+      });
+    });
+  </script>
+  <div id="site-nav-root"></div>
+  <script src="js/site-nav-loader.js"></script>
+
+  <div class="split-container">
+    <div class="split-image"></div>
+
+    <div class="split-form">
+      <div class="form-content">
+        <div class="form-header">
+          <h1>Bienvenue !</h1>
+          <p>Déjà un compte ? <a href="login.html">Se connecter</a></p>
+        </div>
+
+        <div id="register-error-container" class="error-container"
+          style="display: none; align-items: center; justify-content: center; background: rgba(229, 57, 53, 0.1); border: 1px solid rgba(229, 57, 53, 0.4); color: #e53935; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600;">
+          <span id="register-error-text"></span>
+        </div>
+
+        <div id="register-success-container" class="success-container"
+          style="display: none; align-items: center; justify-content: center; background: rgba(46, 204, 113, 0.2); border: 1px solid rgba(46, 204, 113, 0.4); color: #4a7c59; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600;">
+          <span id="register-success-text"></span>
+        </div>
+
+        <form method="POST" action="api.php?action=register" id="registerForm" autocomplete="off">
+          <div class="input-box">
+            <label>Nom Complet</label>
+            <input type="text" id="reg_nom" name="nom" placeholder="Jean Mcfury">
+          </div>
+
+          <div class="input-box">
+            <label>Adresse Email</label>
+            <input type="text" id="reg_email" name="email" placeholder="jean.mcfurry@exemple.com">
+          </div>
+
+          <div class="input-box" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="flex: 1;">
+              <label>Mot de passe</label>
+              <input type="password" id="reg_password" name="password" placeholder="••••••••••••••••••••">
+            </div>
+            <button type="button" onclick="togglePW('reg_password')"
+              style="background: none; border: none; color: var(--accent); cursor: pointer; padding: 0;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="input-box">
+            <label>Rôle</label>
+            <select name="role">
+              <option value="User" selected>Utilisateur</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="or-divider">OU</div>
+
+          <div class="social-row">
+            <a href="auth_api.php?action=oauth_redirect&provider=google&intent=register" class="social-icon">
+              <svg viewBox="0 0 48 48" width="45">
+                <path fill="#FFC107"
+                  d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+                <path fill="#FF3D00"
+                  d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z">
+                </path>
+                <path fill="#4CAF50"
+                  d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z">
+                </path>
+                <path fill="#1976D2"
+                  d="M43.611,20.083L43.611,20.083L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+              </svg>
+            </a>
+            <a href="auth_api.php?action=oauth_redirect&provider=facebook&intent=register" class="social-icon">
+              <svg viewBox="0 0 24 24" width="45" fill="#1877F2">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            </a>
+          </div>
+
+          <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+            <button type="submit" class="btn-submit">S'inscrire</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="js/nutrismart-validation.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/translations.js"></script>
+  <script>
+    var eyeOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var eyeOff = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    function togglePW(id) {
+      const input = document.getElementById(id);
+      const btn = input.nextElementSibling;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = eyeOff;
+      } else {
+        input.type = 'password';
+        btn.innerHTML = eyeOpen;
+      }
+    }
+
+  </script>
+  <script src="js/page-transitions.js"></script>
+
+</body>
+
+</html>

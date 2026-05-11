@@ -1,0 +1,473 @@
+/**
+ * Page Programme sport — alignée sur la maquette BlissFlo (landing yoga / bien-être).
+ * Palette : #F5F3F0, blanc, bouton gris-bleu #4a5c5a.
+ */
+
+.ecran-programme-sport--bliss {
+  min-height: 100vh;
+  background: #f5f3f0;
+}
+
+.ecran-programme-sport--bliss .fo-topnav {
+  background: #f5f3f0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+}
+
+.ecran-programme-sport--bliss .fo-topnav-brand .brand-text {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #2c2c2a;
+}
+
+.fo-topnav--bliss .fo-topnav-center {
+  gap: clamp(0.5rem, 2vw, 1.75rem);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fo-topnav--bliss .fo-topnav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #5a5a58;
+  background: transparent;
+  padding: 0.35rem 0.15rem;
+  border-radius: 0;
+}
+
+.fo-topnav--bliss .fo-topnav-link:hover {
+  color: #2c2c2a;
+  background: transparent;
+}
+
+.fo-topnav--bliss .fo-topnav-link.is-active {
+  color: #1f1f1d;
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 2px solid #4a5c5a;
+  padding-bottom: 0.25rem;
+  border-radius: 0;
+}
+
+.fo-topnav-right--bliss .bliss-link-quiet {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4a5c5a;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid transparent;
+}
+
+.fo-topnav-right--bliss .bliss-link-quiet:hover {
+  border-bottom-color: #4a5c5a;
+}
+
+.main--bliss {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.bliss-wrap {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2rem);
+  box-sizing: border-box;
+}
+
+/* ----- Hero (image gauche, texte droite) ----- */
+.bliss-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(3rem, 7vw, 5.5rem);
+}
+
+@media (max-width: 900px) {
+  .bliss-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bliss-hero__img {
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  max-height: 560px;
+  box-shadow: 0 20px 60px rgba(40, 42, 40, 0.08);
+}
+
+.bliss-hero__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bliss-hero__text {
+  padding: 0.5rem 0;
+}
+
+.bliss-hero__text h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(2rem, 4.2vw, 2.85rem);
+  font-weight: 600;
+  line-height: 1.12;
+  color: #1a1a18;
+  margin: 0 0 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.bliss-hero__text p {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 1.02rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: #5c5c59;
+  margin: 0 0 2rem;
+  max-width: 28rem;
+}
+
+.bliss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.95rem 1.85rem;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.bliss-btn--primary {
+  background: #4a5c5a;
+  color: #fafaf8;
+  border: none;
+}
+
+.bliss-btn--primary:hover {
+  background: #3d4d4b;
+  transform: translateY(-1px);
+}
+
+.bliss-btn--dark {
+  background: #3d4543;
+  color: #fff;
+}
+
+.bliss-btn--dark:hover {
+  background: #2f3534;
+}
+
+/* ----- Sections communes ----- */
+.bliss-section {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+}
+
+.bliss-section__head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 2.75rem;
+}
+
+.bliss-section__head h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  font-weight: 600;
+  color: #1a1a18;
+  margin: 0 0 0.5rem;
+}
+
+.bliss-section__head p {
+  font-size: 0.98rem;
+  color: #6b6b68;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ----- Nos Cours : grille 2×2 ----- */
+.bliss-cours-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem);
+}
+
+@media (max-width: 700px) {
+  .bliss-cours-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bliss-cours-card {
+  background: #ffffff;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.bliss-cours-card__img {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.bliss-cours-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bliss-cours-card h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a18;
+  margin: 1.35rem 1.5rem 0.5rem;
+}
+
+.bliss-cours-card p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #5c5c59;
+  margin: 0 1.5rem 1rem;
+  flex: 1;
+}
+
+.bliss-cours-card a {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a5c5a;
+  text-decoration: none;
+  margin: 0 1.5rem 1.5rem;
+  align-self: flex-start;
+  border-bottom: 1px solid rgba(74, 92, 90, 0.35);
+  padding-bottom: 0.15rem;
+}
+
+.bliss-cours-card a:hover {
+  color: #2f3d3b;
+}
+
+/* ----- Split mission / studio ----- */
+.bliss-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+  padding: clamp(3rem, 8vw, 5rem) 0;
+}
+
+@media (max-width: 860px) {
+  .bliss-split {
+    grid-template-columns: 1fr;
+  }
+
+  .bliss-split--studio .bliss-split__media {
+    order: -1;
+  }
+}
+
+.bliss-split__text .bliss-kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a8a87;
+  margin: 0 0 0.65rem;
+}
+
+.bliss-split__text h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.5rem, 2.8vw, 1.95rem);
+  font-weight: 600;
+  color: #1a1a18;
+  margin: 0 0 0.75rem;
+}
+
+.bliss-split__text .bliss-sub {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #4a4a48;
+  margin: 0 0 1rem;
+}
+
+.bliss-split__text .bliss-prose {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #5c5c59;
+  margin: 0 0 1rem;
+}
+
+.bliss-signature {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #6b6b68;
+  margin: 1.5rem 0 0;
+}
+
+.bliss-split__media {
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.07);
+}
+
+.bliss-split__media img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.bliss-split--mission .bliss-split__media img {
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
+}
+
+.bliss-split--studio .bliss-split__media--wide img {
+  aspect-ratio: 16 / 10;
+  max-height: 380px;
+}
+
+.bliss-list {
+  margin: 1rem 0 0;
+  padding: 0 0 0 1.15rem;
+  font-size: 0.94rem;
+  line-height: 1.85;
+  color: #5c5c59;
+}
+
+/* ----- Ressources 3 colonnes ----- */
+.bliss-res-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem);
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+@media (max-width: 900px) {
+  .bliss-res-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bliss-res-card {
+  background: #ffffff;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
+}
+
+.bliss-res-card__img {
+  aspect-ratio: 3 / 4;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.bliss-res-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bliss-res-card h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 1.15rem 1.35rem 0.4rem;
+  color: #1a1a18;
+}
+
+.bliss-res-card p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #5c5c59;
+  margin: 0 1.35rem 1rem;
+  flex: 1;
+}
+
+.bliss-res-card a {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a5c5a;
+  margin: auto 1.35rem 1.35rem;
+  align-self: flex-start;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(74, 92, 90, 0.35);
+  padding-bottom: 0.1rem;
+}
+
+/* ----- CTA pleine largeur ----- */
+.bliss-cta {
+  position: relative;
+  min-height: min(420px, 70vh);
+  display: flex;
+  align-items: center;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.bliss-cta__bg {
+  position: absolute;
+  inset: 0;
+  background: url("../images/photo-1558961363-fa8fdf82db35.jpg") center / cover no-repeat;
+}
+
+.bliss-cta__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 243, 240, 0.94) 0%,
+    rgba(245, 243, 240, 0.75) 38%,
+    rgba(245, 243, 240, 0.35) 100%
+  );
+}
+
+.bliss-cta__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem);
+  box-sizing: border-box;
+}
+
+.bliss-cta__inner h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+  font-weight: 600;
+  color: #1a1a18;
+  margin: 0 0 0.75rem;
+  max-width: 22rem;
+}
+
+.bliss-cta__price {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #3d4543;
+  margin: 0 0 0.5rem;
+}
+
+.bliss-cta__price span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6b6b68;
+}
+
+.bliss-cta__inner > p:not(.bliss-cta__price) {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #5c5c59;
+  margin: 0 0 1.5rem;
+  max-width: 26rem;
+}

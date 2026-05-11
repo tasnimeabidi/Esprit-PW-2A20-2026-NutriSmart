@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="fr" data-ns-activite-fixe="Musculation">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musculation — NutriSmart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/mp-dashboard.css" />
+    <link rel="stylesheet" href="css/shared-styles.css?v=20260416" />
+    <link rel="stylesheet" href="css/nutrismart-saisie-ui.css" />
+    <link rel="stylesheet" href="css/nutrismart-crud-field-toolbar.css" />
+    <link rel="stylesheet" href="css/plan-repas-crud.css?v=20260426" />
+    <link rel="stylesheet" href="css/plan-repas-dialog-base.css?v=20260426" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        important: "#crud-prog-dialog",
+        corePlugins: { preflight: false },
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #ffffff;
+      }
+
+      .pr-back {
+        position: fixed;
+        top: 0.65rem;
+        left: 1rem;
+        z-index: 20;
+      }
+      .pr-back a {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      }
+      .pr-back a:hover {
+        text-decoration: underline;
+      }
+
+      .pr-hero {
+        position: relative;
+        z-index: 1;
+        min-height: 100dvh;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding-top: 2.85rem;
+        padding-bottom: clamp(5.5rem, 14vh, 9rem);
+        box-sizing: border-box;
+        background-color: #0f172a;
+        background-image: url("images/musculation-hero-rejoindre.png?v=2");
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        isolation: isolate;
+      }
+
+      .pr-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.12) 0%,
+          rgba(0, 0, 0, 0.03) 42%,
+          rgba(0, 0, 0, 0.14) 100%
+        );
+        pointer-events: none;
+      }
+
+      .pr-hero__main {
+        position: relative;
+        z-index: 1;
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+        padding: 0.5rem clamp(1rem, 4vw, 2.5rem) clamp(1rem, 3vh, 2rem);
+        transform: translateY(clamp(-0.5rem, -1vh, 0rem));
+      }
+
+      .pr-hero__copy {
+        max-width: 46rem;
+        text-align: center;
+      }
+      .pr-hero__copy h1 {
+        margin: 0 0 0.85rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: clamp(2rem, 4.8vw, 3.05rem);
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.035em;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+      }
+      .pr-hero__copy p {
+        margin: 0 auto;
+        max-width: 34rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: clamp(0.9rem, 1.85vw, 1.06rem);
+        font-weight: 400;
+        line-height: 1.55;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+      }
+
+      .pr-stats-shelf {
+        position: relative;
+        z-index: 5;
+        margin-top: clamp(1rem, 4vw, 2.75rem);
+        margin-bottom: 0;
+        padding: 0 clamp(1.25rem, 5.5vw, 4rem);
+      }
+      .pr-stats-wrap {
+        position: relative;
+        max-width: min(88%, 1120px);
+        margin: 0 auto;
+      }
+      .pr-stats {
+        position: relative;
+        padding: clamp(1.85rem, 3.8vw, 2.45rem) clamp(1.6rem, 3.5vw, 2.75rem);
+        background: #1a1a1a;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 22px 56px rgba(0, 0, 0, 0.2), 0 6px 16px rgba(0, 0, 0, 0.1);
+      }
+      .pr-stats__watermark {
+        position: absolute;
+        right: 2%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: min(180px, 42vw);
+        height: min(180px, 42vw);
+        opacity: 0.07;
+        color: #fff;
+        pointer-events: none;
+      }
+      .pr-stats__grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.38fr);
+        gap: clamp(1rem, 2.5vw, 2.1rem);
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .pr-stats__grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .pr-stats__col--text {
+          grid-column: 1 / -1;
+        }
+      }
+      @media (max-width: 520px) {
+        .pr-stats__grid {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+        .pr-stats-wrap {
+          max-width: 94%;
+        }
+      }
+      .pr-stats__num {
+        display: block;
+        margin: 0 0 0.35rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: clamp(1.55rem, 3vw, 2rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+      .pr-stats__label {
+        margin: 0;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        line-height: 1.35;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      .pr-stats__text {
+        margin: 0 0 0.65rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 400;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.78);
+      }
+      .pr-stats__link {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .pr-stats__link:hover {
+        opacity: 0.9;
+      }
+
+      .pr-sub {
+        position: relative;
+        z-index: 2;
+        margin-top: 0;
+        /* Grand espace blanc sous le bandeau noir (comme la maquette) */
+        padding-top: clamp(4.25rem, 14vh, 8.5rem);
+        padding-bottom: clamp(4.5rem, 11vh, 7rem);
+        background: #ffffff;
+      }
+
+      .pr-services__inner {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding-inline: clamp(1.25rem, 4.5vw, 2.75rem);
+      }
+
+      /* Momentus : titre + intro en colonne gauche ; bouton aligné en haut à droite */
+      .pr-services__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem 2.5rem;
+        margin-bottom: clamp(3rem, 5.5vw, 4.25rem);
+      }
+      .pr-services__titles {
+        flex: 1 1 auto;
+        min-width: min(100%, 20rem);
+        max-width: 38rem;
+      }
+      .pr-services__titles h2 {
+        margin: 0 0 0.85rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: clamp(1.85rem, 3.4vw, 2.35rem);
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 1.12;
+        color: #000000;
+      }
+      .pr-services__titles p {
+        margin: 0;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.9375rem;
+        font-weight: 400;
+        line-height: 1.65;
+        color: #6b6b6b;
+      }
+      .pr-services__btn {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.45rem;
+        border-radius: 999px;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #fff;
+        background: #000000;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .pr-services__btn:hover {
+        opacity: 0.85;
+      }
+      @media (max-width: 640px) {
+        .pr-services__head {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .pr-services__btn {
+          align-self: flex-start;
+        }
+      }
+
+      .pr-services__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(2rem, 5.5vw, 3.75rem);
+      }
+      @media (max-width: 900px) {
+        .pr-services__grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .pr-svc-card__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        margin-bottom: 1.15rem;
+        border-radius: 50%;
+        background: #000000;
+        color: #dce94a;
+      }
+      .pr-svc-card__icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .pr-svc-card h3 {
+        margin: 0 0 0.65rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 1.0625rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #000000;
+      }
+      .pr-svc-card p {
+        margin: 0 0 1.1rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.65;
+        color: #6b6b6b;
+      }
+      .pr-svc-card__more {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-decoration: none;
+        padding: 0.45rem 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s, border-color 0.2s, transform 0.2s;
+      }
+      .pr-svc-card__more::after {
+        content: "→";
+        font-size: 0.95em;
+        transition: transform 0.2s;
+      }
+      .pr-svc-card__more:hover {
+        color: #2d4a3e;
+        border-bottom-color: rgba(45, 74, 62, 0.35);
+      }
+      .pr-svc-card__more:hover::after {
+        transform: translateX(3px);
+      }
+      .pr-svc-card__more:focus-visible {
+        outline: 2px solid #4a7c59;
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+
+      /* Même rendu réseaux que programme-sport (icônes plates au survol) */
+      footer#contact .social-btn {
+        border: none;
+        background: transparent;
+        transform: none;
+      }
+      footer#contact .social-btn:hover {
+        border: none;
+        background: rgba(255, 255, 255, 0.07);
+        transform: none;
+      }
+
+      @keyframes pr-crud-dialog-in {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Centrage explicite : mp-dashboard.css applique * { margin: 0 }, ce qui casse le margin:auto natif du <dialog>. */
+      .pr-crud-dialog {
+        position: fixed;
+        inset: 0;
+        width: min(90vw, 760px);
+        max-width: min(90vw, 760px);
+        height: fit-content;
+        max-height: min(92vh, 900px);
+        margin: auto;
+        padding: 0;
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 32px 96px rgba(10, 22, 16, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+        font-family: "Inter", system-ui, sans-serif;
+        color: #1a1f1c;
+      }
+      .pr-crud-dialog[open] {
+        animation: pr-crud-dialog-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .pr-crud-dialog::backdrop {
+        background: rgba(8, 18, 12, 0.58);
+        backdrop-filter: blur(6px);
+      }
+
+      .pr-crud-dialog__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        padding: 1.35rem 1.5rem 1.15rem;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #334155 100%);
+        color: #fff;
+      }
+      .pr-crud-dialog__kicker {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+        margin-bottom: 0.35rem;
+      }
+      .pr-crud-dialog__title {
+        margin: 0;
+        font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+        color: #fff;
+      }
+      .pr-crud-dialog__close {
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+        color: #fff;
+        transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      }
+      .pr-crud-dialog__close:hover {
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      .pr-crud-dialog__close:active {
+        transform: scale(0.96);
+      }
+      .pr-crud-dialog__close svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      .pr-crud-dialog .fo-mem-crud-section {
+        margin: 0;
+        padding: 0;
+        max-width: none;
+        border-top: none;
+        border-radius: 0;
+        max-height: min(72vh, 640px);
+        overflow: auto;
+        background: #fff;
+        scrollbar-gutter: stable;
+      }
+      .pr-crud-dialog .fo-mem-crud-inner {
+        max-width: none;
+        margin: 0;
+        padding: 1rem 1.25rem 1.25rem;
+      }
+      .pr-crud-dialog .fo-crud-wrap {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        background: transparent;
+      }
+      .pr-crud-dialog .fo-crud-tabs {
+        margin-bottom: 1.15rem;
+        background: rgba(15, 23, 42, 0.05);
+        border-color: rgba(15, 23, 42, 0.1);
+      }
+      .pr-crud-dialog .fo-crud-tab {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.02em;
+        padding: 0.52rem 1.05rem;
+      }
+      .pr-crud-dialog .fo-crud-heading {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: -0.02em;
+      }
+      .pr-crud-dialog .fo-crud-form-grid label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+      }
+      .pr-crud-dialog .fo-crud-form-grid input,
+      .pr-crud-dialog .fo-crud-form-grid select {
+        font-family: "Inter", system-ui, sans-serif;
+        font-weight: 500;
+        padding: 0.55rem 0.65rem;
+        border-radius: 8px;
+      }
+      .pr-crud-dialog .fo-crud-table {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.78rem;
+      }
+
+      .pr-filemode-banner {
+        position: relative;
+        z-index: 25;
+        margin: 0;
+        padding: 0.75rem 1.25rem;
+        background: #7a1f1f;
+        color: #fff;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.875rem;
+        line-height: 1.45;
+        text-align: center;
+        border-bottom: 2px solid #c62828;
+      }
+      .pr-filemode-banner strong {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      .pr-filemode-banner code {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        font-size: 0.8em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pr-back">
+      <a href="programme-sport.html#musculation-programmes">← Retour aux programmes Musculation</a>
+    </div>
+
+    <script>
+      (function () {
+        if (window.location.protocol !== "file:") return;
+        var b = document.createElement("div");
+        b.className = "pr-filemode-banner";
+        b.setAttribute("role", "alert");
+        b.innerHTML =
+          "<strong>Mode démo navigateur (fichier local)</strong>Les enregistrements du CRUD vont dans le stockage du navigateur, <em>pas</em> dans MySQL — phpMyAdmin ne changera pas. Pour écrire dans la base <strong>nutrismart</strong>, ouvrez cette page via Apache, par exemple : <code>http://localhost/projetNutriSmart/Views/frontoffice/musculation-rejoindre.html</code> (adaptez le chemin si votre dossier htdocs est différent).";
+        var hero = document.querySelector(".pr-hero");
+        if (hero && hero.parentNode) {
+          hero.parentNode.insertBefore(b, hero);
+        } else {
+          document.body.insertBefore(b, document.body.firstChild);
+        }
+      })();
+    </script>
+
+    <section class="pr-hero" aria-labelledby="pr-hero-title">
+      <div class="pr-hero__main">
+        <div class="pr-hero__copy">
+          <h1 id="pr-hero-title">Build strength with NutriSmart</h1>
+          <p>
+            Progresser en force, en volume et en confiance : séances structurées, charges et volumes suivis, et
+            nutrition alignée sur vos objectifs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="pr-stats-shelf" aria-label="Statistics">
+      <div class="pr-stats-wrap">
+        <div class="pr-stats">
+          <svg class="pr-stats__watermark" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="8" r="5" fill="currentColor" />
+            <circle cx="24" cy="16" r="5" fill="currentColor" />
+            <circle cx="16" cy="24" r="5" fill="currentColor" />
+            <circle cx="8" cy="16" r="5" fill="currentColor" />
+          </svg>
+          <div class="pr-stats__grid">
+            <div class="pr-stats__col">
+              <span class="pr-stats__num">1k+</span>
+              <p class="pr-stats__label">World champions</p>
+            </div>
+            <div class="pr-stats__col">
+              <span class="pr-stats__num">1.8%</span>
+              <p class="pr-stats__label">Runner up champions</p>
+            </div>
+            <div class="pr-stats__col">
+              <span class="pr-stats__num">4.5m</span>
+              <p class="pr-stats__label">Sea games participation</p>
+            </div>
+            <div class="pr-stats__col pr-stats__col--text">
+              <p class="pr-stats__text">
+                Once we receive your consult request we match you up with a trainer. This is to ensure that your unique
+                goals, needs, and personalities align.
+              </p>
+              <a class="pr-stats__link" href="register.html">Join Member</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="pr-sub" aria-labelledby="pr-services-title">
+      <div class="pr-services__inner">
+        <header class="pr-services__head">
+          <div class="pr-services__titles">
+            <h2 id="pr-services-title">Our Services</h2>
+            <p>
+              Whether you're a beginner or an advanced practitioner, our offerings are designed to inspire and support
+              you on your wellness journey.
+            </p>
+          </div>
+          <a class="pr-services__btn" href="programme-sport.html#musculation-programmes">Explore more</a>
+        </header>
+
+        <div class="pr-services__grid">
+          <article class="pr-svc-card">
+            <div class="pr-svc-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round">
+                <circle cx="12" cy="5.5" r="2" />
+                <path d="M12 7.5v3M9 10.5h6M10 10.5L9 20M15 10.5l1 9.5M11 20h2" />
+                <path d="M8 20h8" />
+              </svg>
+            </div>
+            <h3>Musculation &amp; renforcement</h3>
+            <p>
+              Programmes de force et d’hypertrophie pour tous niveaux : technique, progression de charges et
+              périodisation pour des résultats durables.
+            </p>
+            <button type="button" class="pr-svc-card__more js-open-prog-crud" aria-haspopup="dialog" aria-controls="crud-prog-dialog">
+              En savoir plus
+            </button>
+          </article>
+
+          <article class="pr-svc-card">
+            <div class="pr-svc-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+                <path d="M5 10v4M19 10v4" />
+                <rect x="3.5" y="9" width="3" height="6" rx="0.75" />
+                <rect x="17.5" y="9" width="3" height="6" rx="0.75" />
+                <path d="M6.5 12h11" />
+              </svg>
+            </div>
+            <h3>Fitness Training</h3>
+            <p>
+              Our expert trainers offer customized workouts and ongoing support for weight loss, muscle building, and
+              improved health.
+            </p>
+            <button type="button" class="pr-svc-card__more js-open-prog-crud" aria-haspopup="dialog" aria-controls="crud-prog-dialog">
+              En savoir plus
+            </button>
+          </article>
+
+          <article class="pr-svc-card">
+            <div class="pr-svc-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round">
+                <path
+                  d="M12 18.9c-3.8-2.9-6.5-5.4-6.5-8.4 0-2.1 1.6-3.5 3.5-3.5 1.1 0 2.1.5 2.7 1.3.6-.8 1.6-1.3 2.7-1.3 1.9 0 3.5 1.4 3.5 3.5 0 3-2.7 5.5-6.5 8.4z"
+                />
+              </svg>
+            </div>
+            <h3>Wellness Workshops</h3>
+            <p>
+              Workshops on mindfulness, stress management, and holistic health. Gain valuable insights and practical
+              tools to enhance your physical and mental well-being.
+            </p>
+            <button type="button" class="pr-svc-card__more js-open-prog-crud" aria-haspopup="dialog" aria-controls="crud-prog-dialog">
+              En savoir plus
+            </button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <dialog id="crud-prog-dialog" class="pr-crud-dialog" aria-modal="true" aria-label="Programme sportif">
+      <section class="fo-mem-crud-section fo-mem-crud-section--sport" aria-label="Gestion programme sportif">
+        <div class="fo-mem-crud-inner">
+          <div id="fo-crud-prog" class="fo-crud-wrap bo-crud-page w-full max-w-none">
+            <section
+              class="content-card fo-crud-panel bo-crud-panel border-0 bg-transparent p-0 shadow-none"
+              data-panel="programmeSportif"
+              id="fo-panel-programme"
+            >
+              <h2 class="bo-crud-heading mb-4 text-[16px] font-semibold text-gray-800">Programme sportif</h2>
+              <p class="bo-crud-hint" id="hint-programmeSportif"></p>
+              <form id="form-programmeSportif" class="bo-crud-form fo-crud-form" novalidate>
+                <div class="flex w-full flex-col gap-2.5">
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Plan repas</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <select
+                        id="prog-id-plan"
+                        name="idPlan"
+                        class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      ></select>
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-id-plan" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-id-plan" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Type d'activité</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <input
+                        type="text"
+                        id="prog-type-sport"
+                        name="typeSport"
+                        value="Musculation"
+                        readonly
+                        aria-readonly="true"
+                        title="Cette page est dédiée à la musculation : une autre activité ne peut pas être enregistrée."
+                        class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      />
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-type-sport" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-type-sport" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Niveau</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <select
+                        id="prog-niveau"
+                        name="niveau"
+                        class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      >
+                        <option value="">— Choisir —</option>
+                        <option>Débutant</option>
+                        <option>Intermédiaire</option>
+                        <option>Avancé</option>
+                        <option>Expert</option>
+                      </select>
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-niveau" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-niveau" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Intensité</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <select
+                        id="prog-intensite"
+                        name="intensite"
+                        class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      >
+                        <option value="">— Choisir —</option>
+                        <option>Très légère</option>
+                        <option>Légère</option>
+                        <option>Modérée</option>
+                        <option>Soutenue</option>
+                        <option>Très soutenue</option>
+                        <option>Récupération</option>
+                      </select>
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-intensite" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-intensite" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Date de la séance</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <input
+                        type="date"
+                        id="prog-date-seance"
+                        name="dateSeance"
+                        title="Date du jour de séance"
+                        class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      />
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-date-seance" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-date-seance" title="Vider ce champ" aria-label="Vider ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Durée (minutes)</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <input
+                        type="text"
+                        id="prog-duree-min"
+                        name="dureeMin"
+                        inputmode="numeric"
+                        placeholder="45"
+                        class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      />
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-duree-min" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-duree-min" title="Vider ce champ" aria-label="Vider ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                  <label class="flex w-full flex-col gap-1.5 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <span class="text-[13px] font-semibold text-gray-800">Statut de la séance</span>
+                    <div class="flex min-w-0 items-center gap-2">
+                      <select
+                        id="prog-statut-seance"
+                        name="statutSeance"
+                        class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                      >
+                        <option value="">— Choisir —</option>
+                        <option value="prevue">Prévue</option>
+                        <option value="en cours">En cours</option>
+                        <option value="realisee">Réalisée</option>
+                        <option value="annulee">Annulée</option>
+                        <option value="reportee">Reportée</option>
+                      </select>
+                      <span class="pr-field-tools shrink-0">
+                        <button type="button" class="pr-field-btn pr-field-btn--edit" data-pr-target="prog-statut-seance" title="Modifier ce champ" aria-label="Modifier ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button type="button" class="pr-field-btn pr-field-btn--clear" data-pr-target="prog-statut-seance" title="Réinitialiser ce champ" aria-label="Réinitialiser ce champ">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                  </label>
+                </div>
+                <div class="bo-crud-form-actions mt-4 flex flex-col gap-2.5">
+                  <button
+                    type="submit"
+                    class="btn-sm btn-green h-[50px] w-full rounded-full border-0 bg-[#1e5631] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(30,86,49,0.35)] transition hover:bg-[#174728] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/50"
+                  >
+                    Enregistrer
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-sm btn-ghost h-[44px] w-full rounded-[12px] border border-[#d1d5db] bg-white text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+                    data-reset-form="programmeSportif"
+                  >
+                    Nouveau
+                  </button>
+                </div>
+              </form>
+              <div id="tbody-programme" hidden></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </dialog>
+
+    <footer id="contact">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <mask id="biteMaskFooterPilates">
+                <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                <circle cx="92" cy="35" r="18" fill="black" />
+                <circle cx="84" cy="62" r="14" fill="black" />
+              </mask>
+              <g mask="url(#biteMaskFooterPilates)">
+                <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+                <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+              </g>
+              <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+            </svg>
+            <span>NutriSmart</span>
+          </div>
+          <p class="footer-desc">
+            Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+          </p>
+          <div class="footer-contact-list">
+            <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              contact@nutrismart.demo
+            </a>
+            <a href="tel:+21612345678" class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                </svg>
+              </div>
+              +216 12 345 678
+            </a>
+            <div class="footer-contact-item">
+              <div class="fc-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              Tunis, Tunisie
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Plateforme</h5>
+          <ul>
+            <li><a href="nutrismart-website.html#features">Fonctionnalités</a></li>
+            <li><a href="nutrismart-website.html#comment">Comment ça marche</a></li>
+            <li><a href="nutrismart-website.html#modules">Modules</a></li>
+            <li><a href="plan-repas.html">Programmes repas</a></li>
+            <li><a href="programme-sport.html">Programmes sport</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Ressources</h5>
+          <ul>
+            <li><a href="nutrismart-website.html">Base alimentaire</a></li>
+            <li><a href="recette.html">Carnet de recettes</a></li>
+            <li><a href="nutrismart-website.html#features">Blog nutrition</a></li>
+            <li><a href="suivi-statistiques.php">Suivi de progrès</a></li>
+            <li><a href="nutrismart-website.html#contact">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Suivez-nous</h5>
+          <div class="footer-social">
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="X">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </a>
+          </div>
+          <h5>Légal</h5>
+          <ul>
+            <li><a href="#">Politique de confidentialité</a></li>
+            <li><a href="#">Conditions d’utilisation</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 NutriSmart — Tous droits réservés</span>
+        <div class="footer-bottom-links">
+          <a href="#">Confidentialité</a>
+          <a href="#">CGU</a>
+          <a href="mailto:contact@nutrismart.demo">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="nutrismart-api-config.php"></script>
+    <script>
+      window.NUTRISMART_CRUD_ADMIN_CONFIG = {
+        root: "#fo-crud-prog",
+        tabSelector: ".fo-crud-tab",
+        panelSelector: ".fo-crud-panel",
+        msgClassBase: "bo-crud-msg",
+        actionsClass: "fo-crud-actions",
+      };
+      window.NUTRISMART_CRUD_ENTITIES = ["planRepas", "programmeSportif"];
+      if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
+      if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
+    </script>
+    <script src="js/nutrismart-crud-store.js"></script>
+    <script src="js/nutrismart-saisie-crud.js"></script>
+    <script src="js/nutrismart-crud-admin.js?v=20260420-2"></script>
+    <script src="js/nutrismart-crud-field-toolbar.js"></script>
+    <script>
+      (function () {
+        var lastCrudOpener = null;
+
+        function openCrud() {
+          var d = document.getElementById("crud-prog-dialog");
+          if (!d) return;
+          lastCrudOpener = document.activeElement;
+          if (typeof d.showModal === "function") d.showModal();
+          else d.setAttribute("open", "");
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () {
+              var tab = d.querySelector('.fo-crud-tab[data-tab="programmeSportif"]');
+              if (tab && typeof tab.focus === "function") tab.focus();
+              else {
+                var closeBtn = d.querySelector("[data-crud-dialog-close]");
+                if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
+              }
+            });
+          });
+        }
+
+        function closeCrud() {
+          var d = document.getElementById("crud-prog-dialog");
+          if (!d) return;
+          if (typeof d.close === "function") d.close();
+          else d.removeAttribute("open");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          var dialog = document.getElementById("crud-prog-dialog");
+          if (dialog) {
+            dialog.addEventListener("close", function () {
+              if (lastCrudOpener && document.contains(lastCrudOpener) && typeof lastCrudOpener.focus === "function") {
+                try {
+                  lastCrudOpener.focus();
+                } catch (e) {}
+              }
+              lastCrudOpener = null;
+            });
+          }
+          document.querySelectorAll(".js-open-prog-crud").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+              e.preventDefault();
+              openCrud();
+            });
+          });
+          document.querySelectorAll("[data-crud-dialog-close]").forEach(function (btn) {
+            btn.addEventListener("click", closeCrud);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

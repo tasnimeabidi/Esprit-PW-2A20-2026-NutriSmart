@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSmart — Plan repas</title>
+    <link rel="stylesheet" href="css/mp-dashboard.css?v=20260427" />
+    <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+    <script src="js/avatar-utils.js"></script>
+    <link rel="stylesheet" href="css/plan-repas-crud.css?v=20260426" />
+    <link rel="stylesheet" href="css/crud-panel-plan-repas.css?v=20260421" />
+    <link rel="stylesheet" href="css/crud-panel-repas.css?v=20260421" />
+    <link rel="stylesheet" href="css/crud-panel-programme-sportif.css?v=20260421" />
+    <link rel="stylesheet" href="css/nutrismart-saisie-ui.css?v=20260423" />
+    <link rel="stylesheet" href="css/plan-repas-dialog-base.css?v=20260426" />
+    <link rel="stylesheet" href="css/nutrismart-crud-field-toolbar.css?v=20260421" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        important: "#plan-repas-crud-dialog",
+        corePlugins: { preflight: false },
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .day-card.js-open-plan-crud {
+        cursor: pointer;
+        transition: box-shadow 0.2s ease, transform 0.15s ease;
+      }
+      .day-card.js-open-plan-crud:hover {
+        box-shadow: 0 10px 36px rgba(26, 60, 34, 0.14);
+        transform: translateY(-2px);
+      }
+      .day-card.js-open-plan-crud:focus-visible {
+        outline: 2px solid #2d5a27;
+        outline-offset: 3px;
+      }
+      .days-grid-add-wrap {
+        display: flex;
+        justify-content: center;
+        padding: 0.75rem 0 1.25rem;
+      }
+      .days-grid-add-btn {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        padding: 0.55rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid rgba(45, 90, 39, 0.35);
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e4620;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(26, 60, 34, 0.08);
+        transition: background 0.18s, box-shadow 0.18s;
+      }
+      .days-grid-add-btn:hover {
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(26, 60, 34, 0.12);
+      }
+      .pr-open-full-crud-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0 0 1.25rem;
+        padding: 0 0.25rem;
+      }
+      .pr-open-full-crud-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1.2;
+        padding: 0.5rem 0.9rem;
+        min-height: 2.5rem;
+        border-radius: 6px;
+        border: 1px solid rgba(30, 86, 49, 0.45);
+        background: #fff;
+        color: #1a3d18;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(16, 24, 20, 0.06);
+        transition:
+          background 0.16s,
+          border-color 0.16s,
+          color 0.16s,
+          box-shadow 0.16s;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .pr-open-full-crud-ic {
+        display: flex;
+        align-items: center;
+        color: #1e5631;
+        flex-shrink: 0;
+      }
+      .pr-open-full-crud-ic--chev {
+        opacity: 0.75;
+        margin-left: 0.05rem;
+      }
+      .pr-open-full-crud-txt {
+        text-align: left;
+        max-width: 18rem;
+      }
+      .pr-open-full-crud-btn:hover {
+        background: #f3f7f3;
+        border-color: #1e5631;
+        box-shadow: 0 2px 6px rgba(16, 40, 28, 0.08);
+      }
+      .pr-open-full-crud-btn:active {
+        transform: translateY(0.5px);
+        box-shadow: 0 1px 2px rgba(16, 40, 28, 0.06);
+      }
+      .pr-open-full-crud-btn:focus-visible {
+        outline: 2px solid #2d5a27;
+        outline-offset: 2px;
+      }
+      /* Modale plan repas : un peu plus large + cadre arrondi marqué */
+      #plan-repas-crud-dialog.pr-plan-crud-dialog {
+        width: min(94vw, 600px);
+        max-width: 600px;
+        border-radius: 32px;
+        border: 2px solid rgba(30, 86, 49, 0.28);
+        box-shadow:
+          0 14px 44px rgba(26, 60, 34, 0.18),
+          0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="site-nav-root"></div>
+    <script src="js/site-nav-loader.js"></script>
+    <!-- Structure type cours HTML5 : en-tête site + main (sections / articles) -->
+    <div class="conteneur-principal ecran-plan-repas conteneur-principal--menu-haut">
+      <!-- Contenu principal de la page (une seule balise main par document) -->
+      <main class="main">
+        <!-- Bandeau membre : titre, date, recherche, notifications -->
+        <header class="main-header">
+          
+          <div class="header-actions">
+            <div class="search-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input type="search" placeholder="Rechercher..." />
+            </div>
+            <button type="button" class="btn-icon" aria-label="Notifications">
+              <span class="notif-dot notif-dot--red"></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 01-3.46 0" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- En-tête visuel du plan : fond, voile, contenu -->
+        <section class="plan-header" aria-label="En-tête du plan repas">
+          <div class="background"></div>
+          <div class="overlay"></div>
+          <div class="content">
+            <div class="pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+              Semaine du 1 au 7 Avril 2026
+            </div>
+            <h2 class="serif">Plan Repas</h2>
+          </div>
+        </section>
+
+        <div class="pr-open-full-crud-wrap">
+          <a
+            class="pr-open-full-crud-btn"
+            href="meal-workout-calculator.html"
+            aria-label="Ouvrir le calculateur repas et activité sportive"
+          >
+            <span class="pr-open-full-crud-ic" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                focusable="false"
+              >
+                <path
+                  d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </span>
+            <span class="pr-open-full-crud-txt">Calculateur repas &amp; activité</span>
+            <span class="pr-open-full-crud-ic pr-open-full-crud-ic--chev" aria-hidden="true">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+          </a>
+        </div>
+        <section class="goal-bar" aria-label="Objectif nutritionnel">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2" />
+              <path d="M7 2v20" />
+              <path d="M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+            </svg>
+          </div>
+          <div class="mid">
+            <div class="label">OBJECTIF ACTUEL</div>
+            <div class="goal-title serif">Perte de poids</div>
+          </div>
+          <div class="target">
+            <span>Cible journalière</span>
+            <strong>2100 kcal</strong>
+          </div>
+          <div class="goal-nav">
+            <button type="button" aria-label="Précédent">‹</button>
+            <button type="button" aria-label="Suivant">›</button>
+          </div>
+        </section>
+
+        <!-- Zone liste : un article par jour (contenu structuré sémantique) -->
+        <div class="page-plan-repas">
+        <section class="days-grid days-grid--plan" aria-label="Plan repas de la semaine">
+          <article
+            class="day-card is-current js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Lundi</span>
+                <span class="kcal-pill">1530 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Porridge aux fruits rouges</div>
+                </div>
+                <span class="meal-kcal">350 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Salade César au poulet</div>
+                </div>
+                <span class="meal-kcal">520 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Yaourt grec &amp; amandes</div>
+                </div>
+                <span class="meal-kcal">180 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Saumon grillé &amp; légumes</div>
+                </div>
+                <span class="meal-kcal">480 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Mardi</span>
+                <span class="kcal-pill">1530 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Porridge aux fruits rouges</div>
+                </div>
+                <span class="meal-kcal">350 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Salade César au poulet</div>
+                </div>
+                <span class="meal-kcal">520 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Yaourt grec &amp; amandes</div>
+                </div>
+                <span class="meal-kcal">180 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Saumon grillé &amp; légumes</div>
+                </div>
+                <span class="meal-kcal">480 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Mercredi</span>
+                <span class="kcal-pill">1530 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Porridge aux fruits rouges</div>
+                </div>
+                <span class="meal-kcal">350 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Salade César au poulet</div>
+                </div>
+                <span class="meal-kcal">520 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Yaourt grec &amp; amandes</div>
+                </div>
+                <span class="meal-kcal">180 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Saumon grillé &amp; légumes</div>
+                </div>
+                <span class="meal-kcal">480 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Jeudi</span>
+                <span class="kcal-pill">1620 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Tartines avocat &amp; œuf</div>
+                </div>
+                <span class="meal-kcal">320 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Buddha bowl quinoa &amp; légumes</div>
+                </div>
+                <span class="meal-kcal">540 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="images/photo-1512621776951-a57141f2eefd.jpg"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Smoothie vert &amp; épinards</div>
+                </div>
+                <span class="meal-kcal">160 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Cabillaud en papillote</div>
+                </div>
+                <span class="meal-kcal">600 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Vendredi</span>
+                <span class="kcal-pill">1580 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Œufs brouillés &amp; pain complet</div>
+                </div>
+                <span class="meal-kcal">280 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="images/photo-1546069901-ba9599a7e63c.jpg"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Wrap thon &amp; crudités</div>
+                </div>
+                <span class="meal-kcal">480 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="images/photo-1488477181946-6428a0291777.jpg"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Barre céréales &amp; noix</div>
+                </div>
+                <span class="meal-kcal">200 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Pizza maison légère</div>
+                </div>
+                <span class="meal-kcal">620 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Samedi</span>
+                <span class="kcal-pill">1780 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Brunch pancakes &amp; fruits</div>
+                </div>
+                <span class="meal-kcal">420 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Burger maison &amp; salade</div>
+                </div>
+                <span class="meal-kcal">650 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="images/photo-1490818387583-1baba5e638af.jpg"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Salade de fruits frais</div>
+                </div>
+                <span class="meal-kcal">120 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Risotto aux champignons</div>
+                </div>
+                <span class="meal-kcal">590 kcal</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="day-card js-open-plan-crud"
+            tabindex="0"
+            role="button"
+            aria-label="Ouvrir la fenêtre CRUD plan repas"
+          >
+            <div class="day-card-head">
+              <img loading="lazy" decoding="async"
+                src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=600&q=80"
+                alt=""
+              />
+              <div class="day-card-meta">
+                <span class="day-name">Dimanche</span>
+                <span class="kcal-pill">1650 kcal</span>
+              </div>
+            </div>
+            <div class="day-card-body">
+              <div class="meal-row breakfast">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Petit dejeuner</div>
+                  <div class="meal-name">Viennoiseries &amp; café au lait</div>
+                </div>
+                <span class="meal-kcal">380 kcal</span>
+              </div>
+              <div class="meal-row lunch">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Dejeuner</div>
+                  <div class="meal-name">Rôti &amp; légumes du marché</div>
+                </div>
+                <span class="meal-kcal">720 kcal</span>
+              </div>
+              <div class="meal-row snack">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=200&q=80"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Collation</div>
+                  <div class="meal-name">Thé &amp; madeleines</div>
+                </div>
+                <span class="meal-kcal">150 kcal</span>
+              </div>
+              <div class="meal-row dinner">
+                <img loading="lazy" decoding="async"
+                  class="meal-thumb"
+                  src="images/photo-1467003909585-2f8a72700288.jpg"
+                  alt=""
+                />
+                <div class="meal-info">
+                  <div class="meal-type">Diner</div>
+                  <div class="meal-name">Soupe maison &amp; salade verte</div>
+                </div>
+                <span class="meal-kcal">400 kcal</span>
+              </div>
+            </div>
+          </article>
+        </section>
+        <div class="days-grid-add-wrap">
+          <button type="button" class="days-grid-add-btn" id="btn-add-extra-day">
+            + Ajouter un jour
+          </button>
+        </div>
+        </div>
+      </main>
+
+    <dialog
+      id="plan-repas-crud-dialog"
+      class="pr-crud-dialog pr-plan-crud-dialog overflow-hidden border-0 bg-[#f5f5f4] p-0 font-sans text-neutral-900 antialiased"
+      aria-modal="true"
+      aria-labelledby="plan-repas-crud-form-title"
+    >
+      <div class="flex shrink-0 items-center justify-between gap-3 rounded-t-[32px] border-b border-[#dfe6e0] bg-white px-4 py-3 sm:px-5">
+        <h2 id="plan-repas-crud-form-title" class="m-0 text-[16px] font-semibold tracking-tight text-gray-900">
+          plan_repas
+        </h2>
+        <button
+          type="button"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d1d5db] bg-white text-gray-600 transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/35"
+          data-plan-crud-close
+          aria-label="Fermer la fenêtre"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex max-h-[min(82vh,880px)] min-h-0 flex-col overflow-hidden rounded-b-[32px] bg-[#f0f0f0]">
+        <div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-crud-scroll">
+          <div class="px-4 pb-5 pt-4 sm:px-5 sm:pb-6 sm:pt-5">
+            <div id="plan-repas-crud-root" class="bo-users-page bo-crud-page w-full max-w-none p-0">
+              <p id="crud-global-msg" class="bo-crud-msg" role="status" aria-live="polite"></p>
+
+              <!-- PlanRepas -->
+              <section class="content-card bo-crud-panel border-0 bg-transparent p-0 shadow-none" data-panel="planRepas" id="panel-plan-repas">
+                <p class="bo-crud-hint" id="hint-planRepas"></p>
+                <form id="form-planRepas" class="bo-crud-form" novalidate>
+                  <!-- id_utilisateur requis en base : envoyé sans saisie (défaut 1 — à remplacer par l’utilisateur connecté si besoin) -->
+                  <input type="hidden" id="pr-id-utilisateur" name="idUtilisateur" value="1" />
+                  <input type="hidden" id="pr-id" name="id" value="" />
+                  <div class="flex w-full flex-col gap-2.5">
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Date de début</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="date"
+                          id="pr-date-debut"
+                          name="dateDebut"
+                          min="2026-04-01"
+                          title="Période du plan — date de début"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-date-debut"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-date-debut"
+                            title="Vider ce champ"
+                            aria-label="Vider ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">Date de fin</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <input
+                          type="date"
+                          id="pr-date-fin"
+                          name="dateFin"
+                          min="2026-04-01"
+                          title="Période du plan — date de fin"
+                          class="box-border min-h-[46px] min-w-0 flex-1 rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        />
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-date-fin"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-date-fin"
+                            title="Vider ce champ"
+                            aria-label="Vider ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">objectif</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="pr-objectif"
+                          name="objectif"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option value="Perte de poids">Perte de poids</option>
+                          <option value="Prise de masse musculaire">Prise de masse musculaire</option>
+                          <option value="Maintien et tonification">Maintien et tonification</option>
+                          <option value="Santé métabolique">Santé métabolique</option>
+                          <option value="Performance sportive">Performance sportive</option>
+                          <option value="Rééquilibrage alimentaire">Rééquilibrage alimentaire</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-objectif"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-objectif"
+                            title="Réinitialiser ce champ"
+                            aria-label="Réinitialiser ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                    <label class="flex w-full flex-col gap-2 rounded-[10px] border border-[#d1d5db] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                      <span class="text-[13px] font-semibold text-gray-800">statut</span>
+                      <div class="flex min-w-0 items-center gap-2">
+                        <select
+                          id="pr-statut"
+                          name="statut"
+                          class="box-border min-h-[46px] min-w-0 flex-1 cursor-pointer rounded-[10px] border border-[#d1d5db] bg-white px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-[#1e5631] focus:outline-none focus:ring-2 focus:ring-[#1e5631]/15"
+                        >
+                          <option value="">— Choisir —</option>
+                          <option value="brouillon">Brouillon</option>
+                          <option value="actif">Actif</option>
+                          <option value="archivé">Archivé</option>
+                          <option value="en pause">En pause</option>
+                        </select>
+                        <span class="pr-field-tools shrink-0">
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--edit"
+                            data-pr-target="pr-statut"
+                            title="Modifier ce champ"
+                            aria-label="Modifier ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            class="pr-field-btn pr-field-btn--clear"
+                            data-pr-target="pr-statut"
+                            title="Réinitialiser ce champ"
+                            aria-label="Réinitialiser ce champ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <span class="ns-saisie-field-msg" role="alert"></span>
+                      <span class="ns-saisie-success-msg" aria-live="polite"></span>
+                    </label>
+                  </div>
+                  <div class="bo-crud-form-actions mt-4 flex flex-col gap-2.5">
+                    <button
+                      type="submit"
+                      class="btn-sm btn-green h-[50px] w-full rounded-full border-0 bg-[#1e5631] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(30,86,49,0.35)] transition hover:bg-[#174728] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e5631]/50"
+                    >
+                      Enregistrer
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-sm btn-ghost h-[44px] w-full rounded-[12px] border border-[#d1d5db] bg-white text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+                      data-reset-form="planRepas"
+                    >
+                      Nouveau
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+
+      <footer id="contact">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <div class="footer-logo">
+              <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <mask id="biteMaskFooterPlan">
+                  <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                  <circle cx="92" cy="35" r="18" fill="black" />
+                  <circle cx="84" cy="62" r="14" fill="black" />
+                </mask>
+                <g mask="url(#biteMaskFooterPlan)">
+                  <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+                  <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+                </g>
+                <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+              </svg>
+              <span style="margin-left: 10px">NutriSmart</span>
+            </div>
+            <p class="footer-desc">
+              Votre plateforme de nutrition intelligente et personnalisee. Mangez mieux, vivez pleinement.
+            </p>
+            <div class="footer-contact-list">
+              <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+                <div class="fc-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                contact@nutrismart.demo
+              </a>
+              <a href="tel:+21612345678" class="footer-contact-item">
+                <div class="fc-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                  </svg>
+                </div>
+                +216 12 345 678
+              </a>
+              <div class="footer-contact-item">
+                <div class="fc-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </div>
+                Tunis, Tunisie
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h5>Plateforme</h5>
+            <ul>
+              <li><a href="nutrismart-website.html#features">Fonctionnalites</a></li>
+              <li><a href="nutrismart-website.html#comment">Comment ca marche</a></li>
+              <li><a href="nutrismart-website.html#modules">Modules</a></li>
+              <li><a href="nutrismart-website.html#programme">Programmes Repas</a></li>
+              <li><a href="nutrismart-website.html#sport">Programmes Sport</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h5>Ressources</h5>
+            <ul>
+              <li><p>Base alimentaire</p></li>
+              <li><p>Carnet de recettes</p></li>
+              <li><p>Blog Nutrition</p></li>
+              <li><p>Suivi de progres</p></li>
+              <li><p>FAQ</p></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h5>Suivez-nous</h5>
+            <div class="footer-social">
+              <a href="#" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" /></svg></a>
+              <a href="#" class="social-btn" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg></a>
+              <a href="#" class="social-btn" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg></a>
+              <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg></a>
+            </div>
+            <h5>Legal</h5>
+            <ul>
+              <li>Politique de confidentialite</li>
+              <li>Conditions d'utilisation</li>
+              <li>Mentions legales</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 NutriSmart — Tous droits reserves</span>
+          <div class="footer-bottom-links">
+            <a href="#">Confidentialite</a>
+            <a href="#">CGU</a>
+            <a href="#">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- JavaScript externe (cours : &lt;script src="..."&gt;) — CRUD plan_repas dans la modale -->
+    <script src="nutrismart-api-config.php"></script>
+    <script>
+      if (typeof window.NUTRISMART_API_BASE === "undefined") window.NUTRISMART_API_BASE = "";
+      if (window.location.protocol === "file:") window.NUTRISMART_API_BASE = "";
+      window.NUTRISMART_CRUD_ENTITIES = ["planRepas"];
+      window.NUTRISMART_CRUD_ADMIN_CONFIG = {
+        root: "#plan-repas-crud-root",
+        tabSelector: ".bo-crud-tab",
+        panelSelector: ".bo-crud-panel",
+        msgClassBase: "bo-crud-msg",
+        actionsClass: "bo-crud-actions",
+      };
+    </script>
+    <script src="js/nutrismart-crud-store.js"></script>
+    <script src="js/nutrismart-saisie-crud.js?v=20260421"></script>
+    <script src="js/nutrismart-crud-admin.js?v=20260420-2"></script>
+    <script src="js/crud-panel-planRepas.js?v=20260421"></script>
+    <script src="js/nutrismart-crud-field-toolbar.js?v=20260421"></script>
+    <script src="js/plan-repas-modal-validation.js?v=20260420f"></script>
+    <script src="js/plan-repas-day-cards-modal.js?v=20260422"></script>
+    <script src="js/script.js" defer></script>
+  </body>
+</html>

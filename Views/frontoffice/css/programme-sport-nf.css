@@ -1,0 +1,64 @@
+/**
+ * Programme sport — en-tête NutriSmart au-dessus de la mise en page blissflo-exact.
+ */
+
+body.programme-sport-page {
+  background: var(--bf-bg);
+  font-family: "Montserrat", system-ui, sans-serif;
+}
+
+.ns-ps-header {
+  gap: 1rem 1.5rem;
+}
+
+.ns-ps-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--bf-text);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ns-ps-brand .brand-mark svg {
+  display: block;
+}
+
+.ns-ps-brand .brand-nutri {
+  color: #4a7c59;
+}
+
+.ns-ps-brand .brand-smart {
+  color: #5c6d62;
+}
+
+.ns-ps-header .bf-nav {
+  flex: 1;
+  justify-content: center;
+}
+
+@media (max-width: 960px) {
+  .ns-ps-header .bf-nav {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.ns-ps-cta {
+  flex-shrink: 0;
+}
+
+.ns-ps-cta .bf-btn {
+  padding: 0.75rem 1.35rem;
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+/* Pied de page NutriSmart : garde les styles shared-styles sous la zone bf */
+.programme-sport-page #contact.footer-ns {
+  margin-top: 0;
+}

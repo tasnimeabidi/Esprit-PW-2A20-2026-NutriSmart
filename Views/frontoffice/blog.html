@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog — NutriSmart</title>
+    <!-- Blog dynamique : module Nassim (voir nassim_integration.php + blog.php). -->
+    <meta http-equiv="refresh" content="0;url=blog.php" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/mp-dashboard.css" />
+    <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+    <script src="js/avatar-utils.js"></script>
+    <style>
+      .blog-page-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 0 3rem;
+      }
+      .blog-page-main .ns-blog-heading-page {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 700;
+        color: var(--forest);
+        margin: 0 0 0.5rem;
+      }
+      .blog-page-intro {
+        color: var(--gray);
+        line-height: 1.65;
+        max-width: 42rem;
+        margin: 0 0 1.5rem;
+        font-size: 0.98rem;
+      }
+      .ns-blog-article-block {
+        max-width: 42rem;
+        margin: 3rem auto 0;
+        padding: 0 1rem;
+      }
+      .ns-blog-article-block h2 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: 1.35rem;
+        color: var(--forest);
+        margin: 2rem 0 0.75rem;
+        scroll-margin-top: 6rem;
+      }
+      .ns-blog-article-block p {
+        color: var(--gray);
+        line-height: 1.7;
+        font-size: 0.95rem;
+        margin: 0 0 1rem;
+      }
+      .ns-blog-article-block hr {
+        border: none;
+        border-top: 1px solid var(--sand);
+        margin: 2.5rem 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <p style="padding: 1rem; font-family: system-ui, sans-serif;">
+        <a href="blog.php">Ouvrir le blog NutriSmart (module Nassim)</a>
+      </p>
+    </noscript>
+    <div id="site-nav-root"></div>
+    <script src="js/site-nav-loader.js"></script>
+    <div class="conteneur-principal conteneur-principal--menu-haut">
+      <main class="main blog-page-main">
+        <section class="ns-blog-section" style="border-top: none; padding-top: 2rem" aria-labelledby="blog-page-title">
+          <h1 class="ns-blog-heading-page" id="blog-page-title">Blog nutrition</h1>
+          <p class="blog-page-intro">
+            Conseils pratiques pour composer vos repas, mieux vous hydrater et garder
+            de l’énergie — en lien avec vos plans et votre activité sur NutriSmart.
+          </p>
+
+          <div class="ns-blog-grid">
+            <article class="ns-blog-card" id="post-1">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80"
+                alt="Assiette colorée de légumes et protéines"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Nutrition · 5 min</span>
+                <h3 class="ns-blog-card__title">Les bases d’une assiette équilibrée</h3>
+                <p class="ns-blog-card__excerpt">
+                  Légumes, protéines, féculents : repères simples pour varier les plaisirs
+                  sans compliquer vos journées.
+                </p>
+                <a class="ns-blog-card__more" href="#article-1">Lire l’article ↓</a>
+              </div>
+            </article>
+
+            <article class="ns-blog-card" id="post-2">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=600&q=80"
+                alt="Verre d’eau et agrumes"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Hydratation · 4 min</span>
+                <h3 class="ns-blog-card__title">Boire assez, sans s’y perdre</h3>
+                <p class="ns-blog-card__excerpt">
+                  Signaux de soif, eau vs boissons sucrées : quelques repères pour rester
+                  efficace au travail et à l’entraînement.
+                </p>
+                <a class="ns-blog-card__more" href="#article-2">Lire l’article ↓</a>
+              </div>
+            </article>
+
+            <article class="ns-blog-card" id="post-3">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80"
+                alt="Personne dormant paisiblement"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Bien-être · 5 min</span>
+                <h3 class="ns-blog-card__title">Sommeil et métabolisme</h3>
+                <p class="ns-blog-card__excerpt">
+                  Pourquoi les nuits courtes peuvent influencer la faim et l’énergie, et
+                  comment retrouver un rythme plus stable.
+                </p>
+                <a class="ns-blog-card__more" href="#article-3">Lire l’article ↓</a>
+              </div>
+            </article>
+
+            <article class="ns-blog-card" id="post-4">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80"
+                alt="Préparation de repas en boîtes"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Organisation · 6 min</span>
+                <h3 class="ns-blog-card__title">Batch cooking sans stress</h3>
+                <p class="ns-blog-card__excerpt">
+                  Préparer en avance deux bases (légumes + féculents) pour sécuriser la
+                  semaine et limiter les repas improvisés.
+                </p>
+                <a class="ns-blog-card__more" href="#article-4">Lire l’article ↓</a>
+              </div>
+            </article>
+
+            <article class="ns-blog-card" id="post-5">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80"
+                alt="Course à pied en extérieur"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Sport · 5 min</span>
+                <h3 class="ns-blog-card__title">Avant l’effort : que manger ?</h3>
+                <p class="ns-blog-card__excerpt">
+                  Timing des glucides, collation légère ou repas complet selon l’intensité
+                  et l’heure de votre séance.
+                </p>
+                <a class="ns-blog-card__more" href="#article-5">Lire l’article ↓</a>
+              </div>
+            </article>
+
+            <article class="ns-blog-card" id="post-6">
+              <img
+                class="ns-blog-card__img"
+                src="https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80"
+                alt="Bol de flocons et fruits"
+              />
+              <div class="ns-blog-card__body">
+                <span class="ns-blog-meta">Digestion · 4 min</span>
+                <h3 class="ns-blog-card__title">Fibres : en douceur</h3>
+                <p class="ns-blog-card__excerpt">
+                  Augmenter progressivement les fibres pour le confort digestif, avec des
+                  exemples d’aliments simples à ajouter.
+                </p>
+                <a class="ns-blog-card__more" href="#article-6">Lire l’article ↓</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <div class="ns-blog-article-block">
+          <article id="article-1">
+            <h2>Les bases d’une assiette équilibrée</h2>
+            <p>
+              Une assiette pratique peut suivre une règle simple : environ la moitié en
+              légumes (crus ou cuits), un quart de protéines (légumineuses, œufs,
+              poisson, viande maigre, tofu…) et un quart de féculents complets ou
+              légumineuses. Vous adaptez les portions à votre faim et à votre activité.
+            </p>
+            <p>
+              L’objectif n’est pas la perfection à chaque repas, mais une moyenne sur la
+              semaine : varier les couleurs et les sources protéiques suffit souvent à
+              couvrir une bonne partie des besoins. NutriSmart vous aide à aligner ces
+              repères avec vos plans enregistrés.
+            </p>
+          </article>
+          <hr />
+          <article id="article-2">
+            <h2>Boire assez, sans s’y perdre</h2>
+            <p>
+              La soif arrive souvent en retard : gardez une bouteille visible sur le
+              bureau ou au sport. L’eau reste la base ; les boissons sucrées peuvent
+              compter dans l’apport énergétique sans calmer la soif aussi efficacement.
+            </p>
+            <p>
+              En période de chaleur ou d’entraînement intense, ajoutez une pincée de sel
+              ou un repas contenant des minéraux (soupe, légumes) pour compléter les
+              pertes.
+            </p>
+          </article>
+          <hr />
+          <article id="article-3">
+            <h2>Sommeil et métabolisme</h2>
+            <p>
+              Des nuits trop courtes peuvent augmenter la sensation de faim le lendemain
+              et modifier la préférence pour des aliments très énergétiques. Fixer une
+              heure de coucher régulière, même en semaine, améliore souvent la qualité du
+              sommeil profond.
+            </p>
+            <p>
+              Évitez les écrans et les repas lourds juste avant de dormir ; une collation
+              légère peut suffire si vous avez faim.
+            </p>
+          </article>
+          <hr />
+          <article id="article-4">
+            <h2>Batch cooking sans stress</h2>
+            <p>
+              Le dimanche ou le jour où vous avez une heure, cuisez un grand plat de
+              légumes au four et une grande casserole de riz complet, pâtes complètes ou
+              lentilles. Stockez en boîtes : vous assemblez en 10 minutes le midi avec une
+              sauce ou du fromage frais.
+            </p>
+          </article>
+          <hr />
+          <article id="article-5">
+            <h2>Avant l’effort : que manger ?</h2>
+            <p>
+              Pour une séance modérée dans l’heure qui suit un repas, un déjeuner
+              équilibré suffit souvent. Pour le matin à jeun, une banane ou quelques
+              biscuits secs peuvent éviter les baisses d’énergie si la séance dépasse 45
+              minutes.
+            </p>
+          </article>
+          <hr />
+          <article id="article-6">
+            <h2>Fibres : en douceur</h2>
+            <p>
+              Augmentez les fibres progressivement (légumes, fruits avec peau, flocons,
+              légumineuses) et buvez suffisamment pour éviter les inconforts. Une
+              augmentation brutale peut provoquer des ballonnements temporaires.
+            </p>
+          </article>
+
+          <div class="ns-blog-footer-cta" style="margin-top: 2.5rem">
+            <a href="nutrismart-website.html#blog" class="ns-blog-btn ns-blog-btn--ghost">← Voir le site</a>
+            <a href="plan-repas.html" class="ns-blog-btn">Mes plans repas</a>
+          </div>
+        </div>
+      </main>
+
+      <footer id="contact" class="ns-member-footer">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <div class="footer-logo">
+              <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <mask id="biteMaskFooterBlog">
+                  <rect x="-20" y="-20" width="140" height="140" fill="white" />
+                  <circle cx="92" cy="35" r="18" fill="black" />
+                  <circle cx="84" cy="62" r="14" fill="black" />
+                </mask>
+                <g mask="url(#biteMaskFooterBlog)">
+                  <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+                  <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+                </g>
+                <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+              </svg>
+              <span>NutriSmart</span>
+            </div>
+            <p class="footer-desc">
+              Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+            </p>
+            <div class="footer-contact-list">
+              <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+                <span class="fc-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </span>
+                contact@nutrismart.demo
+              </a>
+              <a href="tel:+21612345678" class="footer-contact-item">
+                <span class="fc-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
+                </span>
+                +216 12 345 678
+              </a>
+              <div class="footer-contact-item">
+                <span class="fc-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                </span>
+                Tunis, Tunisie
+              </div>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h5>Plateforme</h5>
+            <ul>
+              <li><a href="nutrismart-website.html#features">Fonctionnalités</a></li>
+              <li><a href="nutrismart-website.html#comment">Comment ça marche</a></li>
+              <li><a href="nutrismart-website.html#modules">Modules</a></li>
+              <li><a href="plan-repas.html">Programmes repas</a></li>
+              <li><a href="programme-sport.html">Programmes sport</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Ressources</h5>
+            <ul>
+              <li><a href="plan-repas.html">Base alimentaire</a></li>
+              <li><a href="recette.html">Carnet de recettes</a></li>
+              <li><a href="blog.php">Blog nutrition</a></li>
+              <li><a href="suivi-statistiques.php">Suivi de progrès</a></li>
+              <li><a href="nutrismart-website.html#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Suivez-nous</h5>
+            <div class="footer-social">
+              <a href="#" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" /></svg></a>
+              <a href="#" class="social-btn" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg></a>
+              <a href="#" class="social-btn" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg></a>
+              <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg></a>
+            </div>
+            <h5>Légal</h5>
+            <ul>
+              <li><a href="#">Politique de confidentialité</a></li>
+              <li><a href="#">Conditions d’utilisation</a></li>
+              <li><a href="#">Mentions légales</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 NutriSmart — Tous droits réservés</span>
+          <div class="footer-bottom-links">
+            <a href="#">Confidentialité</a>
+            <a href="#">CGU</a>
+            <a href="mailto:contact@nutrismart.demo">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

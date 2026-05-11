@@ -1,0 +1,7 @@
+/**
+ * Onglet PlanRepas — grille et détails (#panel-plan-repas).
+ * Logique : nutrismart-crud-admin.js (entité planRepas).
+ */
+#panel-plan-repas .bo-crud-form-grid {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}

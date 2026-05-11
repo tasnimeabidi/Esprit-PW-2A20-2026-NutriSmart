@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriSmart — Recettes Santé</title>
+  <link rel="stylesheet" href="css/mp-dashboard.css" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+  <script src="js/avatar-utils.js"></script>
+  <style>
+    .ecran-recette {
+      --recette-primary: #4caf50;
+      --recette-mid: #8bc34a;
+      --recette-lime: #c4d4a8;
+      --recette-orange: #f2994a;
+      --recette-forest: #2d6a2d;
+      --recette-gray: #7a7a7a;
+      --recette-white: #fff;
+    }
+
+    .ecran-recette .main--recette {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding: 1rem 1.25rem 2.5rem;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--text, #1a1f1c);
+    }
+
+    /* HERO */
+    .recette-hero {
+      min-height: min(70vh, 520px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: clamp(2.5rem, 6vw, 4rem) 1rem;
+      overflow: hidden;
+      text-align: center;
+    }
+    .recette-hero::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      right: -150px;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(76, 175, 80, 0.16) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .recette-hero::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 195, 74, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .recette-hero h1 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-weight: 700;
+      color: var(--recette-forest);
+      margin-bottom: 1rem;
+    }
+    .recette-hero h1 em {
+      display: block;
+      font-style: italic;
+      color: var(--recette-orange);
+    }
+    .recette-hero p {
+      font-size: 1.05rem;
+      color: var(--recette-gray);
+      max-width: 32rem;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* RECIPES GRID */
+    .recipes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 2.5rem 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .recipe-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: var(--radius-lg, 1rem);
+      box-shadow: var(--shadow-card, 0 4px 24px rgba(26, 58, 26, 0.08));
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid var(--border, #e8ece9);
+    }
+    .recipe-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(26, 58, 26, 0.15);
+    }
+    .recipe-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .recipe-content {
+      padding: 1.5rem;
+    }
+    .recipe-content h3 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 1.35rem;
+      color: var(--recette-forest);
+      margin-bottom: 0.5rem;
+    }
+    .recipe-content p {
+      font-size: 0.9rem;
+      color: var(--recette-gray);
+      line-height: 1.5;
+    }
+    .btn-view {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.65rem 1.6rem;
+      border-radius: 2rem;
+      border: none;
+      background: linear-gradient(135deg, var(--recette-primary), var(--recette-mid));
+      color: var(--recette-white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-view:hover {
+      background: var(--recette-lime);
+      color: var(--recette-forest);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 212, 168, 0.4);
+    }
+    .btn-view:active {
+      background: var(--recette-orange);
+      color: var(--recette-white);
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(242, 153, 74, 0.35);
+    }
+
+    .full-recipe {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .full-recipe ul,
+    .full-recipe ol {
+      margin-left: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+  </style>
+</head>
+<body data-site-nav="recettes">
+  <div id="site-nav-root"></div>
+  <script src="js/site-nav-loader.js"></script>
+  <div class="conteneur-principal ecran-recette conteneur-principal--menu-haut">
+    <main class="main main--recette">
+  <!-- HERO -->
+  <section class="recette-hero" aria-labelledby="recette-hero-title">
+    <div>
+      <h1 id="recette-hero-title">Découvrez <em>Nos Recettes Santé</em></h1>
+      <p>Des recettes intelligentes et savoureuses pour vous aider à garder une alimentation équilibrée et saine chaque jour.</p>
+    </div>
+  </section>
+
+  <!-- RECIPES -->
+  <section class="recipes">
+
+    <!-- 1: Salade Quinoa -->
+    <div class="recipe-card">
+      <img src="images/salade.jpg" alt="Salade Quinoa">
+      <div class="recipe-content">
+        <h3>Salade Quinoa & Avocat</h3>
+        <p>Une salade fraîche et nutritive à base de quinoa, avocat et légumes croquants.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>100g de quinoa</li>
+            <li>1 avocat</li>
+            <li>Tomates cerises</li>
+            <li>Feuilles de roquette</li>
+            <li>Huile d'olive, sel, poivre</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Cuire le quinoa et laisser refroidir.</li>
+            <li>Couper l'avocat et les tomates.</li>
+            <li>Mélanger tous les ingrédients avec la roquette.</li>
+            <li>Assaisonner avec l'huile, le sel et le poivre.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 12g | <strong>Calories :</strong> 350 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2: Smoothie -->
+    <div class="recipe-card">
+      <img src="images/smoothie.jpg" alt="Smoothie Vert">
+      <div class="recipe-content">
+        <h3>Bol de Smoothie Vert</h3>
+        <p>Un bol de smoothie riche en vitamines et minéraux pour bien démarrer la journée.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>1 pomme verte</li>
+            <li>1 poignée d’épinards</li>
+            <li>1 banane</li>
+            <li>200ml d’eau de coco</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Mettre tous les ingrédients dans un blender.</li>
+            <li>Mixer jusqu’à obtenir une texture lisse.</li>
+            <li>Servir frais.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 3g | <strong>Calories :</strong> 180 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: Riz au Poulet -->
+    <div class="recipe-card">
+      <img src="images/riz-poulet.jpg" alt="Riz au Poulet">
+      <div class="recipe-content">
+        <h3>Riz au Poulet</h3>
+        <p>Un plat léger et savoureux, parfait pour un dîner équilibré et gourmand.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>150g de riz basmati</li>
+            <li>200g de blanc de poulet</li>
+            <li>Légumes (carottes, petits pois)</li>
+            <li>Épices, sel, poivre</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Cuire le riz selon les instructions.</li>
+            <li>Griller le poulet avec les épices.</li>
+            <li>Cuire les légumes à la vapeur et mélanger avec le riz et le poulet.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 25g | <strong>Calories :</strong> 450 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4: Omelette -->
+    <div class="recipe-card">
+      <img src="images/omelette.jpg" alt="Omelette">
+      <div class="recipe-content">
+        <h3>Omelette aux Légumes</h3>
+        <p>Une omelette moelleuse et saine avec des légumes frais.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>3 œufs</li>
+            <li>Poivrons, oignons, champignons</li>
+            <li>Sel, poivre, herbes</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Battre les œufs avec sel et poivre.</li>
+            <li>Faire revenir les légumes dans une poêle.</li>
+            <li>Verser les œufs et cuire jusqu'à ce que l'omelette soit ferme.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 18g | <strong>Calories :</strong> 250 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5: Viande steak & légumes -->
+    <div class="recipe-card">
+      <img src="images/steak.jpg" alt="Steak et légumes sautés">
+      <div class="recipe-content">
+        <h3>Viande Steak & Légumes Sautés</h3>
+        <p>Un plat riche en protéines et fibres avec viande et légumes frais.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>150g de steak</li>
+            <li>Poivrons, brocolis, carottes</li>
+            <li>Sel, poivre, huile d’olive</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Faire revenir les légumes à feu moyen.</li>
+            <li>Griller le steak selon la cuisson désirée.</li>
+            <li>Servir ensemble avec un filet d’huile d’olive.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 28g | <strong>Calories :</strong> 400 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6: Pasta high protéine -->
+    <div class="recipe-card">
+      <img src="images/pasta.jpg" alt="Pasta High Protéine">
+      <div class="recipe-content">
+        <h3>Pasta High Protéine</h3>
+        <p>Pâtes complètes avec poulet, épinards et sauce légère.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>100g de pâtes complètes</li>
+            <li>150g de poulet</li>
+            <li>Épinards, ail, huile d’olive</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Cuire les pâtes al dente.</li>
+            <li>Faire revenir le poulet et les épinards.</li>
+            <li>Mélanger le tout et servir chaud.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 30g | <strong>Calories :</strong> 500 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7: Poisson -->
+    <div class="recipe-card">
+      <img src="images/poisson.jpg" alt="Poisson">
+      <div class="recipe-content">
+        <h3>Poisson Grillé & Légumes</h3>
+        <p>Poisson riche en oméga-3 accompagné de légumes vapeur.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>150g de poisson blanc</li>
+            <li>Courgettes, carottes, brocolis</li>
+            <li>Citron, sel, poivre</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Assaisonner le poisson et griller 5-7 min.</li>
+            <li>Cuire les légumes à la vapeur.</li>
+            <li>Servir ensemble avec un filet de citron.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 25g | <strong>Calories :</strong> 350 kcal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8: Salade de Fruits -->
+    <div class="recipe-card">
+      <img src="images/saladefruit.jpg" alt="Salade de Fruits">
+      <div class="recipe-content">
+        <h3>Salade de Fruits Fraîche</h3>
+        <p>Un dessert léger et vitaminé pour terminer le repas en douceur.</p>
+        <button class="btn-view" onclick="toggleRecipe(this)">Voir la recette</button>
+        <div class="full-recipe">
+          <h4>Ingrédients :</h4>
+          <ul>
+            <li>Pomme, poire, kiwi</li>
+            <li>Fraises, myrtilles</li>
+            <li>Jus de citron</li>
+          </ul>
+          <h4>Préparation :</h4>
+          <ol>
+            <li>Couper tous les fruits en morceaux.</li>
+            <li>Mélanger avec le jus de citron.</li>
+            <li>Servir frais.</li>
+          </ol>
+          <p><strong>Protéines :</strong> 2g | <strong>Calories :</strong> 120 kcal</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+    </main>
+
+  <footer id="contact">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="biteMaskFooterRecette">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterRecette)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span style="margin-left: 10px">NutriSmart</span>
+        </div>
+        <p class="footer-desc">
+          Votre plateforme de nutrition intelligente et personnalisee. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <div class="fc-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></div>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <div class="fc-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg></div>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <div class="fc-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg></div>
+            Tunis, Tunisie
+          </div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Plateforme</h5>
+        <ul>
+          <li><a href="nutrismart-website.html#features">Fonctionnalites</a></li>
+          <li><a href="nutrismart-website.html#comment">Comment ca marche</a></li>
+          <li><a href="nutrismart-website.html#modules">Modules</a></li>
+          <li><a href="nutrismart-website.html#programme">Programmes Repas</a></li>
+          <li><a href="nutrismart-website.html#sport">Programmes Sport</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Ressources</h5>
+        <ul>
+          <li><p>Base alimentaire</p></li>
+          <li><p>Carnet de recettes</p></li>
+          <li><p>Blog Nutrition</p></li>
+          <li><p>Suivi de progres</p></li>
+          <li><p>FAQ</p></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Suivez-nous</h5>
+        <div class="footer-social">
+          <a href="#" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" /></svg></a>
+          <a href="#" class="social-btn" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg></a>
+          <a href="#" class="social-btn" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg></a>
+          <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg></a>
+        </div>
+        <h5>Legal</h5>
+        <ul>
+          <li>Politique de confidentialite</li>
+          <li>Conditions d'utilisation</li>
+          <li>Mentions legales</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NutriSmart — Tous droits reserves</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialite</a>
+        <a href="#">CGU</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <script>
+    function toggleRecipe(button) {
+      const recipe = button.nextElementSibling;
+      if(recipe.style.display === "block") {
+        recipe.style.display = "none";
+        button.textContent = "Voir la recette";
+      } else {
+        recipe.style.display = "block";
+        button.textContent = "Masquer la recette";
+      }
+    }
+  </script>
+</body>
+</html>

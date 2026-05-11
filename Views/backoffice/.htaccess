@@ -1,0 +1,4 @@
+# Autoriser l'exécution des scripts admin (évite 403 sur certaines configs Apache / XAMPP)
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>

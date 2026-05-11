@@ -1,0 +1,340 @@
+/**
+ * Meal to Workout Calculator — flux type Magic Patterns, palette beige / vert NutriSmart.
+ * Référence : https://project-meal-to-workout-calculator-539.magicpatterns.app/
+ */
+:root {
+  --mw-bg: #e5e0d4;
+  --mw-bg-soft: #f2ede4;
+  --mw-card: #ffffff;
+  --mw-border: #d4cbc0;
+  --mw-text: #2a2824;
+  --mw-muted: #6a6356;
+  --mw-green: #0d4a2e;
+  --mw-green-soft: #1e5631;
+  --mw-green-hover: #0a3520;
+  --mw-green-tint: #d8e8d8;
+  --mw-radius: 22px;
+  --mw-radius-sm: 12px;
+  --mw-shadow: 0 14px 44px rgba(42, 40, 36, 0.1);
+  --mw-font: "Inter", system-ui, sans-serif;
+}
+
+.mw-page {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--mw-font);
+  color: var(--mw-text);
+  background: var(--mw-bg);
+}
+
+.mw-wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 2rem) 2.5rem;
+  box-sizing: border-box;
+}
+
+.mw-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.mw-back {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--mw-green-soft);
+  text-decoration: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--mw-border);
+  background: var(--mw-card);
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.mw-back:hover {
+  background: var(--mw-bg-soft);
+  border-color: var(--mw-green-soft);
+}
+
+.mw-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mw-muted);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: var(--mw-card);
+  border: 1px solid var(--mw-border);
+}
+
+.mw-hero {
+  margin-bottom: 1.5rem;
+}
+
+.mw-hero .mw-en-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--mw-text);
+}
+
+.mw-hero .mw-fr-sub {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--mw-green);
+}
+
+.mw-hero p {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--mw-muted);
+}
+
+.mw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.15rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .mw-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mw-card {
+  background: var(--mw-card);
+  border: 1px solid var(--mw-border);
+  border-radius: var(--mw-radius);
+  padding: 1.4rem 1.45rem;
+  box-shadow: var(--mw-shadow);
+}
+
+.mw-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mw-green);
+  letter-spacing: -0.02em;
+}
+
+.mw-field {
+  margin-bottom: 1rem;
+}
+
+.mw-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mw-muted);
+  margin-bottom: 0.4rem;
+}
+
+.mw-input,
+.mw-select {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--mw-radius-sm);
+  border: 1px solid var(--mw-border);
+  background: #fff;
+  color: var(--mw-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mw-input:focus,
+.mw-select:focus {
+  outline: none;
+  border-color: var(--mw-green-soft);
+  box-shadow: 0 0 0 3px rgba(30, 86, 49, 0.12);
+}
+
+.mw-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--mw-muted);
+  line-height: 1.4;
+}
+
+.mw-range-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.mw-range {
+  width: 100%;
+  accent-color: var(--mw-green-soft);
+}
+
+.mw-range-val {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--mw-green);
+}
+
+.mw-btn-row {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mw-btn {
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.72rem 1.45rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+
+.mw-btn-primary {
+  background: var(--mw-green-soft);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(30, 86, 49, 0.32);
+}
+
+.mw-btn-primary:hover {
+  background: var(--mw-green-hover);
+}
+
+.mw-btn-ghost {
+  background: transparent;
+  color: var(--mw-green-soft);
+  border: 1px solid var(--mw-border);
+}
+
+.mw-result-box {
+  min-height: 140px;
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-green-tint);
+  border: 1px solid rgba(30, 86, 49, 0.2);
+  padding: 1rem 1.1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--mw-text);
+  margin-bottom: 1rem;
+}
+
+.mw-result-box.mw-result-wait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--mw-muted);
+  border-style: dashed;
+  background: linear-gradient(145deg, #f7f4ee 0%, var(--mw-bg-soft) 100%);
+}
+
+.mw-stat-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.mw-stat {
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-bg-soft);
+  border: 1px solid var(--mw-border);
+}
+
+.mw-stat span {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mw-muted);
+  margin-bottom: 0.3rem;
+}
+
+.mw-stat strong {
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--mw-green);
+}
+
+.mw-alt-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mw-muted);
+}
+
+.mw-alt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (max-width: 520px) {
+  .mw-alt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mw-alt-card {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--mw-border);
+  font-size: 0.8125rem;
+}
+
+.mw-alt-card.mw-alt-pick {
+  border-color: var(--mw-green-soft);
+  box-shadow: 0 0 0 2px rgba(30, 86, 49, 0.12);
+}
+
+.mw-alt-card strong {
+  display: block;
+  color: var(--mw-green);
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+
+.mw-reco {
+  margin: 0;
+  padding: 0.85rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--mw-muted);
+  border-top: 1px solid var(--mw-border);
+}
+
+.mw-foot {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--mw-muted);
+  line-height: 1.55;
+  max-width: 42rem;
+}
+
+.mw-foot a {
+  color: var(--mw-green-soft);
+  font-weight: 600;
+}

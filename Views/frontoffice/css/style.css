@@ -1,0 +1,78 @@
+body {
+  font-family: Arial;
+  background: #f4f6f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  outline: none;
+  transition: 0.3s;
+}
+
+/* ERREUR */
+.input-error {
+  border-color: red;
+}
+
+.form-group small {
+  color: red;
+  font-size: 12px;
+}
+
+/* VALIDE */
+.input-success {
+  border-color: green;
+  background: #f6fff6;
+}
+
+.success {
+  color: green;
+  font-size: 12px;
+}
+
+/* PASSWORD */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle {
+  position: absolute;
+  right: 10px;
+  top: 38px;
+  cursor: pointer;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: green;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background: darkgreen;
+}

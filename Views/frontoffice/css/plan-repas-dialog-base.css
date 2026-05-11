@@ -1,0 +1,107 @@
+/**
+ * Compléments natifs hors Tailwind : <dialog>, ::backdrop, calendrier date, messages validation #panel-plan-repas.
+ * Périmètre : #plan-repas-crud-dialog (modal) ou #plan-repas-crud-page (page dédiée).
+ */
+#plan-repas-crud-dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  border: none;
+  outline: none;
+  max-height: min(92vh, 900px);
+}
+
+#plan-repas-crud-page {
+  display: block;
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-height: min(92vh, 900px);
+}
+
+#plan-repas-crud-dialog::backdrop {
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page)
+  input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+/* Zone scroll : fond gris + barre discrète (aspect pro) */
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .pr-crud-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c5cbd3 #e8eaed;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .pr-crud-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .pr-crud-scroll::-webkit-scrollbar-track {
+  background: #e8eaed;
+  border-radius: 8px;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .pr-crud-scroll::-webkit-scrollbar-thumb {
+  background: #c5cbd3;
+  border-radius: 8px;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
+  .ns-saisie-field-msg:not(.is-visible) {
+  display: none !important;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
+  .ns-saisie-success-msg:not(.is-visible) {
+  display: none !important;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
+  .ns-saisie-field-msg.is-visible {
+  display: block !important;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page, #crud-prog-dialog)
+  :is(#panel-plan-repas, #panel-repas, #panel-programme, #fo-panel-programme)
+  .ns-saisie-success-msg.is-visible {
+  display: flex !important;
+  align-items: center;
+}
+
+/* Tableaux CRUD — en-tête vert très clair, uppercase (aligné maquette) */
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .bo-crud-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .bo-crud-table thead {
+  background-color: #ecfdf5;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .bo-crud-table thead th {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #374151;
+  text-align: left;
+  white-space: nowrap;
+}
+
+:where(#plan-repas-crud-dialog, #repas-crud-dialog, #plan-repas-crud-page) .bo-crud-table tbody td {
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fff;
+}

@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme sport — Nutrismart</title>
+<link rel="stylesheet" href="css/mp-dashboard.css" />
+<link rel="stylesheet" href="css/shared-styles.css?v=3" />
+<script src="js/avatar-utils.js"></script>
+<link rel="stylesheet" href="css/programme-sport.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --color-bg: #faf8f5;
+    --color-bg-section: #f3ebe0;
+    --color-bg-alt: #eef3ef;
+    --color-surface: #ffffff;
+    --color-text: #1a1a1a;
+    --color-text-muted: #5c5c5c;
+    --color-accent: #2d4a3e;
+    --color-accent-soft: #3d6654;
+    --color-nav: #e5d4bc;
+    --color-nav-border: rgba(45, 74, 62, 0.08);
+    --shadow-sm: 0 2px 8px rgba(26, 26, 26, 0.06);
+    --shadow-md: 0 12px 40px rgba(26, 26, 26, 0.1);
+    --shadow-card: 0 4px 24px rgba(26, 26, 26, 0.08);
+    --shadow-card-hover: 0 16px 48px rgba(26, 26, 26, 0.12);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-pill: 999px;
+    --space-section: clamp(3.5rem, 8vw, 6rem);
+    --space-inline: clamp(1.25rem, 5vw, 5rem);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Poppins', system-ui, sans-serif;
+    --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Pas de padding global mp-dashboard sur cette page (hero pleine largeur) */
+.ecran-programme-sport .main--programme-sport {
+    padding: 0;
+}
+
+/* ----- HERO ----- */
+.hero {
+    position: relative;
+    min-height: calc(100vh - 5.5rem);
+    min-height: calc(100dvh - 5.5rem);
+    background-color: #e8dfd4;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: var(--space-inline);
+    padding-bottom: 5.5rem;
+    isolation: isolate;
+}
+
+/* Photo en arrière-plan uniquement : floue (texte + carte restent nets) */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: -2%;
+    background-image: url('images/zeinebb.jpg.jpeg');
+    background-repeat: no-repeat;
+    background-position: center 38%;
+    background-size: cover;
+    filter: blur(4px);
+    transform: scale(1.02);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Crème à gauche (texte), zone centrale plus claire pour la silhouette, ton chaud à droite (carte) */
+    background: linear-gradient(
+        100deg,
+        rgba(250, 248, 245, 0.94) 0%,
+        rgba(250, 248, 245, 0.55) 22%,
+        rgba(250, 248, 245, 0.08) 48%,
+        rgba(250, 248, 245, 0.12) 52%,
+        rgba(250, 248, 245, 0.42) 78%,
+        rgba(110, 92, 76, 0.38) 100%
+    );
+    pointer-events: none;
+}
+
+.hero .content {
+    position: relative;
+    z-index: 1;
+    max-width: 40rem;
+}
+
+.hero .content h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+    font-weight: 500;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin-bottom: 1rem;
+}
+
+.hero .content p {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.hero .lead {
+    margin-top: 1.25rem;
+    font-size: 1.0625rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    max-width: 32rem;
+}
+
+/* ----- HERO : statistiques hebdo (carte) — texte à gauche, carte à droite, sujet photo au centre ----- */
+.hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: clamp(1.75rem, 4vw, 2.25rem);
+}
+
+@media (min-width: 900px) {
+    .hero-inner {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: clamp(2.5rem, 8vw, 6.5rem);
+    }
+}
+
+.weekly-stats {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 3.5vw, 1.75rem) clamp(1.35rem, 4vw, 1.85rem);
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    max-width: 22rem;
+    width: 100%;
+    align-self: flex-start;
+}
+
+@media (min-width: 900px) {
+    .weekly-stats {
+        flex: 0 0 auto;
+        width: min(100%, 19.5rem);
+        max-width: 19.5rem;
+        align-self: center;
+    }
+
+    .hero-inner .content {
+        flex: 0 1 auto;
+    }
+}
+
+.weekly-stats__heading {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #718096;
+    margin: 0 0 1.25rem;
+    line-height: 1.3;
+}
+
+.weekly-stats__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+.weekly-stats__row + .weekly-stats__row {
+    margin-top: 1.35rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid rgba(26, 26, 26, 0.06);
+}
+
+.weekly-stats__icon {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weekly-stats__icon--time {
+    background: #fff0e8;
+    color: #ea580c;
+}
+
+.weekly-stats__icon--trophy {
+    background: #e8f5ef;
+    color: #15803d;
+}
+
+.weekly-stats__icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.weekly-stats__body {
+    min-width: 0;
+    text-align: left;
+}
+
+.weekly-stats__value-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+}
+
+.weekly-stats__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.125rem);
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.weekly-stats__unit {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.weekly-stats__label {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: #718096;
+    margin: 0.35rem 0 0;
+    line-height: 1.35;
+}
+
+/* ----- NAVBAR ----- */
+.navbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    width: 100%;
+    background: rgba(229, 212, 188, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: none;
+    padding: 1rem 0;
+}
+
+.navbar ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem 2rem;
+    list-style: none;
+}
+
+.navbar ul li a {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.35rem 0;
+    position: relative;
+    transition: color var(--transition);
+}
+
+.navbar ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transition: width var(--transition);
+}
+
+.navbar ul li a:hover {
+    color: var(--color-accent);
+}
+
+.navbar ul li a:hover::after {
+    width: 100%;
+}
+
+.navbar ul li a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* ----- SECTION HEADINGS (réutilisables) ----- */
+.section-block {
+    padding: var(--space-section) var(--space-inline);
+}
+
+.section-block--alt {
+    background: var(--color-bg-alt);
+}
+
+.section-block--warm {
+    background: var(--color-bg-section);
+}
+
+.section-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.section-kicker {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 0.65rem;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 3.8vw, 2.5rem);
+    font-weight: 500;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+}
+
+.section-intro {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    max-width: 38rem;
+    line-height: 1.7;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+/* ----- MISSION (fond pleine largeur, contenu centré) ----- */
+.mission-strip {
+    width: 100%;
+    background-color: var(--color-bg-section);
+}
+
+.section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 4.5rem);
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-section) var(--space-inline);
+}
+
+.image {
+    justify-self: center;
+}
+
+.image img {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    object-fit: cover;
+    aspect-ratio: 4 / 5;
+}
+
+.text {
+    max-width: 34rem;
+}
+
+.text h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.text h2 {
+    font-size: clamp(0.95rem, 1.8vw, 1.0625rem);
+    font-weight: 400;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.text p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--color-text-muted);
+    margin-bottom: 1.1rem;
+}
+
+.text p:last-child {
+    margin-bottom: 0;
+}
+
+/* ----- PROGRAMMES & ACCOMPAGNEMENT (grille responsive + cartes alignées) ----- */
+.prog-accomp {
+    --prog-card-radius: 1rem;
+    --prog-grid-gap: max(24px, 1.5rem);
+
+    background: #e4ddd4;
+    color: #3a3632;
+    border-top: none;
+    border-bottom: none;
+}
+
+.section-block.prog-accomp {
+    padding-left: clamp(0.5rem, 2.5vw, 1.75rem);
+    padding-right: clamp(0.5rem, 2.5vw, 1.75rem);
+}
+
+.section-block.prog-accomp > .section-inner {
+    max-width: none;
+    width: 100%;
+}
+
+.prog-accomp__head {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.prog-accomp__kicker {
+    font-family: 'Montserrat', var(--font-body), system-ui, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7a726a;
+    margin-bottom: 0.85rem;
+}
+
+.prog-accomp__title {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: clamp(1.75rem, 4.2vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.1rem;
+    color: #2e2a26;
+}
+
+.prog-accomp__intro {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: clamp(0.9375rem, 1.85vw, 1.0625rem);
+    font-weight: 400;
+    line-height: 1.75;
+    color: #6d6660;
+    margin: 0 auto;
+    max-width: 36rem;
+}
+
+.prog-accomp__split-label {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: clamp(0.68rem, 1.1vw, 0.78rem);
+    font-weight: 700;
+    color: #5a5550;
+    text-align: center;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+    flex-shrink: 0;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: #d8d0c7;
+    border: none;
+    align-self: center;
+}
+
+/* Tous les panneaux (Pilates … Natation) remontent à la grille du split via display:contents */
+.prog-accomp-stack {
+    display: contents;
+}
+
+.prog-accomp-split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--prog-grid-gap);
+    align-items: stretch;
+    width: 100%;
+}
+
+/* Tablette : 2 colonnes (6 disciplines : grille 2×3) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .prog-accomp-split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Bureau : 3 colonnes (2 lignes avec 6 disciplines : 3 + 3) */
+@media (min-width: 1200px) {
+    .prog-accomp-split {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.prog-accomp-panel {
+    min-width: 0;
+    container-type: inline-size;
+    container-name: progac;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+/* Grille interne : cartes | vidéo | cartes — vidéo centrée verticalement entre les deux colonnes de texte */
+.prog-accomp .prog-accomp__grid {
+    display: grid;
+    gap: var(--prog-grid-gap);
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    align-items: center;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.prog-accomp__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--prog-grid-gap);
+    align-items: stretch;
+    min-height: min-content;
+}
+
+/* Bloc centré sans « cadre » : pas de fond type carte, pas d’ombre ni bordure */
+.prog-accomp__card {
+    box-sizing: border-box;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.35rem 0.25rem;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: min-content;
+}
+
+.prog-accomp__card-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    background: #6f6860;
+    color: #f2eeea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.prog-accomp__card-icon svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.prog-accomp__card-title {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: clamp(0.8125rem, 0.9vw + 0.55rem, 0.9375rem);
+    font-weight: 600;
+    color: #2e2a26;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.22;
+    width: 100%;
+}
+
+.prog-accomp__link {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #5c5650;
+    text-decoration: none;
+    margin-top: 0.1rem;
+    letter-spacing: 0.02em;
+    transition: color var(--transition), opacity var(--transition);
+}
+
+.prog-accomp__link:hover {
+    color: #3a3632;
+    opacity: 0.9;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.prog-accomp__video-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.prog-accomp__video-shell {
+    position: relative;
+    width: min(220px, min(82vw, calc(50vh * 9 / 16)));
+    aspect-ratio: 9 / 16;
+    margin: 0 auto;
+    border-radius: var(--prog-card-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(42, 38, 34, 0.08);
+    border: none;
+    background: #d0c8bf;
+}
+
+.prog-accomp__video-el {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
+
+.prog-accomp__play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    border-radius: 50%;
+    background: #e8e2db;
+    color: #4a4540;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
+}
+
+.prog-accomp__play:hover {
+    transform: translate(-50%, -50%);
+    background: #f0ebe5;
+}
+
+.prog-accomp__play[hidden] {
+    display: none;
+}
+
+.prog-accomp__play svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: 0.15rem;
+}
+
+/* Légende sous la vidéo : texte simple, sans cadre ni ombre */
+.prog-accomp__video-caption {
+    font-family: "Inter", var(--font-body), system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: #6d6660;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    max-width: 16rem;
+    line-height: 1.38;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.prog-accomp-panel .prog-accomp__video-shell {
+    width: min(220px, min(100%, calc(50vh * 9 / 16)));
+}
+
+@container progac (min-width: 520px) {
+    .prog-accomp__grid {
+        grid-template-columns: minmax(0, 1fr) minmax(160px, min(260px, 34cqw)) minmax(0, 1fr);
+        grid-template-rows: auto;
+        column-gap: var(--prog-grid-gap);
+        row-gap: var(--prog-grid-gap);
+    }
+
+    .prog-accomp__col--left {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: stretch;
+    }
+
+    .prog-accomp__video-wrap {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    .prog-accomp__col--right {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: stretch;
+    }
+}
+
+@supports not (container-type: inline-size) {
+    @media (min-width: 768px) {
+        .prog-accomp__grid {
+            grid-template-columns: minmax(0, 1fr) minmax(160px, 26vw) minmax(0, 1fr);
+            grid-template-rows: auto;
+            column-gap: var(--prog-grid-gap);
+            row-gap: var(--prog-grid-gap);
+            align-items: center;
+        }
+
+        .prog-accomp__col--left {
+            grid-column: 1;
+            grid-row: 1;
+            align-self: stretch;
+        }
+
+        .prog-accomp__video-wrap {
+            grid-column: 2;
+            grid-row: 1;
+            align-self: center;
+            justify-content: center;
+        }
+
+        .prog-accomp__col--right {
+            grid-column: 3;
+            grid-row: 1;
+            align-self: stretch;
+        }
+    }
+}
+
+/* ----- CONSEILS (modèle « Our Services » : 3 col., cercle noir + picto citron, sans cadre) ----- */
+#conseils.conseils-section {
+    --conseils-bg: #f9f9f9;
+    --conseils-text: #1a1a1a;
+    --conseils-muted: #555555;
+    --conseils-kicker: #666666;
+    --conseils-icon-lime: #dfff00;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--conseils-bg) !important;
+    border: none;
+}
+
+#conseils.conseils-section .section-inner {
+    max-width: 72rem;
+}
+
+#conseils.conseils-section .conseils-head {
+    text-align: left;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+#conseils.conseils-section .section-kicker {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--conseils-kicker);
+    margin: 0 0 0.85rem;
+}
+
+#conseils.conseils-section h2.section-title#conseils-title {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3.2vw, 2.125rem);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--conseils-text);
+    margin: 0;
+}
+
+#conseils.conseils-section .conseils-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 4vw, 2.75rem);
+}
+
+@media (min-width: 640px) {
+    #conseils.conseils-section .conseils-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: clamp(2rem, 6vw, 3.5rem);
+        row-gap: clamp(2.25rem, 4vw, 3rem);
+    }
+}
+
+@media (min-width: 960px) {
+    #conseils.conseils-section .conseils-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: clamp(2.25rem, 5vw, 4rem);
+        row-gap: clamp(2.5rem, 4vw, 3.25rem);
+    }
+}
+
+#conseils.conseils-section .conseil-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 1rem;
+}
+
+#conseils.conseils-section .conseil-item__icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+#conseils.conseils-section .conseil-item__icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke: var(--conseils-icon-lime);
+    fill: none;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#conseils.conseils-section .conseil-item__title {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--conseils-text);
+    margin: 0;
+}
+
+#conseils.conseils-section .conseil-item__text {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--conseils-muted);
+    margin: 0;
+}
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 900px) {
+    .section {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .text {
+        max-width: 100%;
+    }
+
+    .image img {
+        max-width: min(340px, 100%);
+    }
+
+    .hero {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero .content {
+        max-width: 100%;
+    }
+
+    .hero .lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero::before {
+        background: linear-gradient(
+            to bottom,
+            rgba(250, 248, 245, 0.88) 0%,
+            rgba(250, 248, 245, 0.65) 50%,
+            rgba(250, 248, 245, 0.4) 100%
+        );
+    }
+
+    .section-intro {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    .section-kicker,
+    .section-title {
+        text-align: center;
+    }
+
+    #conseils.conseils-section .section-kicker,
+    #conseils.conseils-section h2.section-title#conseils-title {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar ul {
+        gap: 0.75rem 1.25rem;
+    }
+
+    .navbar ul li a {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+    }
+}
+
+/* Footer : pleine largeur ; réseaux sans cadre (icônes seules, style mat) */
+.ecran-programme-sport footer#contact {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.ecran-programme-sport footer .social-btn {
+    border: none;
+    background: transparent;
+    transform: none;
+}
+
+.ecran-programme-sport footer .social-btn:hover {
+    border: none;
+    background: rgba(255, 255, 255, 0.07);
+    transform: none;
+}
+</style>
+</head>
+
+<body>
+<div id="site-nav-root"></div>
+<script src="js/site-nav-loader.js"></script>
+
+<div class="conteneur-principal ecran-programme-sport conteneur-principal--menu-haut">
+  <main class="main main--programme-sport programme-sport-page">
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-programme-title">
+  <div class="hero-inner">
+    <div class="content">
+      <h1 id="hero-programme-title">Transform Your Body &amp; Mind</h1>
+      <p>Only compete with yesterday's you</p>
+    </div>
+    <aside class="weekly-stats" aria-labelledby="weekly-stats-heading">
+      <h2 class="weekly-stats__heading" id="weekly-stats-heading">Statistiques de la semaine</h2>
+      <div class="weekly-stats__row">
+        <div class="weekly-stats__icon weekly-stats__icon--time" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+        </div>
+        <div class="weekly-stats__body">
+          <div class="weekly-stats__value-line">
+            <span class="weekly-stats__value">180</span>
+            <span class="weekly-stats__unit">min</span>
+          </div>
+          <p class="weekly-stats__label">Temps d’activité</p>
+        </div>
+      </div>
+      <div class="weekly-stats__row">
+        <div class="weekly-stats__icon weekly-stats__icon--trophy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 9H4a2 2 0 1 0 0 4h2" />
+            <path d="M18 9h2a2 2 0 1 1 0 4h-2" />
+            <path d="M6 9h12v5a6 6 0 0 1-12 0V9z" />
+            <path d="M9 14v7h6v-7" />
+            <path d="M8 21h8" />
+          </svg>
+        </div>
+        <div class="weekly-stats__body">
+          <div class="weekly-stats__value-line">
+            <span class="weekly-stats__value">1/4</span>
+          </div>
+          <p class="weekly-stats__label">Séances complétées</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="routine-elevate-banner" aria-labelledby="routine-elevate-title">
+  <div class="routine-elevate-banner__inner">
+    <h2 class="routine-elevate-banner__title" id="routine-elevate-title">
+      Prêt à <strong class="routine-elevate-banner__accent">transformer</strong> votre routine&nbsp;?
+    </h2>
+    <p class="routine-elevate-banner__text">
+      Vous méritez un équipement confortable et de haute qualité pour vos entraînements et vos séances de yoga. Nous proposons de nouvelles offres chaque semaine, alors n’oubliez pas de vous inscrire à notre newsletter pour ne rien manquer.
+    </p>
+    <a class="routine-elevate-banner__cta" href="register.html">Je m’inscris</a>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission-strip" id="mission">
+    <div class="section">
+        <div class="image">
+            <img src="images/image.jpg.jpeg" alt="Coaching sport et bien-être Nutrismart" width="380" height="475" loading="lazy">
+        </div>
+
+        <div class="text">
+            <h1>Notre mission</h1>
+            <h2>Un accompagnement professionnel, du mouvement à l’assiette</h2>
+
+            <p>
+                Chez Nutrismart, nous vous aidons à construire une routine durable : entraînements adaptés à votre niveau,
+                progression mesurable et conseils nutritionnels cohérents avec vos objectifs (performance, santé ou silhouette).
+            </p>
+
+            <p>
+                Chaque discipline est pensée pour allier plaisir, technique et récupération — piliers souvent négligés mais essentiels aux résultats sur le long terme.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRAMMES : Pilates, Cardio, Musculation, Boxing, Danse fitness, Natation (grille responsive) -->
+<section class="section-block prog-accomp section-progression" id="disciplines" aria-labelledby="disciplines-title" aria-describedby="disciplines-intro">
+    <div class="section-inner">
+        <header class="prog-accomp__head">
+            <p class="prog-accomp__kicker">Offre sport</p>
+            <h2 class="prog-accomp__title" id="disciplines-title">Programmes &amp; Accompagnement</h2>
+            <p class="prog-accomp__intro" id="disciplines-intro">
+                Que vous débutiez ou approfondissiez votre pratique, nos classes offrent guidance, soutien, et un espace pour grandir.
+            </p>
+        </header>
+
+        <div class="prog-accomp-split">
+        <div class="prog-accomp-stack">
+        <div class="prog-accomp-panel" id="pilates-programmes" aria-labelledby="pilates-split-label">
+        <p class="prog-accomp__split-label" id="pilates-split-label">Pilates</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="pilates-rejoindre.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/prog-accomp-video-poster.png"
+                        aria-label="Vidéo Pilates — lecture dans la page"
+                    >
+                        <source src="videos/pilates.mp4" type="video/mp4" />
+                        <source src="videos/programme-sport.mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Pilates">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Pilates — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        <div class="prog-accomp-panel" id="cardio-programmes" aria-labelledby="cardio-split-label">
+        <p class="prog-accomp__split-label" id="cardio-split-label">Cardio</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="register.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/prog-accomp-video-poster.png"
+                        aria-label="Vidéo Cardio — lecture dans la page"
+                    >
+                        <source src="videos/0410(2).mp4" type="video/mp4" />
+                        <source src="videos/cardio.mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Cardio">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Cardio — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        </div>
+
+        <div class="prog-accomp-panel" id="musculation-programmes" aria-labelledby="muscu-split-label">
+        <p class="prog-accomp__split-label" id="muscu-split-label">Musculation</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="musculation-rejoindre.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/section-musculation-dumbbell.png"
+                        aria-label="Vidéo Musculation — lecture dans la page"
+                    >
+                        <source src="videos/musculation.mp4" type="video/mp4" />
+                        <source src="videos/0410(1).mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Musculation">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Musculation — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        <div class="prog-accomp-panel" id="boxing-programmes" aria-labelledby="boxing-split-label">
+        <p class="prog-accomp__split-label" id="boxing-split-label">Boxing</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="boxing-rejoindre.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/prog-accomp-video-poster.png"
+                        aria-label="Vidéo Boxing — lecture dans la page"
+                    >
+                        <source src="videos/Enregistrement%20de%20l%27%C3%A9cran%202026-04-11%20013854.mp4" type="video/mp4" />
+                        <source src="videos/boxing.mp4" type="video/mp4" />
+                        <source src="videos/0410(1).mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Boxing">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Boxing — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        <div class="prog-accomp-panel" id="danse-fitness-programmes" aria-labelledby="danse-fitness-split-label">
+        <p class="prog-accomp__split-label" id="danse-fitness-split-label">Danse fitness</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="danse-fitness-rejoindre.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/prog-accomp-video-poster.png"
+                        aria-label="Vidéo Danse fitness — lecture dans la page"
+                    >
+                        <source src="videos/Enregistrement%20de%20l%27%C3%A9cran%202026-04-11%20014825.mp4" type="video/mp4" />
+                        <source src="videos/0410(4).mp4" type="video/mp4" />
+                        <source src="videos/danse-fitness.mp4" type="video/mp4" />
+                        <source src="videos/danse.mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Danse fitness">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Danse fitness — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        <div class="prog-accomp-panel" id="natation-programmes" aria-labelledby="natation-split-label">
+        <p class="prog-accomp__split-label" id="natation-split-label">Natation</p>
+        <div class="prog-accomp__grid">
+            <div class="prog-accomp__col prog-accomp__col--left">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Sessions Privées</h3>
+                    <a class="prog-accomp__link" href="natation-rejoindre.html">Rejoindre la Classe →</a>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Méditation &amp; Pleine Conscience</h3>
+                </article>
+            </div>
+
+            <div class="prog-accomp__video-wrap">
+                <div class="prog-accomp__video-shell">
+                    <video
+                        class="prog-accomp__video-el"
+                        controls
+                        playsinline
+                        autoplay
+                        muted
+                        preload="metadata"
+                        poster="images/prog-accomp-video-poster.png"
+                        aria-label="Vidéo Natation — lecture dans la page"
+                    >
+                        <source src="videos/0410(3).mp4" type="video/mp4" />
+                        <source src="videos/natation.mp4" type="video/mp4" />
+                        <source src="videos/0410(5).mp4" type="video/mp4" />
+                        <source src="videos/programme-sport.mp4" type="video/mp4" />
+                        <source src="videos/0410.mp4" type="video/mp4" />
+                        Votre navigateur ne prend pas en charge la vidéo HTML5.
+                    </video>
+                    <button type="button" class="prog-accomp__play" aria-label="Lire la vidéo Natation">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+                <p class="prog-accomp__video-caption">Aperçu vidéo Natation — lecture sur cette page.</p>
+            </div>
+
+            <div class="prog-accomp__col prog-accomp__col--right">
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M8 11V8"/><path d="M12 11V6"/><path d="M16 11V8"/><path d="M6 4s1.5 2 2 3"/><path d="M18 4s-1.5 2-2 3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Soutien Nutritionnel</h3>
+                </article>
+                <article class="prog-accomp__card">
+                    <div class="prog-accomp__card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <h3 class="prog-accomp__card-title">Formations Vidéo</h3>
+                </article>
+            </div>
+        </div>
+        </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONSEILS -->
+<section class="section-block section-block--warm conseils-section" id="conseils" aria-labelledby="conseils-title">
+    <div class="section-inner">
+        <header class="conseils-head">
+            <p class="section-kicker">Expertise</p>
+            <h2 class="section-title" id="conseils-title">Conseils pour un entraînement efficace</h2>
+        </header>
+
+        <div class="conseils-grid">
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="5.5" r="2" />
+                        <path d="M12 7.5v3M9 10.5h6M10 10.5L9 20M15 10.5l1 9.5M11 20h2" />
+                        <path d="M8 20h8" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Échauffement systématique</h3>
+                <p class="conseil-item__text">
+                    Préparez articulations et muscles pendant 5 à 10 minutes (mobilité légère + activation) avant toute séance intense.
+                </p>
+            </article>
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 22a7 7 0 0 0 7-7c0-5-7-13-7-13S5 10 5 15a7 7 0 0 0 7 7z" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Hydratation continue</h3>
+                <p class="conseil-item__text">
+                    Répartissez votre apport hydrique sur la journée ; l’effort se prolonge mieux lorsque le corps n’est pas déjà en déficit.
+                </p>
+            </article>
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                        <path d="M17 6h6v6" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Progression mesurée</h3>
+                <p class="conseil-item__text">
+                    Augmentez charge, durée ou fréquence par paliers (environ 5 à 10 % par semaine) pour limiter blessures et stagnation.
+                </p>
+            </article>
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Sommeil et récupération</h3>
+                <p class="conseil-item__text">
+                    La qualité du sommeil influence force, humeur et régulation hormonale : traitez-la comme un pilier d’entraînement.
+                </p>
+            </article>
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Écouter les signaux</h3>
+                <p class="conseil-item__text">
+                    Douleur aiguë ou localisée : arrêtez et consultez si besoin. Courbatures diffuses : récupération normale, adaptez l’intensité.
+                </p>
+            </article>
+            <article class="conseil-item">
+                <div class="conseil-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                        />
+                        <path d="M12 10v4M10 12h4" />
+                    </svg>
+                </div>
+                <h3 class="conseil-item__title">Alignement nutritionnel</h3>
+                <p class="conseil-item__text">
+                    Associez protéines, glucides et lipides à vos objectifs (Nutrismart) pour soutenir l’effort, la récupération et la composition corporelle.
+                </p>
+            </article>
+        </div>
+
+        
+</section>
+
+  </main>
+
+  <footer id="contact">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <mask id="biteMaskFooterPS">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterPS)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span>NutriSmart</span>
+        </div>
+        <p class="footer-desc">
+          Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <div class="fc-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <div class="fc-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+              </svg>
+            </div>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <div class="fc-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </div>
+            Tunis, Tunisie
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Plateforme</h5>
+        <ul>
+          <li><a href="nutrismart-website.html#features">Fonctionnalités</a></li>
+          <li><a href="nutrismart-website.html#comment">Comment ça marche</a></li>
+          <li><a href="nutrismart-website.html#modules">Modules</a></li>
+          <li><a href="plan-repas.html">Programmes repas</a></li>
+          <li><a href="programme-sport.html">Programmes sport</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Ressources</h5>
+        <ul>
+          <li><a href="nutrismart-website.html">Base alimentaire</a></li>
+          <li><a href="recette.html">Carnet de recettes</a></li>
+          <li><a href="nutrismart-website.html#features">Blog nutrition</a></li>
+          <li><a href="suivi-statistiques.php">Suivi de progrès</a></li>
+          <li><a href="nutrismart-website.html#contact">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Suivez-nous</h5>
+        <div class="footer-social">
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" /></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="X">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg>
+          </a>
+        </div>
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Conditions d’utilisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 NutriSmart — Tous droits réservés</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">CGU</a>
+        <a href="mailto:contact@nutrismart.demo">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+    document.querySelectorAll('.prog-accomp__video-shell').forEach(function (shell) {
+        var video = shell.querySelector('video');
+        var playBtn = shell.querySelector('.prog-accomp__play');
+        if (!video || !playBtn) return;
+        function hidePlay() {
+            playBtn.hidden = true;
+        }
+        function syncOverlay() {
+            if (!video.paused) hidePlay();
+        }
+        video.addEventListener('play', hidePlay);
+        video.addEventListener('playing', syncOverlay);
+        video.addEventListener('loadeddata', syncOverlay);
+        playBtn.addEventListener('click', function () {
+            video.play();
+            hidePlay();
+        });
+        syncOverlay();
+    });
+})();
+</script>
+
+</body>
+</html>

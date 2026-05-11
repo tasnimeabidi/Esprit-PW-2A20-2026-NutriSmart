@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — NutriSmart</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared-styles.css?v=3" />
+  <script src="js/avatar-utils.js"></script>
+  <style>
+    /* Modern Split Layout for Profile */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fdfdfd;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .split-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Side Image / Info */
+    .profile-side-info {
+      flex: 1.1;
+      background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+
+    .profile-side-info::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(74, 124, 89, 0.4), rgba(34, 60, 42, 0.6));
+      z-index: 1;
+    }
+
+    .info-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .info-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .info-content p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 3rem;
+    }
+
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .benefit-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+    }
+
+    /* Form Section */
+    .profile-form-section {
+      flex: 1;
+      background: #fdfdfd;
+      display: grid;
+      place-items: center;
+      padding: 4rem;
+    }
+
+    .form-container-inner {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .profile-card {
+      background: rgb(255, 255, 255);
+      border-radius: 2rem;
+      padding: 3rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    /* Glass Badges Style */
+    .glass-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.8rem 1.6rem;
+      border-radius: 4rem;
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .glass-badge:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .glass-badge.green {
+      background: rgba(74, 124, 89, 0.3);
+      border-color: rgba(74, 124, 89, 0.4);
+    }
+
+    .input-box-modern {
+      margin-bottom: 1.2rem;
+    }
+
+    .input-box-modern label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a7c59;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-box-modern input,
+    .input-box-modern select {
+      width: 100%;
+      padding: 0.8rem 1.4rem;
+      border-radius: 3rem;
+      border: 1.5px solid #eee;
+      background: #f9f9f9;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2d3436;
+      transition: all 0.3s;
+    }
+
+    .input-box-modern input:focus,
+    .input-box-modern select:focus {
+      outline: none;
+      border-color: #4a7c59;
+      background: white;
+      box-shadow: 0 8px 20px rgba(74, 124, 89, 0.1);
+    }
+
+    .btn-save-modern {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 3rem;
+      background: #4a7c59;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .btn-save-modern:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(74, 124, 89, 0.2);
+    }
+
+    @media (max-width: 1100px) {
+      .split-wrapper {
+        flex-direction: column;
+      }
+
+      .profile-side-info {
+        padding: 4rem 2rem;
+      }
+    }
+
+    /* ── SIDEBAR MENU ── */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: #f8f9fa;
+      z-index: 9999;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.active {
+      transform: translateX(320px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+
+    .sidebar-search {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem 0;
+      color: #4a6fa5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-links a:hover {
+      color: var(--orange);
+      padding-left: 0.5rem;
+    }
+  </style>
+</head>
+
+<body data-site-nav="profil">
+  <div id="site-nav-root"></div>
+  <script src="js/site-nav-loader.js"></script>
+
+  <div class="split-wrapper">
+    <!-- Left Side: Welcome & Benefits -->
+    <section class="profile-side-info">
+      <div class="info-content">
+        <div class="badges-row">
+          <div id="profile-welcome-badge" class="glass-badge green" data-i18n="prof_welcome">Bienvenue !</div>
+        </div>
+        <h1 data-i18n="prof_title">Complétez votre Profil</h1>
+        <p data-i18n="prof_sub">Quelques informations pour personnaliséer votre expérience NutriSmart.</p>
+
+
+
+        <ul class="benefits-list">
+          <li class="benefit-item">
+            <span class="benefit-icon">🥗</span>
+            <span data-i18n="benefit_1">Plan alimentaire personnalisé selon vos besoins</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">📈</span>
+            <span data-i18n="benefit_2">Suivi de progression en temps réel</span>
+          </li>
+          <li class="benefit-item">
+            <span class="benefit-icon">🤖</span>
+            <span data-i18n="benefit_3">Assistant nutritionnel AI à votre écoute</span>
+          </li>
+        </ul>
+
+        <div style="margin-top: 4rem; display: flex; flex-wrap: wrap;">
+          <div class="glass-badge" id="profile-user-name" style="gap: 0.8rem; padding: 0.5rem 1.2rem;">
+            <div class="user-avatar" id="profile-user-initial"
+              style="width:30px; height:30px; font-size:12px; font-weight: 800;">?</div>
+            <span id="profile-user-name-span" style="font-weight: 700;">Chargement...</span>
+          </div>
+          <div class="glass-badge" id="profile-user-email">
+            <svg style="width:20px; height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <span id="profile-user-email-span">...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Side: Form -->
+    <section class="profile-form-section">
+      <div class="form-container-inner">
+        <div class="profile-card">
+          <form method="POST" action="api.php?action=update_profile" id="profileForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_age">Âge</label>
+                <input type="number" name="age" required min="1" max="120" placeholder="Ex: 25"
+                  data-i18n-placeholder="ph_age" />
+              </div>
+              <div class="input-box-modern">
+                <label data-i18n="lbl_gender">Genre</label>
+                <select name="genre">
+                  <option value="Aucun" data-i18n="g_none">Aucun</option>
+                  <option value="Homme" data-i18n="g_m">Homme</option>
+                  <option value="Femme" data-i18n="g_f">Femme</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="input-box-modern">
+                <label data-i18n="lbl_weight">Poids (kg)</label>
+                <input type="number" name="poids" step="0.1" required placeholder="Ex: 70"
+                  data-i18n-placeholder="ph_weight" />
+              </div>
+              <div class="input-box-modern">
+                <label data-i18n="lbl_height">Taille (cm)</label>
+                <input type="number" name="taille" required placeholder="Ex: 175" data-i18n-placeholder="ph_height" />
+              </div>
+            </div>
+
+            <div class="input-box-modern">
+              <label data-i18n="lbl_goal">Objectif Principal</label>
+              <select name="objectif">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="Maintien et Tonification" data-i18n="goal_1">Maintien et Tonification</option>
+                <option value="Perte de poids" data-i18n="goal_2">Perte de poids</option>
+                <option value="Prise de masse musculaire" data-i18n="goal_3">Prise de masse musculaire</option>
+                <option value="Santé métabolique" data-i18n="goal_4">Santé métabolique</option>
+              </select>
+            </div>
+
+            <div class="input-box-modern">
+              <label data-i18n="lbl_pref">Préférences alimentaires</label>
+              <select name="preference">
+                <option value="aucune" data-i18n="g_none">Aucune</option>
+                <option value="vegetarien" data-i18n="pref_1">Végétarien</option>
+                <option value="vegan" data-i18n="pref_2">Vegan</option>
+                <option value="sans-gluten" data-i18n="pref_3">Sans gluten</option>
+                <option value="sans-lactose" data-i18n="pref_4">Sans lactose</option>
+                <option value="low-carb" data-i18n="pref_5">Low carb</option>
+              </select>
+            </div>
+
+
+            <button type="submit" class="btn-save-modern" data-i18n="btn_save_pref">
+              Enregistrer mon profil
+            </button>
+          </form>
+
+          <!-- Face ID Section Premium Design -->
+          <div id="face-id-section" class="face-id-card" style="display: none; margin-top: 3rem;">
+            <h3 class="face-id-title">
+              <svg style="width:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path
+                  d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span data-i18n="face_title">Biométrie Face ID</span>
+            </h3>
+
+            <!-- Setup View -->
+            <div id="face-setup-view">
+              <div class="face-id-video-container">
+                <video id="enrollVideo" class="face-id-video" autoplay muted playsinline></video>
+                <div id="scanLine" class="scanning-line"></div>
+              </div>
+              <div id="enrollStatus" class="face-id-status" data-i18n="face_ready">Prêt à configurer</div>
+              <button id="btnEnroll" type="button" class="btn-face-id"
+                onclick="enrollFace('enrollVideo', 'enrollStatus', 'btnEnroll')" data-i18n="btn_face_enable">
+                Activer Face ID
+              </button>
+            </div>
+
+            <!-- Manage View (When already enabled) -->
+            <div id="face-manage-view" style="display: none;">
+              <div
+                style="background: rgba(74, 124, 89, 0.1); padding: 2rem; border-radius: 2rem; text-align: center; border: 1.5px dashed #4a7c59; margin-bottom: 1.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
+                <div style="font-weight: 800; color: #4a7c59; font-size: 1.1rem;" data-i18n="face_enabled">Face ID
+                  Activé</div>
+                <p style="font-size: 0.85rem; color: #4a7c59; opacity: 0.8; margin-top: 0.5rem;">Votre visage est
+                  enregistré en toute sécurité.</p>
+              </div>
+              <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn-face-id" style="flex: 1; padding: 0.7rem; font-size: 0.9rem;"
+                  onclick="document.getElementById('face-manage-view').style.display='none'; document.getElementById('face-setup-view').style.display='block';"
+                  data-i18n="btn_edit">
+                  Refaire le scan
+                </button>
+                <button id="btnDeleteFace" type="button" class="btn-face-id"
+                  style="flex: 1; padding: 0.7rem; font-size: 0.9rem; border-color: #ef4444 !important; color: #ef4444 !important;"
+                  onclick="deleteFaceID('deleteStatus', 'btnDeleteFace')" data-i18n="btn_del">
+                  Supprimer
+                </button>
+              </div>
+              <div id="deleteStatus"
+                style="font-size: 0.85rem; margin-top: 1rem; text-align: center; font-weight: 600;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </section>
+  </div>
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-inner">
+      <!-- Brand & Contact -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="biteMaskFooterFinal">
+              <rect x="-20" y="-20" width="140" height="140" fill="white" />
+              <circle cx="92" cy="35" r="18" fill="black" />
+              <circle cx="84" cy="62" r="14" fill="black" />
+            </mask>
+            <g mask="url(#biteMaskFooterFinal)">
+              <path d="M 20 80 C 35 45 65 25 90 10 C 90 60 70 90 20 80 Z" fill="#4a7c59" />
+              <path d="M 20 80 C 10 30 40 10 90 10 C 65 25 35 45 20 80 Z" fill="#8fbc8f" />
+            </g>
+            <path d="M 22 78 L 12 92" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <span>NutriSmart</span>
+        </div>
+        <p class="footer-desc">
+          Votre plateforme de nutrition intelligente et personnalisée. Mangez mieux, vivez pleinement.
+        </p>
+        <div class="footer-contact-list">
+          <a href="mailto:contact@nutrismart.demo" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            contact@nutrismart.demo
+          </a>
+          <a href="tel:+21612345678" class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.31-2.31a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            +216 12 345 678
+          </a>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Tunis, Tunisie
+          </div>
+        </div>
+      </div>
+
+      <!-- Plateforme -->
+      <div class="footer-col">
+        <h5>Plateforme</h5>
+        <ul>
+          <li><a href="#features">Fonctionnalités</a></li>
+          <li><a href="#how-it-works">Comment ça marche</a></li>
+          <li><a href="#modules">Modules</a></li>
+          <li><a href="#programme">Programmes Repas</a></li>
+          <li><a href="#sport">Programmes Sport</a></li>
+        </ul>
+      </div>
+
+      <!-- Ressources -->
+      <div class="footer-col">
+        <h5>Ressources</h5>
+        <ul>
+          <li>
+            <p>Base alimentaire</p>
+          </li>
+          <li>
+            <p>Carnet de recettes</p>
+          </li>
+          <li>
+            <p>Blog Nutrition</p>
+          </li>
+          <li>
+            <p>Suivi de progrès</p>
+          </li>
+          <li>
+            <p>FAQ</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social & Legal -->
+      <div class="footer-col">
+        <h5>Suivez-nous</h5>
+        <div class="footer-social-wrap">
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="social-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
+        </div>
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="#">Politique de confidentialitéé</a></li>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 NutriSmart — Tous droits réservés</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">CGU</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="langBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>Français</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="lang-popover" id="langPopover">
+          <div class="lang-item" onclick="setLang('ar')"><span>العربية</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item selected" onclick="setLang('fr')"><span>Français</span><svg class="check"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+          <div class="lang-item" onclick="setLang('en')"><span>English</span><svg class="check" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/nutrismart-validation.js"></script>
+  <script src="js/validation.js"></script>
+  <script>
+    window.addEventListener('nutrismart:session', function (ev) {
+      var data = ev.detail || {};
+
+      if (data.loggedIn) {
+        var isAdmin = data.role && data.role.toLowerCase().trim() === 'admin';
+        var firstName = (data.name || '').split(' ')[0];
+
+        if (!isAdmin) {
+          var welcomeBadge = document.getElementById('profile-welcome-badge');
+          if (welcomeBadge) {
+            welcomeBadge.textContent = '✨ Bienvenue, ' + firstName + ' !';
+          }
+          var profileName = document.getElementById('profile-user-name-span');
+          if (profileName) profileName.textContent = data.name;
+
+          var profileInitial = document.getElementById('profile-user-initial');
+          if (profileInitial) {
+            profileInitial.textContent = firstName.charAt(0).toUpperCase();
+            if (typeof getAvatarStyle === 'function') {
+              var style = getAvatarStyle(data.name);
+              profileInitial.style.background = style.bg;
+              profileInitial.style.color = style.text;
+            }
+          }
+
+          var profileEmail = document.getElementById('profile-user-email-span');
+          if (profileEmail) profileEmail.textContent = data.email;
+
+          var params = new URLSearchParams(window.location.search);
+          if (params.has('verified')) {
+            var successMsg = document.createElement('div');
+            successMsg.className = 'glass-badge';
+            successMsg.style.cssText = 'background: rgba(46, 204, 113, 0.2); border: 1px solid rgba(46, 204, 113, 0.4); color: white; padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; font-weight: 600; width: 100%; justify-content: center;';
+            successMsg.setAttribute('data-i18n', 'msg_verified');
+            successMsg.textContent = '✅ Compte activé avec succès !';
+            var infoContent = document.querySelector('.info-content');
+            if (infoContent) infoContent.prepend(successMsg);
+          }
+
+          var faceSection = document.getElementById('face-id-section');
+          if (faceSection) {
+            faceSection.style.display = 'block';
+            if (data.hasFaceId) {
+              document.getElementById('face-setup-view').style.display = 'none';
+              document.getElementById('face-manage-view').style.display = 'block';
+            } else {
+              document.getElementById('face-setup-view').style.display = 'block';
+              document.getElementById('face-manage-view').style.display = 'none';
+            }
+          }
+        }
+      } else {
+        var faceOff = document.getElementById('face-id-section');
+        if (faceOff) faceOff.style.display = 'none';
+      }
+    });
+
+    // --- Language Selector Logic ---
+    const langBtn = document.getElementById('langBtn');
+    const langPopover = document.getElementById('langPopover');
+
+    if (langBtn && langPopover) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langBtn.classList.toggle('active');
+        langPopover.classList.toggle('show');
+      });
+
+      window.addEventListener('click', () => {
+        langBtn.classList.remove('active');
+        langPopover.classList.remove('show');
+      });
+    }
+
+  </script>
+  <script src="js/translations.js"></script>
+  <script>
+    // Monkey patch setLang for placeholders logic
+    const originalSetLang = window.setLang;
+    if (originalSetLang) {
+      window.setLang = (lang) => {
+        originalSetLang(lang);
+        // Apply translations to placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (translations && translations[lang] && translations[lang][key]) {
+            el.setAttribute('placeholder', translations[lang][key]);
+          }
+        });
+      }
+      // initial trigger for placeholders
+      const savedLang = localStorage.getItem('preferred_lang') || 'fr';
+      window.setLang(savedLang);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="js/face-auth.js"></script>
+
+<script src="js/page-transitions.js"></script>
+
+</body>
+
+</html>
